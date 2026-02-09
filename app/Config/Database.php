@@ -51,6 +51,21 @@ class Database extends Config
         ],
     ];
 
+    public function __construct()
+    {
+        parent::__construct();
+
+        // Parse JAWSDB_URL for Heroku
+        if ($jawsdbUrl = getenv('JAWSDB_URL')) {
+            $dbUrl = parse_url($jawsdbUrl);
+            $this->default['hostname'] = $dbUrl['host'];
+            $this->default['username'] = $dbUrl['user'];
+            $this->default['password'] = $dbUrl['pass'];
+            $this->default['database'] = ltrim($dbUrl['path'], '/');
+            $this->default['port']     = $dbUrl['port'] ?? 3306;
+        }
+    }
+
     //    /**
     //     * Sample database connection for SQLite3.
     //     *
