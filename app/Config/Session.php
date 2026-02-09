@@ -60,6 +60,19 @@ class Session extends BaseConfig
      */
     public string $savePath = WRITEPATH . 'session';
 
+    public function __construct()
+    {
+        parent::__construct();
+
+        // Use /tmp for sessions on Heroku (only writable directory)
+        if (getenv('DYNO')) {
+            $this->savePath = '/tmp/sessions';
+            if (!is_dir($this->savePath)) {
+                mkdir($this->savePath, 0700, true);
+            }
+        }
+    }
+
     /**
      * --------------------------------------------------------------------------
      * Session Match IP
