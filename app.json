@@ -1,0 +1,58 @@
+{
+    "name": "Sistem Absensi Siswa Fingerprint",
+    "description": "Aplikasi absensi siswa menggunakan mesin fingerprint dengan CodeIgniter 4",
+    "keywords": [
+        "php",
+        "codeigniter",
+        "fingerprint",
+        "attendance",
+        "absensi"
+    ],
+    "website": "https://github.com/Rizki2629/absen_siswa",
+    "repository": "https://github.com/Rizki2629/absen_siswa",
+    "logo": "",
+    "success_url": "/",
+    "env": {
+        "CI_ENVIRONMENT": {
+            "description": "CodeIgniter environment",
+            "value": "production"
+        },
+        "app.baseURL": {
+            "description": "Base URL of the application",
+            "value": "https://yourapp.herokuapp.com/"
+        },
+        "database.default.hostname": {
+            "description": "Database hostname (will be set by ClearDB addon)"
+        },
+        "database.default.database": {
+            "description": "Database name"
+        },
+        "database.default.username": {
+            "description": "Database username"
+        },
+        "database.default.password": {
+            "description": "Database password"
+        },
+        "encryption.key": {
+            "description": "Encryption key for CodeIgniter (generate with: php spark key:generate --show)",
+            "generator": "secret"
+        }
+    },
+    "formation": {
+        "web": {
+            "quantity": 1,
+            "size": "basic"
+        }
+    },
+    "addons": [
+        {
+            "plan": "jawsdb:kitefin",
+            "as": "DATABASE"
+        }
+    ],
+    "buildpacks": [
+        {
+            "url": "heroku/php"
+        }
+    ]
+}
