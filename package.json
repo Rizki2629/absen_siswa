@@ -1,0 +1,15 @@
+{
+  "name": "absensi-siswa",
+  "version": "1.0.0",
+  "description": "Aplikasi Absensi Siswa dengan Fingerprint - CodeIgniter 4",
+  "scripts": {
+    "dev": "tailwindcss -i ./assets/css/input.css -o ./public/css/style.css --watch",
+    "build": "tailwindcss -i ./assets/css/input.css -o ./public/css/style.css --minify"
+  },
+  "keywords": ["attendance", "fingerprint", "codeigniter"],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "tailwindcss": "^3.4.1"
+  }
+}
