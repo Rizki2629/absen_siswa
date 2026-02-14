@@ -59,8 +59,8 @@ class Filters extends BaseFilters
         ],
         'after' => [
             'pagecache',   // Web Page Caching
-            'performance', // Performance Metrics
-            'toolbar',     // Debug Toolbar
+            // 'performance', // Performance Metrics - Disabled in production
+            // 'toolbar',     // Debug Toolbar - Disabled in production
         ],
     ];
 
