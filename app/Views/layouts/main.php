@@ -90,7 +90,13 @@
                 <div class="flex items-center justify-between">
                     <div class="flex items-center space-x-4">
                         <!-- Mobile Hamburger Button -->
-                        <button id="hamburgerBtn" class="md:hidden p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-all" onclick="toggleSidebar()">
+                        <button 
+                            id="hamburgerBtn" 
+                            class="md:hidden p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-all" 
+                            onclick="toggleSidebar()"
+                            aria-controls="sidebar"
+                            aria-expanded="false"
+                            aria-label="Toggle sidebar">
                             <span class="material-symbols-outlined text-2xl">menu</span>
                         </button>
                         
@@ -139,8 +145,14 @@
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
             const overlay = document.getElementById('sidebarOverlay');
-            sidebar.classList.toggle('open');
+            const hamburgerBtn = document.getElementById('hamburgerBtn');
+            const isOpen = sidebar.classList.toggle('open');
             overlay.classList.toggle('active');
+            
+            // Update aria-expanded for accessibility
+            if (hamburgerBtn) {
+                hamburgerBtn.setAttribute('aria-expanded', isOpen);
+            }
         }
         
         // Update current time
