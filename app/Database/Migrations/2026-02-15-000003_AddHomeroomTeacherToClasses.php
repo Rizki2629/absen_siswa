@@ -16,7 +16,7 @@ class AddHomeroomTeacherToClasses extends Migration
                 'after' => 'year'
             ],
         ];
-        
+
         $this->forge->addColumn('classes', $fields);
     }
 

@@ -16,9 +16,9 @@ class SeedDummyStudentData extends Migration
             'created_at' => date('Y-m-d H:i:s'),
             'updated_at' => date('Y-m-d H:i:s'),
         ]);
-        
+
         $classId = $this->db->insertID();
-        
+
         // Insert dummy student
         $this->db->table('students')->insert([
             'nis' => '123456',

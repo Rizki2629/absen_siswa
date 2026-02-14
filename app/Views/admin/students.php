@@ -155,19 +155,11 @@
                 </div>
             </div>
 
-            <div class="grid grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">No. HP Orang Tua</label>
-                    <input type="text" id="parentPhone" name="parent_phone"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500"
-                        placeholder="08xxxxxxxxxx">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Email Orang Tua</label>
-                    <input type="email" id="parentEmail" name="parent_email"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500"
-                        placeholder="email@contoh.com">
-                </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">No. HP Orang Tua</label>
+                <input type="text" id="parentPhone" name="parent_phone"
+                    class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500"
+                    placeholder="08xxxxxxxxxx">
             </div>
 
             <div>
@@ -300,23 +292,107 @@
         document.getElementById('studentModal').style.display = 'none';
     }
 
-    function editStudent(id) {
-        // TODO: Implement edit
-        alert('Edit student ' + id);
-    }
-
-    function deleteStudent(id) {
-        if (confirm('Apakah Anda yakin ingin menghapus siswa ini?')) {
-            // TODO: Implement delete
-            alert('Delete student ' + id);
+    async function editStudent(id) {
+        try {
+            const response = await fetch(`/api/admin/students/${id}`);
+            const result = await response.json();
+            
+            if (result.status === 'success') {
+                const student = result.data;
+                
+                // Fill form with student data
+                document.getElementById('studentModalTitle').textContent = 'Edit Data Siswa';
+                document.getElementById('studentId').value = student.id;
+                document.getElementById('studentNis').value = student.nis;
+                document.getElementById('studentName').value = student.name;
+                document.getElementById('studentClass').value = student.class_id;
+                document.getElementById('studentGender').value = student.gender;
+                document.getElementById('parentPhone').value = student.parent_phone || '';
+                document.getElementById('studentAddress').value = student.address || '';
+                document.getElementById('studentActive').checked = student.active == 1;
+                
+                // Show modal
+                document.getElementById('studentModal').style.display = 'flex';
+            } else {
+                alert('Gagal mengambil data siswa: ' + result.message);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Terjadi kesalahan saat mengambil data siswa');
         }
     }
 
-    document.getElementById('studentForm').addEventListener('submit', function(e) {
+    async function deleteStudent(id) {
+        if (!confirm('Apakah Anda yakin ingin menghapus siswa ini?')) {
+            return;
+        }
+        
+        try {
+            const response = await fetch(`/api/admin/students/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            });
+            
+            const result = await response.json();
+            
+            if (result.status === 'success') {
+                alert('Siswa berhasil dihapus');
+                loadStudents();
+            } else {
+                alert('Gagal menghapus siswa: ' + result.message);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Terjadi kesalahan saat menghapus siswa');
+        }
+    }
+
+    document.getElementById('studentForm').addEventListener('submit', async function(e) {
         e.preventDefault();
-        // TODO: Implement save
-        alert('Save student');
-        closeStudentModal();
+        
+        const studentId = document.getElementById('studentId').value;
+        const formData = {
+            nis: document.getElementById('studentNis').value,
+            name: document.getElementById('studentName').value,
+            class_id: document.getElementById('studentClass').value,
+            gender: document.getElementById('studentGender').value,
+            parent_phone: document.getElementById('parentPhone').value,
+            address: document.getElementById('studentAddress').value,
+            is_active: document.getElementById('studentActive').checked
+        };
+        
+        try {
+            const url = studentId ? `/api/admin/students/${studentId}` : '/api/admin/students';
+            const method = studentId ? 'PUT' : 'POST';
+            
+            const response = await fetch(url, {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: JSON.stringify(formData)
+            });
+            
+            const result = await response.json();
+            
+            if (result.status === 'success') {
+                alert(studentId ? 'Data siswa berhasil diperbarui' : 'Siswa berhasil ditambahkan');
+                closeStudentModal();
+                loadStudents();
+            } else {
+                alert('Gagal menyimpan data: ' + result.message);
+                if (result.errors) {
+                    console.error('Validation errors:', result.errors);
+                }
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Terjadi kesalahan saat menyimpan data siswa');
+        }
     });
 </script>
 

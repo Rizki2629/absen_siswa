@@ -15,7 +15,7 @@ class Auth implements FilterInterface
             // Log for debugging
             log_message('error', 'Auth Filter: Session not found or expired. URI: ' . $request->getUri());
             log_message('error', 'Auth Filter: Session data: ' . json_encode(session()->get()));
-            
+
             // If it's an API request, return JSON instead of redirect
             if (strpos($request->getUri()->getPath(), '/api/') !== false) {
                 return service('response')
@@ -25,7 +25,7 @@ class Auth implements FilterInterface
                         'message' => 'Unauthorized. Please login first.'
                     ]);
             }
-            
+
             // Redirect to login page for web requests
             return redirect()->to('/')->with('error', 'Silakan login terlebih dahulu');
         }

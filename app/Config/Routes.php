@@ -48,6 +48,11 @@ $routes->group('api/admin', ['filter' => 'auth'], static function (RouteCollecti
 
 	// Students & Classes API
 	$routes->get('students', 'Admin::apiGetStudents');
+	$routes->get('students/(:num)', 'Admin::apiGetStudent/$1');
+	$routes->post('students', 'Admin::apiCreateStudent');
+	$routes->put('students/(:num)', 'Admin::apiUpdateStudent/$1');
+	$routes->delete('students/(:num)', 'Admin::apiDeleteStudent/$1');
+	
 	$routes->get('classes', 'Admin::apiGetClasses');
 });
 

@@ -584,6 +584,181 @@ class Admin extends BaseController
     }
 
     /**
+     * API: Get single student
+     */
+    public function apiGetStudent($id)
+    {
+        try {
+            $student = $this->studentModel
+                ->select('students.*, classes.name as class_name')
+                ->join('classes', 'classes.id = students.class_id', 'left')
+                ->where('students.id', $id)
+                ->first();
+
+            if (!$student) {
+                return $this->response->setStatusCode(404)->setJSON([
+                    'status' => 'error',
+                    'message' => 'Siswa tidak ditemukan'
+                ]);
+            }
+
+            return $this->response->setJSON([
+                'status' => 'success',
+                'data' => $student
+            ]);
+        } catch (\Exception $e) {
+            return $this->response->setStatusCode(500)->setJSON([
+                'status' => 'error',
+                'message' => 'Gagal mengambil data siswa: ' . $e->getMessage()
+            ]);
+        }
+    }
+
+    /**
+     * API: Create new student
+     */
+    public function apiCreateStudent()
+    {
+        try {
+            $json = $this->request->getJSON(true);
+
+            // Validation
+            $validation = \Config\Services::validation();
+            $validation->setRules([
+                'nis' => 'required|is_unique[students.nis]|max_length[50]',
+                'name' => 'required|max_length[255]',
+                'class_id' => 'required|integer',
+                'gender' => 'required|in_list[L,P]',
+            ]);
+
+            if (!$validation->run($json)) {
+                return $this->response->setStatusCode(400)->setJSON([
+                    'status' => 'error',
+                    'message' => 'Validasi gagal',
+                    'errors' => $validation->getErrors()
+                ]);
+            }
+
+            $data = [
+                'nis' => $json['nis'],
+                'name' => $json['name'],
+                'class_id' => $json['class_id'],
+                'gender' => $json['gender'],
+                'parent_phone' => $json['parent_phone'] ?? null,
+                'address' => $json['address'] ?? null,
+                'active' => isset($json['is_active']) ? ($json['is_active'] ? 1 : 0) : 1,
+            ];
+
+            $this->studentModel->insert($data);
+
+            return $this->response->setJSON([
+                'status' => 'success',
+                'message' => 'Siswa berhasil ditambahkan'
+            ]);
+        } catch (\Exception $e) {
+            return $this->response->setStatusCode(500)->setJSON([
+                'status' => 'error',
+                'message' => 'Gagal menambahkan siswa: ' . $e->getMessage()
+            ]);
+        }
+    }
+
+    /**
+     * API: Update student
+     */
+    public function apiUpdateStudent($id)
+    {
+        try {
+            $json = $this->request->getJSON(true);
+
+            $student = $this->studentModel->find($id);
+            if (!$student) {
+                return $this->response->setStatusCode(404)->setJSON([
+                    'status' => 'error',
+                    'message' => 'Siswa tidak ditemukan'
+                ]);
+            }
+
+            // Validation
+            $validation = \Config\Services::validation();
+            $rules = [
+                'name' => 'required|max_length[255]',
+                'class_id' => 'required|integer',
+                'gender' => 'required|in_list[L,P]',
+            ];
+
+            // Check if NIS is being changed
+            if (isset($json['nis']) && $json['nis'] !== $student['nis']) {
+                $rules['nis'] = 'required|is_unique[students.nis]|max_length[50]';
+            }
+
+            $validation->setRules($rules);
+
+            if (!$validation->run($json)) {
+                return $this->response->setStatusCode(400)->setJSON([
+                    'status' => 'error',
+                    'message' => 'Validasi gagal',
+                    'errors' => $validation->getErrors()
+                ]);
+            }
+
+            $data = [
+                'name' => $json['name'],
+                'class_id' => $json['class_id'],
+                'gender' => $json['gender'],
+                'parent_phone' => $json['parent_phone'] ?? null,
+                'address' => $json['address'] ?? null,
+                'active' => isset($json['is_active']) ? ($json['is_active'] ? 1 : 0) : 1,
+            ];
+
+            if (isset($json['nis']) && $json['nis'] !== $student['nis']) {
+                $data['nis'] = $json['nis'];
+            }
+
+            $this->studentModel->update($id, $data);
+
+            return $this->response->setJSON([
+                'status' => 'success',
+                'message' => 'Data siswa berhasil diperbarui'
+            ]);
+        } catch (\Exception $e) {
+            return $this->response->setStatusCode(500)->setJSON([
+                'status' => 'error',
+                'message' => 'Gagal memperbarui data siswa: ' . $e->getMessage()
+            ]);
+        }
+    }
+
+    /**
+     * API: Delete student
+     */
+    public function apiDeleteStudent($id)
+    {
+        try {
+            $student = $this->studentModel->find($id);
+            if (!$student) {
+                return $this->response->setStatusCode(404)->setJSON([
+                    'status' => 'error',
+                    'message' => 'Siswa tidak ditemukan'
+                ]);
+            }
+
+            // Soft delete
+            $this->studentModel->delete($id);
+
+            return $this->response->setJSON([
+                'status' => 'success',
+                'message' => 'Siswa berhasil dihapus'
+            ]);
+        } catch (\Exception $e) {
+            return $this->response->setStatusCode(500)->setJSON([
+                'status' => 'error',
+                'message' => 'Gagal menghapus siswa: ' . $e->getMessage()
+            ]);
+        }
+    }
+
+    /**
      * API: Get all classes
      */
     public function apiGetClasses()
@@ -612,7 +787,7 @@ class Admin extends BaseController
     {
         try {
             log_message('debug', 'apiGetAttendanceLogs called');
-            
+
             $date = $this->request->getGet('date');
             $deviceId = $this->request->getGet('device_id');
             $studentId = $this->request->getGet('student_id');
@@ -651,7 +826,7 @@ class Admin extends BaseController
         } catch (\Throwable $e) {
             log_message('error', 'apiGetAttendanceLogs error: ' . $e->getMessage());
             log_message('error', 'Stack trace: ' . $e->getTraceAsString());
-            
+
             return $this->response->setStatusCode(500)->setJSON([
                 'status' => 'error',
                 'message' => 'Gagal mengambil log absensi: ' . $e->getMessage(),

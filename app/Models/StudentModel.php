@@ -19,7 +19,6 @@ class StudentModel extends Model
         'gender',
         'birth_date',
         'parent_phone',
-        'parent_email',
         'address',
         'active',
     ];

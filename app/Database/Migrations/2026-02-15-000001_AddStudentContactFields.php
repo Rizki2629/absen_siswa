@@ -27,7 +27,7 @@ class AddStudentContactFields extends Migration
                 'after' => 'parent_email'
             ],
         ];
-        
+
         $this->forge->addColumn('students', $fields);
     }
 
