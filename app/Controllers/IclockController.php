@@ -114,7 +114,7 @@ class IclockController extends BaseController
         $device      = $sn !== '' ? $deviceModel->where('sn', $sn)->first() : null;
 
         $now = date('Y-m-d H:i:s');
-        
+
         // Get real IP from X-Forwarded-For header (for Heroku/proxy) or fallback to request IP
         $realIp = $this->getRealIpAddress();
 
@@ -134,7 +134,7 @@ class IclockController extends BaseController
                 'status'       => 'online',
                 'last_seen_at' => $now,
             ];
-            
+
             // Only update IP if it changed and is not internal Heroku IP
             if (!str_starts_with($realIp, '10.') && $realIp !== $device['ip_address']) {
                 $payload['ip_address'] = $realIp;
@@ -178,7 +178,7 @@ class IclockController extends BaseController
                 return $ips[0];
             }
         }
-        
+
         // Fallback to request IP
         return $this->request->getIPAddress();
     }

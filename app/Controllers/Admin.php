@@ -103,7 +103,7 @@ class Admin extends BaseController
         // Shifts management page
         $shiftModel = model(\App\Models\ShiftModel::class);
         $shifts = $shiftModel->findAll();
-        
+
         $data = [
             'title' => 'Pengaturan Shift',
             'pageTitle' => 'Pengaturan Shift',
@@ -155,7 +155,7 @@ class Admin extends BaseController
         // Users management page
         $userModel = model(\App\Models\UserModel::class);
         $users = $userModel->findAll();
-        
+
         $data = [
             'title' => 'Manajemen User',
             'pageTitle' => 'Manajemen User',

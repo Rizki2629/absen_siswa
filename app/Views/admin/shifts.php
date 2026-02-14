@@ -71,25 +71,25 @@
                 <tbody id="shiftsTable">
                     <?php if (!empty($shifts)): ?>
                         <?php foreach ($shifts as $shift): ?>
-                        <tr class="border-b border-gray-100 hover:bg-gray-50">
-                            <td class="py-3 px-4 font-medium text-gray-900"><?= esc($shift['name']) ?></td>
-                            <td class="py-3 px-4 text-center"><?= esc($shift['check_in_time']) ?></td>
-                            <td class="py-3 px-4 text-center"><?= esc($shift['late_tolerance']) ?> menit</td>
-                            <td class="py-3 px-4 text-center"><?= esc($shift['check_out_time']) ?></td>
-                            <td class="py-3 px-4 text-center">
-                                <span class="badge-<?= $shift['is_active'] ? 'success' : 'danger' ?>">
-                                    <?= $shift['is_active'] ? 'Aktif' : 'Nonaktif' ?>
-                                </span>
-                            </td>
-                            <td class="py-3 px-4 text-center">
-                                <button onclick="editShift(<?= $shift['id'] ?>)" class="text-primary-600 hover:text-primary-800 mr-2">
-                                    <span class="material-symbols-outlined">edit</span>
-                                </button>
-                                <button onclick="deleteShift(<?= $shift['id'] ?>)" class="text-danger-600 hover:text-danger-800">
-                                    <span class="material-symbols-outlined">delete</span>
-                                </button>
-                            </td>
-                        </tr>
+                            <tr class="border-b border-gray-100 hover:bg-gray-50">
+                                <td class="py-3 px-4 font-medium text-gray-900"><?= esc($shift['name']) ?></td>
+                                <td class="py-3 px-4 text-center"><?= esc($shift['check_in_time']) ?></td>
+                                <td class="py-3 px-4 text-center"><?= esc($shift['late_tolerance']) ?> menit</td>
+                                <td class="py-3 px-4 text-center"><?= esc($shift['check_out_time']) ?></td>
+                                <td class="py-3 px-4 text-center">
+                                    <span class="badge-<?= $shift['is_active'] ? 'success' : 'danger' ?>">
+                                        <?= $shift['is_active'] ? 'Aktif' : 'Nonaktif' ?>
+                                    </span>
+                                </td>
+                                <td class="py-3 px-4 text-center">
+                                    <button onclick="editShift(<?= $shift['id'] ?>)" class="text-primary-600 hover:text-primary-800 mr-2">
+                                        <span class="material-symbols-outlined">edit</span>
+                                    </button>
+                                    <button onclick="deleteShift(<?= $shift['id'] ?>)" class="text-danger-600 hover:text-danger-800">
+                                        <span class="material-symbols-outlined">delete</span>
+                                    </button>
+                                </td>
+                            </tr>
                         <?php endforeach; ?>
                     <?php else: ?>
                         <tr>
@@ -115,17 +115,17 @@
                 <span class="material-symbols-outlined">close</span>
             </button>
         </div>
-        
+
         <form id="shiftForm" class="p-6 space-y-4">
             <input type="hidden" id="shiftId" name="shift_id">
-            
+
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Nama Shift *</label>
                 <input type="text" id="shiftName" name="name" required
                     class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500"
                     placeholder="Contoh: Pagi">
             </div>
-            
+
             <div class="grid grid-cols-2 gap-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Jam Masuk *</label>
@@ -138,19 +138,19 @@
                         class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500">
                 </div>
             </div>
-            
+
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Toleransi Telat (menit)</label>
                 <input type="number" id="lateTolerance" name="late_tolerance" value="15" min="0"
                     class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500">
             </div>
-            
+
             <div class="flex items-center">
                 <input type="checkbox" id="isActive" name="is_active" checked
                     class="w-4 h-4 text-primary-600 rounded focus:ring-primary-500">
                 <label for="isActive" class="ml-2 text-sm text-gray-700">Shift Aktif</label>
             </div>
-            
+
             <div class="flex justify-end space-x-3 pt-4">
                 <button type="button" onclick="closeShiftModal()" class="btn-secondary">Batal</button>
                 <button type="submit" class="btn-primary">
@@ -163,35 +163,35 @@
 </div>
 
 <script>
-function openAddShiftModal() {
-    document.getElementById('shiftModalTitle').textContent = 'Tambah Shift Baru';
-    document.getElementById('shiftForm').reset();
-    document.getElementById('shiftId').value = '';
-    document.getElementById('shiftModal').style.display = 'flex';
-}
-
-function closeShiftModal() {
-    document.getElementById('shiftModal').style.display = 'none';
-}
-
-function editShift(id) {
-    // TODO: Implement edit
-    alert('Edit shift ' + id);
-}
-
-function deleteShift(id) {
-    if (confirm('Apakah Anda yakin ingin menghapus shift ini?')) {
-        // TODO: Implement delete
-        alert('Delete shift ' + id);
+    function openAddShiftModal() {
+        document.getElementById('shiftModalTitle').textContent = 'Tambah Shift Baru';
+        document.getElementById('shiftForm').reset();
+        document.getElementById('shiftId').value = '';
+        document.getElementById('shiftModal').style.display = 'flex';
     }
-}
 
-document.getElementById('shiftForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    // TODO: Implement save
-    alert('Save shift');
-    closeShiftModal();
-});
+    function closeShiftModal() {
+        document.getElementById('shiftModal').style.display = 'none';
+    }
+
+    function editShift(id) {
+        // TODO: Implement edit
+        alert('Edit shift ' + id);
+    }
+
+    function deleteShift(id) {
+        if (confirm('Apakah Anda yakin ingin menghapus shift ini?')) {
+            // TODO: Implement delete
+            alert('Delete shift ' + id);
+        }
+    }
+
+    document.getElementById('shiftForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        // TODO: Implement save
+        alert('Save shift');
+        closeShiftModal();
+    });
 </script>
 
 <?= $this->endSection() ?>

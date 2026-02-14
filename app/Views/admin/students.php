@@ -59,7 +59,7 @@
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div class="md:col-span-2">
                 <label class="block text-sm font-medium text-gray-700 mb-2">Cari Siswa</label>
-                <input type="text" id="searchStudent" placeholder="Cari berdasarkan nama atau NIS..." 
+                <input type="text" id="searchStudent" placeholder="Cari berdasarkan nama atau NIS..."
                     onkeyup="filterStudents()"
                     class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500">
             </div>
@@ -117,10 +117,10 @@
                 <span class="material-symbols-outlined">close</span>
             </button>
         </div>
-        
+
         <form id="studentForm" class="p-6 space-y-4">
             <input type="hidden" id="studentId" name="student_id">
-            
+
             <div class="grid grid-cols-2 gap-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">NIS *</label>
@@ -135,7 +135,7 @@
                         placeholder="Nama lengkap siswa">
                 </div>
             </div>
-            
+
             <div class="grid grid-cols-2 gap-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Kelas *</label>
@@ -154,7 +154,7 @@
                     </select>
                 </div>
             </div>
-            
+
             <div class="grid grid-cols-2 gap-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">No. HP Orang Tua</label>
@@ -169,20 +169,20 @@
                         placeholder="email@contoh.com">
                 </div>
             </div>
-            
+
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Alamat</label>
                 <textarea id="studentAddress" name="address" rows="2"
                     class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500"
                     placeholder="Alamat lengkap siswa"></textarea>
             </div>
-            
+
             <div class="flex items-center">
                 <input type="checkbox" id="studentActive" name="is_active" checked
                     class="w-4 h-4 text-primary-600 rounded focus:ring-primary-500">
                 <label for="studentActive" class="ml-2 text-sm text-gray-700">Siswa Aktif</label>
             </div>
-            
+
             <div class="flex justify-end space-x-3 pt-4">
                 <button type="button" onclick="closeStudentModal()" class="btn-secondary">Batal</button>
                 <button type="submit" class="btn-primary">
@@ -195,52 +195,56 @@
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    loadStudents();
-    loadClasses();
-});
+    document.addEventListener('DOMContentLoaded', function() {
+        loadStudents();
+        loadClasses();
+    });
 
-function loadStudents() {
-    fetch('<?= base_url('api/admin/students') ?>', { credentials: 'same-origin' })
-        .then(response => response.json())
-        .then(data => {
-            if (data.status === 'success') {
-                renderStudents(data.data);
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            document.getElementById('studentsTable').innerHTML = `
+    function loadStudents() {
+        fetch('<?= base_url('api/admin/students') ?>', {
+                credentials: 'same-origin'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    renderStudents(data.data);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('studentsTable').innerHTML = `
                 <tr>
                     <td colspan="6" class="text-center py-12 text-red-500">
                         Gagal memuat data siswa
                     </td>
                 </tr>
             `;
-        });
-}
+            });
+    }
 
-function loadClasses() {
-    fetch('<?= base_url('api/admin/classes') ?>', { credentials: 'same-origin' })
-        .then(response => response.json())
-        .then(data => {
-            if (data.status === 'success') {
-                const filterSelect = document.getElementById('filterClass');
-                const formSelect = document.getElementById('studentClass');
-                
-                data.data.forEach(cls => {
-                    filterSelect.innerHTML += `<option value="${cls.id}">${cls.name}</option>`;
-                    formSelect.innerHTML += `<option value="${cls.id}">${cls.name}</option>`;
-                });
-            }
-        });
-}
+    function loadClasses() {
+        fetch('<?= base_url('api/admin/classes') ?>', {
+                credentials: 'same-origin'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    const filterSelect = document.getElementById('filterClass');
+                    const formSelect = document.getElementById('studentClass');
 
-function renderStudents(students) {
-    const tbody = document.getElementById('studentsTable');
-    
-    if (!students || students.length === 0) {
-        tbody.innerHTML = `
+                    data.data.forEach(cls => {
+                        filterSelect.innerHTML += `<option value="${cls.id}">${cls.name}</option>`;
+                        formSelect.innerHTML += `<option value="${cls.id}">${cls.name}</option>`;
+                    });
+                }
+            });
+    }
+
+    function renderStudents(students) {
+        const tbody = document.getElementById('studentsTable');
+
+        if (!students || students.length === 0) {
+            tbody.innerHTML = `
             <tr>
                 <td colspan="6" class="text-center py-12 text-gray-500">
                     <span class="material-symbols-outlined text-5xl text-gray-300 mb-2">groups</span>
@@ -249,10 +253,10 @@ function renderStudents(students) {
                 </td>
             </tr>
         `;
-        return;
-    }
-    
-    tbody.innerHTML = students.map(student => `
+            return;
+        }
+
+        tbody.innerHTML = students.map(student => `
         <tr class="border-b border-gray-100 hover:bg-gray-50">
             <td class="py-3 px-4 font-medium text-gray-900">${student.nis}</td>
             <td class="py-3 px-4">${student.name}</td>
@@ -273,47 +277,47 @@ function renderStudents(students) {
             </td>
         </tr>
     `).join('');
-}
-
-function filterStudents() {
-    // TODO: Implement client-side filtering
-}
-
-function resetFilters() {
-    document.getElementById('searchStudent').value = '';
-    document.getElementById('filterClass').value = '';
-    loadStudents();
-}
-
-function openAddStudentModal() {
-    document.getElementById('studentModalTitle').textContent = 'Tambah Siswa Baru';
-    document.getElementById('studentForm').reset();
-    document.getElementById('studentId').value = '';
-    document.getElementById('studentModal').style.display = 'flex';
-}
-
-function closeStudentModal() {
-    document.getElementById('studentModal').style.display = 'none';
-}
-
-function editStudent(id) {
-    // TODO: Implement edit
-    alert('Edit student ' + id);
-}
-
-function deleteStudent(id) {
-    if (confirm('Apakah Anda yakin ingin menghapus siswa ini?')) {
-        // TODO: Implement delete
-        alert('Delete student ' + id);
     }
-}
 
-document.getElementById('studentForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    // TODO: Implement save
-    alert('Save student');
-    closeStudentModal();
-});
+    function filterStudents() {
+        // TODO: Implement client-side filtering
+    }
+
+    function resetFilters() {
+        document.getElementById('searchStudent').value = '';
+        document.getElementById('filterClass').value = '';
+        loadStudents();
+    }
+
+    function openAddStudentModal() {
+        document.getElementById('studentModalTitle').textContent = 'Tambah Siswa Baru';
+        document.getElementById('studentForm').reset();
+        document.getElementById('studentId').value = '';
+        document.getElementById('studentModal').style.display = 'flex';
+    }
+
+    function closeStudentModal() {
+        document.getElementById('studentModal').style.display = 'none';
+    }
+
+    function editStudent(id) {
+        // TODO: Implement edit
+        alert('Edit student ' + id);
+    }
+
+    function deleteStudent(id) {
+        if (confirm('Apakah Anda yakin ingin menghapus siswa ini?')) {
+            // TODO: Implement delete
+            alert('Delete student ' + id);
+        }
+    }
+
+    document.getElementById('studentForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        // TODO: Implement save
+        alert('Save student');
+        closeStudentModal();
+    });
 </script>
 
 <?= $this->endSection() ?>

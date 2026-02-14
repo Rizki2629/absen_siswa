@@ -71,41 +71,41 @@
                 <tbody id="usersTable">
                     <?php if (!empty($users)): ?>
                         <?php foreach ($users as $user): ?>
-                        <tr class="border-b border-gray-100 hover:bg-gray-50">
-                            <td class="py-3 px-4">
-                                <div class="flex items-center">
-                                    <div class="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center mr-3">
-                                        <span class="text-primary-600 font-bold"><?= strtoupper(substr($user['name'], 0, 1)) ?></span>
+                            <tr class="border-b border-gray-100 hover:bg-gray-50">
+                                <td class="py-3 px-4">
+                                    <div class="flex items-center">
+                                        <div class="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center mr-3">
+                                            <span class="text-primary-600 font-bold"><?= strtoupper(substr($user['name'], 0, 1)) ?></span>
+                                        </div>
+                                        <span class="font-medium text-gray-900"><?= esc($user['name']) ?></span>
                                     </div>
-                                    <span class="font-medium text-gray-900"><?= esc($user['name']) ?></span>
-                                </div>
-                            </td>
-                            <td class="py-3 px-4 text-gray-600"><?= esc($user['username']) ?></td>
-                            <td class="py-3 px-4 text-gray-600"><?= esc($user['email'] ?? '-') ?></td>
-                            <td class="py-3 px-4 text-center">
-                                <span class="badge-<?= $user['role'] === 'admin' ? 'primary' : 'secondary' ?>">
-                                    <?= ucfirst($user['role']) ?>
-                                </span>
-                            </td>
-                            <td class="py-3 px-4 text-center">
-                                <span class="badge-<?= $user['is_active'] ? 'success' : 'danger' ?>">
-                                    <?= $user['is_active'] ? 'Aktif' : 'Nonaktif' ?>
-                                </span>
-                            </td>
-                            <td class="py-3 px-4 text-center">
-                                <button onclick="editUser(<?= $user['id'] ?>)" class="text-primary-600 hover:text-primary-800 mr-2">
-                                    <span class="material-symbols-outlined">edit</span>
-                                </button>
-                                <button onclick="resetPassword(<?= $user['id'] ?>)" class="text-warning-600 hover:text-warning-800 mr-2">
-                                    <span class="material-symbols-outlined">key</span>
-                                </button>
-                                <?php if ($user['id'] != session()->get('user_id')): ?>
-                                <button onclick="deleteUser(<?= $user['id'] ?>)" class="text-danger-600 hover:text-danger-800">
-                                    <span class="material-symbols-outlined">delete</span>
-                                </button>
-                                <?php endif; ?>
-                            </td>
-                        </tr>
+                                </td>
+                                <td class="py-3 px-4 text-gray-600"><?= esc($user['username']) ?></td>
+                                <td class="py-3 px-4 text-gray-600"><?= esc($user['email'] ?? '-') ?></td>
+                                <td class="py-3 px-4 text-center">
+                                    <span class="badge-<?= $user['role'] === 'admin' ? 'primary' : 'secondary' ?>">
+                                        <?= ucfirst($user['role']) ?>
+                                    </span>
+                                </td>
+                                <td class="py-3 px-4 text-center">
+                                    <span class="badge-<?= $user['is_active'] ? 'success' : 'danger' ?>">
+                                        <?= $user['is_active'] ? 'Aktif' : 'Nonaktif' ?>
+                                    </span>
+                                </td>
+                                <td class="py-3 px-4 text-center">
+                                    <button onclick="editUser(<?= $user['id'] ?>)" class="text-primary-600 hover:text-primary-800 mr-2">
+                                        <span class="material-symbols-outlined">edit</span>
+                                    </button>
+                                    <button onclick="resetPassword(<?= $user['id'] ?>)" class="text-warning-600 hover:text-warning-800 mr-2">
+                                        <span class="material-symbols-outlined">key</span>
+                                    </button>
+                                    <?php if ($user['id'] != session()->get('user_id')): ?>
+                                        <button onclick="deleteUser(<?= $user['id'] ?>)" class="text-danger-600 hover:text-danger-800">
+                                            <span class="material-symbols-outlined">delete</span>
+                                        </button>
+                                    <?php endif; ?>
+                                </td>
+                            </tr>
                         <?php endforeach; ?>
                     <?php else: ?>
                         <tr>
@@ -130,38 +130,38 @@
                 <span class="material-symbols-outlined">close</span>
             </button>
         </div>
-        
+
         <form id="userForm" class="p-6 space-y-4">
             <input type="hidden" id="userId" name="user_id">
-            
+
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Nama Lengkap *</label>
                 <input type="text" id="userName" name="name" required
                     class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500"
                     placeholder="Nama lengkap">
             </div>
-            
+
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Username *</label>
                 <input type="text" id="userUsername" name="username" required
                     class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500"
                     placeholder="Username untuk login">
             </div>
-            
+
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
                 <input type="email" id="userEmail" name="email"
                     class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500"
                     placeholder="email@contoh.com">
             </div>
-            
+
             <div id="passwordField">
                 <label class="block text-sm font-medium text-gray-700 mb-2">Password *</label>
                 <input type="password" id="userPassword" name="password"
                     class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500"
                     placeholder="Minimal 6 karakter">
             </div>
-            
+
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Role *</label>
                 <select id="userRole" name="role" required
@@ -171,13 +171,13 @@
                     <option value="parent">Orang Tua</option>
                 </select>
             </div>
-            
+
             <div class="flex items-center">
                 <input type="checkbox" id="userActive" name="is_active" checked
                     class="w-4 h-4 text-primary-600 rounded focus:ring-primary-500">
                 <label for="userActive" class="ml-2 text-sm text-gray-700">User Aktif</label>
             </div>
-            
+
             <div class="flex justify-end space-x-3 pt-4">
                 <button type="button" onclick="closeUserModal()" class="btn-secondary">Batal</button>
                 <button type="submit" class="btn-primary">
@@ -190,44 +190,44 @@
 </div>
 
 <script>
-function openAddUserModal() {
-    document.getElementById('userModalTitle').textContent = 'Tambah User Baru';
-    document.getElementById('userForm').reset();
-    document.getElementById('userId').value = '';
-    document.getElementById('passwordField').style.display = 'block';
-    document.getElementById('userPassword').required = true;
-    document.getElementById('userModal').style.display = 'flex';
-}
-
-function closeUserModal() {
-    document.getElementById('userModal').style.display = 'none';
-}
-
-function editUser(id) {
-    document.getElementById('userModalTitle').textContent = 'Edit User';
-    document.getElementById('passwordField').style.display = 'none';
-    document.getElementById('userPassword').required = false;
-    // TODO: Load user data
-    alert('Edit user ' + id);
-}
-
-function resetPassword(id) {
-    if (confirm('Reset password user ini?')) {
-        alert('Reset password user ' + id);
+    function openAddUserModal() {
+        document.getElementById('userModalTitle').textContent = 'Tambah User Baru';
+        document.getElementById('userForm').reset();
+        document.getElementById('userId').value = '';
+        document.getElementById('passwordField').style.display = 'block';
+        document.getElementById('userPassword').required = true;
+        document.getElementById('userModal').style.display = 'flex';
     }
-}
 
-function deleteUser(id) {
-    if (confirm('Apakah Anda yakin ingin menghapus user ini?')) {
-        alert('Delete user ' + id);
+    function closeUserModal() {
+        document.getElementById('userModal').style.display = 'none';
     }
-}
 
-document.getElementById('userForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    alert('Save user');
-    closeUserModal();
-});
+    function editUser(id) {
+        document.getElementById('userModalTitle').textContent = 'Edit User';
+        document.getElementById('passwordField').style.display = 'none';
+        document.getElementById('userPassword').required = false;
+        // TODO: Load user data
+        alert('Edit user ' + id);
+    }
+
+    function resetPassword(id) {
+        if (confirm('Reset password user ini?')) {
+            alert('Reset password user ' + id);
+        }
+    }
+
+    function deleteUser(id) {
+        if (confirm('Apakah Anda yakin ingin menghapus user ini?')) {
+            alert('Delete user ' + id);
+        }
+    }
+
+    document.getElementById('userForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        alert('Save user');
+        closeUserModal();
+    });
 </script>
 
 <?= $this->endSection() ?>

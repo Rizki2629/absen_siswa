@@ -60,7 +60,7 @@
             <p class="text-sm text-gray-500 mt-2">Rekap absensi per hari</p>
         </div>
     </div>
-    
+
     <div class="card cursor-pointer hover:shadow-lg transition-shadow" onclick="selectReportType('weekly')">
         <div class="card-body text-center">
             <div class="bg-success-100 rounded-full p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
@@ -70,7 +70,7 @@
             <p class="text-sm text-gray-500 mt-2">Rekap absensi per minggu</p>
         </div>
     </div>
-    
+
     <div class="card cursor-pointer hover:shadow-lg transition-shadow" onclick="selectReportType('monthly')">
         <div class="card-body text-center">
             <div class="bg-warning-100 rounded-full p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
@@ -130,7 +130,7 @@
                 </button>
             </div>
         </div>
-        
+
         <!-- Summary Stats -->
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
             <div class="bg-gray-50 rounded-xl p-4">
@@ -150,7 +150,7 @@
                 <p class="text-2xl font-bold text-danger-700" id="totalAbsent">0</p>
             </div>
         </div>
-        
+
         <!-- Report Table -->
         <div class="overflow-x-auto">
             <table class="w-full">
@@ -181,56 +181,58 @@
 </div>
 
 <script>
-let selectedReportType = 'daily';
+    let selectedReportType = 'daily';
 
-document.addEventListener('DOMContentLoaded', function() {
-    loadClasses();
-});
+    document.addEventListener('DOMContentLoaded', function() {
+        loadClasses();
+    });
 
-function loadClasses() {
-    fetch('<?= base_url('api/admin/classes') ?>', { credentials: 'same-origin' })
-        .then(response => response.json())
-        .then(data => {
-            if (data.status === 'success') {
-                const select = document.getElementById('filterClass');
-                data.data.forEach(cls => {
-                    select.innerHTML += `<option value="${cls.id}">${cls.name}</option>`;
-                });
-            }
-        });
-}
-
-function selectReportType(type) {
-    selectedReportType = type;
-    
-    // Update date range based on type
-    const today = new Date();
-    const startDate = document.getElementById('startDate');
-    const endDate = document.getElementById('endDate');
-    
-    if (type === 'daily') {
-        startDate.value = today.toISOString().split('T')[0];
-        endDate.value = today.toISOString().split('T')[0];
-    } else if (type === 'weekly') {
-        const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
-        startDate.value = weekAgo.toISOString().split('T')[0];
-        endDate.value = today.toISOString().split('T')[0];
-    } else if (type === 'monthly') {
-        startDate.value = today.toISOString().slice(0, 7) + '-01';
-        endDate.value = today.toISOString().split('T')[0];
+    function loadClasses() {
+        fetch('<?= base_url('api/admin/classes') ?>', {
+                credentials: 'same-origin'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    const select = document.getElementById('filterClass');
+                    data.data.forEach(cls => {
+                        select.innerHTML += `<option value="${cls.id}">${cls.name}</option>`;
+                    });
+                }
+            });
     }
-}
 
-function generateReport() {
-    document.getElementById('reportPreview').style.display = 'block';
-    
-    // TODO: Fetch actual report data
-    document.getElementById('totalStudents').textContent = '150';
-    document.getElementById('totalPresent').textContent = '145';
-    document.getElementById('totalLate').textContent = '3';
-    document.getElementById('totalAbsent').textContent = '2';
-    
-    document.getElementById('reportTable').innerHTML = `
+    function selectReportType(type) {
+        selectedReportType = type;
+
+        // Update date range based on type
+        const today = new Date();
+        const startDate = document.getElementById('startDate');
+        const endDate = document.getElementById('endDate');
+
+        if (type === 'daily') {
+            startDate.value = today.toISOString().split('T')[0];
+            endDate.value = today.toISOString().split('T')[0];
+        } else if (type === 'weekly') {
+            const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+            startDate.value = weekAgo.toISOString().split('T')[0];
+            endDate.value = today.toISOString().split('T')[0];
+        } else if (type === 'monthly') {
+            startDate.value = today.toISOString().slice(0, 7) + '-01';
+            endDate.value = today.toISOString().split('T')[0];
+        }
+    }
+
+    function generateReport() {
+        document.getElementById('reportPreview').style.display = 'block';
+
+        // TODO: Fetch actual report data
+        document.getElementById('totalStudents').textContent = '150';
+        document.getElementById('totalPresent').textContent = '145';
+        document.getElementById('totalLate').textContent = '3';
+        document.getElementById('totalAbsent').textContent = '2';
+
+        document.getElementById('reportTable').innerHTML = `
         <tr class="border-b border-gray-100">
             <td class="py-3 px-4">1</td>
             <td class="py-3 px-4">12345</td>
@@ -256,18 +258,20 @@ function generateReport() {
             <td class="py-3 px-4 text-center font-bold">100%</td>
         </tr>
     `;
-    
-    // Scroll to preview
-    document.getElementById('reportPreview').scrollIntoView({ behavior: 'smooth' });
-}
 
-function exportPDF() {
-    alert('Export PDF - Coming soon!');
-}
+        // Scroll to preview
+        document.getElementById('reportPreview').scrollIntoView({
+            behavior: 'smooth'
+        });
+    }
 
-function exportExcel() {
-    alert('Export Excel - Coming soon!');
-}
+    function exportPDF() {
+        alert('Export PDF - Coming soon!');
+    }
+
+    function exportExcel() {
+        alert('Export Excel - Coming soon!');
+    }
 </script>
 
 <?= $this->endSection() ?>

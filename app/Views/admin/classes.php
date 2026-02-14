@@ -70,17 +70,17 @@
                 <span class="material-symbols-outlined">close</span>
             </button>
         </div>
-        
+
         <form id="classForm" class="p-6 space-y-4">
             <input type="hidden" id="classId" name="class_id">
-            
+
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Nama Kelas *</label>
                 <input type="text" id="className" name="name" required
                     class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500"
                     placeholder="Contoh: X IPA 1">
             </div>
-            
+
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Tingkat</label>
                 <select id="classLevel" name="level"
@@ -91,21 +91,21 @@
                     <option value="XII">XII (Dua Belas)</option>
                 </select>
             </div>
-            
+
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Wali Kelas</label>
                 <input type="text" id="classTeacher" name="homeroom_teacher"
                     class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500"
                     placeholder="Nama wali kelas">
             </div>
-            
+
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Tahun Ajaran</label>
-                <input type="text" id="academicYear" name="academic_year" value="<?= date('Y') ?>/<?= date('Y')+1 ?>"
+                <input type="text" id="academicYear" name="academic_year" value="<?= date('Y') ?>/<?= date('Y') + 1 ?>"
                     class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500"
                     placeholder="2025/2026">
             </div>
-            
+
             <div class="flex justify-end space-x-3 pt-4">
                 <button type="button" onclick="closeClassModal()" class="btn-secondary">Batal</button>
                 <button type="submit" class="btn-primary">
@@ -118,43 +118,45 @@
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    loadClasses();
-});
+    document.addEventListener('DOMContentLoaded', function() {
+        loadClasses();
+    });
 
-function loadClasses() {
-    fetch('<?= base_url('api/admin/classes') ?>', { credentials: 'same-origin' })
-        .then(response => response.json())
-        .then(data => {
-            if (data.status === 'success') {
-                renderClasses(data.data);
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            document.getElementById('classesContainer').innerHTML = `
+    function loadClasses() {
+        fetch('<?= base_url('api/admin/classes') ?>', {
+                credentials: 'same-origin'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    renderClasses(data.data);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('classesContainer').innerHTML = `
                 <div class="text-center col-span-3 py-12 text-red-500">
                     Gagal memuat data kelas
                 </div>
             `;
-        });
-}
+            });
+    }
 
-function renderClasses(classes) {
-    const container = document.getElementById('classesContainer');
-    
-    if (!classes || classes.length === 0) {
-        container.innerHTML = `
+    function renderClasses(classes) {
+        const container = document.getElementById('classesContainer');
+
+        if (!classes || classes.length === 0) {
+            container.innerHTML = `
             <div class="card col-span-3 text-center py-12">
                 <span class="material-symbols-outlined text-5xl text-gray-300 mb-2">class</span>
                 <p class="text-gray-500">Belum ada data kelas</p>
                 <button onclick="openAddClassModal()" class="btn-primary mt-4">Tambah Kelas Pertama</button>
             </div>
         `;
-        return;
-    }
-    
-    container.innerHTML = classes.map(cls => `
+            return;
+        }
+
+        container.innerHTML = classes.map(cls => `
         <div class="card hover:shadow-lg transition-shadow">
             <div class="card-body">
                 <div class="flex justify-between items-start mb-4">
@@ -179,34 +181,34 @@ function renderClasses(classes) {
             </div>
         </div>
     `).join('');
-}
-
-function openAddClassModal() {
-    document.getElementById('classModalTitle').textContent = 'Tambah Kelas Baru';
-    document.getElementById('classForm').reset();
-    document.getElementById('classId').value = '';
-    document.getElementById('classModal').style.display = 'flex';
-}
-
-function closeClassModal() {
-    document.getElementById('classModal').style.display = 'none';
-}
-
-function editClass(id) {
-    alert('Edit class ' + id);
-}
-
-function deleteClass(id) {
-    if (confirm('Apakah Anda yakin ingin menghapus kelas ini?')) {
-        alert('Delete class ' + id);
     }
-}
 
-document.getElementById('classForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    alert('Save class');
-    closeClassModal();
-});
+    function openAddClassModal() {
+        document.getElementById('classModalTitle').textContent = 'Tambah Kelas Baru';
+        document.getElementById('classForm').reset();
+        document.getElementById('classId').value = '';
+        document.getElementById('classModal').style.display = 'flex';
+    }
+
+    function closeClassModal() {
+        document.getElementById('classModal').style.display = 'none';
+    }
+
+    function editClass(id) {
+        alert('Edit class ' + id);
+    }
+
+    function deleteClass(id) {
+        if (confirm('Apakah Anda yakin ingin menghapus kelas ini?')) {
+            alert('Delete class ' + id);
+        }
+    }
+
+    document.getElementById('classForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        alert('Save class');
+        closeClassModal();
+    });
 </script>
 
 <?= $this->endSection() ?>
