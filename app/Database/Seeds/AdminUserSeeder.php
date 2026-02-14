@@ -18,11 +18,11 @@ class AdminUserSeeder extends Seeder
             return;
         }
 
-        // Create admin user
+        // Create admin user with hashed password
         $userData = [
             'username' => 'admin',
             'email' => 'admin@absensi.com',
-            'password' => 'admin123', // Will be hashed by UserModel
+            'password_hash' => password_hash('admin123', PASSWORD_DEFAULT),
             'role' => 'admin',
             'full_name' => 'Administrator',
             'phone' => '08123456789',
