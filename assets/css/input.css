@@ -248,7 +248,7 @@
 .background-gradient {
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, #e0e7ff 0%, #ddd6fe 50%, #e0e7ff 100%);
+  background: linear-gradient(to bottom right, #F8FAFC, #E0E7FF, #EEF2FF);
   z-index: -1;
 }
 
@@ -267,21 +267,35 @@
 .blob-1 {
   top: 0;
   left: 0;
-  background-color: #c7d2fe;
+  width: 384px;
+  height: 384px;
+  background: #C7D2FE;
+  opacity: 0.3;
+  filter: blur(64px);
+  mix-blend-mode: multiply;
 }
 
 .blob-2 {
   top: 0;
   right: 0;
-  background-color: #ddd6fe;
-  animation-delay: 2s;
+  width: 384px;
+  height: 384px;
+  background: #DDD6FE;
+  opacity: 0.3;
+  filter: blur(64px);
+  mix-blend-mode: multiply;
 }
 
 .blob-3 {
   bottom: 0;
   left: 50%;
-  background-color: #e0e7ff;
-  animation-delay: 4s;
+  transform: translateX(-50%);
+  width: 384px;
+  height: 384px;
+  background: #E0E7FF;
+  opacity: 0.3;
+  filter: blur(64px);
+  mix-blend-mode: multiply;
 }
 
 @keyframes blob {
@@ -365,11 +379,11 @@
 .login-card {
   max-width: 448px;
   width: 100%;
-  background-color: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(24px);
-  border-radius: 1.5rem;
+  background-color: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(8px);
+  border-radius: 24px;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
-  padding: 1.75rem;
+  padding: 2rem;
   border: 1px solid rgba(255, 255, 255, 0.5);
 }
 
@@ -439,14 +453,14 @@
   height: 34px;
   padding-left: 12px;
   padding-right: 12px;
-  background-color: #ffffff;
-  border: 1.5px solid #cbd5e1;
-  border-radius: 5px;
+  background-color: #fefefe;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
   color: #1e293b;
   font-size: 0.875rem;
   transition: all 0.2s ease;
   font-family: "Inter", sans-serif;
-  box-shadow: none;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1), 0 1px 3px 0 rgba(0, 0, 0, 0.08);
 }
 
 .login-form-group input::placeholder {
@@ -462,7 +476,7 @@
   outline: none;
   border-color: #6366f1;
   background-color: #ffffff;
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.08);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2), 0 1px 3px 0 rgba(0, 0, 0, 0.08);
 }
 
 /* Password wrapper */
@@ -521,12 +535,12 @@
 }
 
 .remember-section input[type=\"checkbox\"] {
-  width: 1rem;
-  height: 1rem;
+  width: 13px;
+  height: 13px;
   color: #4f46e5;
   background-color: #f8fafc;
-  border: 1px solid #cbd5e1;
-  border-radius: 0.25rem;
+  border: 1px solid #767676;
+  border-radius: 2.5px;
   cursor: pointer;
 }
 
@@ -556,24 +570,25 @@
 /* Login button */
 .btn-login {
   width: 100%;
-  background: linear-gradient(to right, #4f46e5, #4338ca);
+  background: #5855EA;
   color: white;
   font-weight: 600;
   padding: 0.875rem;
-  border-radius: 0.75rem;
+  border-radius: 12px;
   border: none;
   cursor: pointer;
   transition: all 0.2s ease;
   box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.3);
-  font-size: 0.875rem;
+  font-size: 0.9375rem;
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-top: 0.5rem;
 }
 
 .btn-login:hover {
-  background: linear-gradient(to right, #4338ca, #3730a3);
-  box-shadow: 0 20px 25px -5px rgba(79, 70, 229, 0.4);
+  background: #4F46E5;
+  box-shadow: 0 6px 8px -1px rgba(79, 70, 229, 0.4);
   transform: scale(1.02);
 }
 
@@ -628,31 +643,35 @@
 
 /* Role cards */
 .role-cards {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 0.75rem;
   margin-top: 2rem;
+  width: 100%;
+  max-width: 448px;
 }
 
 .role-card {
+  width: 141px;
+  height: 108px;
   background-color: rgba(255, 255, 255, 0.7);
   backdrop-filter: blur(8px);
-  border-radius: 1rem;
-  padding: 1rem;
+  border-radius: 16px;
   border: 1px solid rgba(255, 255, 255, 0.5);
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-  cursor: pointer;
-  transition: all 0.2s ease;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
 .role-card:hover {
-  background-color: white;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-  transform: scale(1.05) translateY(-4px);
+  box-shadow: 0 6px 8px -1px rgba(0, 0, 0, 0.15);
+  transform: scale(1.05);
 }
 
 .role-icon {
@@ -680,15 +699,33 @@
 }
 
 .role-admin {
-  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  background: linear-gradient(to bottom right, #3B82F6, #2563EB);
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .role-guru {
-  background: linear-gradient(135deg, #10b981, #059669);
+  background: linear-gradient(to bottom right, #10B981, #059669);
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .role-siswa {
-  background: linear-gradient(135deg, #a855f7, #9333ea);
+  background: linear-gradient(to bottom right, #A855F7, #9333EA);
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .role-card p {
@@ -705,10 +742,10 @@
 
 /* Footer */
 .login-footer {
-  text-align: center;
-  font-size: 0.75rem;
-  color: #64748b;
   margin-top: 2rem;
+  font-size: 0.75rem;
+  color: #64748B;
+  text-align: center;
 }
 
 /* Responsive design */
@@ -718,16 +755,42 @@
   }
 
   .login-card {
-    padding: 1.5rem;
-  }
+  max-width: 448px;
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(8px);
+  border-radius: 24px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+}
 
   .role-cards {
-    gap: 0.5rem;
-  }
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 2rem;
+  width: 100%;
+  max-width: 448px;
+}
 
   .role-card {
-    padding: 0.75rem;
-  }
+  width: 141px;
+  height: 108px;
+  background-color: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(8px);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
 
   .role-icon {
     width: 2.5rem;
