@@ -77,7 +77,7 @@
             </div>
             <div class="mt-4 flex items-center text-sm">
                 <span class="text-gray-500">
-                    <?= round(($stats['present_today'] ?? 0) / ($stats['total_students'] ?? 1) * 100, 1) ?>% dari total
+                    <?= round(($stats['present_today'] ?? 0) / max(1, $stats['total_students'] ?? 1) * 100, 1) ?>% dari total
                 </span>
             </div>
         </div>
@@ -97,7 +97,7 @@
             </div>
             <div class="mt-4 flex items-center text-sm">
                 <div class="flex-1 bg-gray-200 rounded-full h-2">
-                    <div class="bg-warning-500 h-2 rounded-full" style="width: <?= round(($stats['active_devices'] ?? 0) / ($stats['total_devices'] ?? 1) * 100) ?>%"></div>
+                    <div class="bg-warning-500 h-2 rounded-full" style="width: <?= round(($stats['active_devices'] ?? 0) / max(1, $stats['total_devices'] ?? 1) * 100) ?>%"></div>
                 </div>
             </div>
         </div>
@@ -117,7 +117,7 @@
             </div>
             <div class="mt-4 flex items-center text-sm">
                 <span class="text-gray-500">
-                    <?= round(($stats['absent_today'] ?? 0) / ($stats['total_students'] ?? 1) * 100, 1) ?>% dari total
+                    <?= round(($stats['absent_today'] ?? 0) / max(1, $stats['total_students'] ?? 1) * 100, 1) ?>% dari total
                 </span>
             </div>
         </div>
