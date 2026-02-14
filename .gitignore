@@ -133,4 +133,4 @@ _modules/*
 node_modules/
 npm-debug.log
 package-lock.json
-public/css/style.css
+# public/css/style.css  # Commented out - CSS needs to be deployed to Heroku
