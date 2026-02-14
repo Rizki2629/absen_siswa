@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Flash Messages Partial
  * Usage: <?= $this->include('partials/flash_messages') ?>

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Admin Sidebar Partial
  * Usage: <?= $this->include('partials/sidebar_admin') ?>
@@ -18,8 +19,8 @@ $menuItems = [
 ];
 ?>
 <?php foreach ($menuItems as $item): ?>
-<a href="<?= base_url($item['url']) ?>" class="<?= ($activePage ?? '') === $item['url'] ? 'sidebar-item-active' : 'sidebar-item' ?>">
-    <span class="material-symbols-outlined mr-3"><?= $item['icon'] ?></span>
-    <span><?= $item['label'] ?></span>
-</a>
+    <a href="<?= base_url($item['url']) ?>" class="<?= ($activePage ?? '') === $item['url'] ? 'sidebar-item-active' : 'sidebar-item' ?>">
+        <span class="material-symbols-outlined mr-3"><?= $item['icon'] ?></span>
+        <span><?= $item['label'] ?></span>
+    </a>
 <?php endforeach; ?>

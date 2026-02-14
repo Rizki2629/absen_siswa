@@ -22,7 +22,7 @@
             </div>
         </div>
     </div>
-    
+
     <!-- Sakit -->
     <div class="card group hover:scale-105 transition-transform duration-300 border-l-4 border-warning-500">
         <div class="card-body">
@@ -37,7 +37,7 @@
             </div>
         </div>
     </div>
-    
+
     <!-- Izin -->
     <div class="card group hover:scale-105 transition-transform duration-300 border-l-4 border-primary-500">
         <div class="card-body">
@@ -52,7 +52,7 @@
             </div>
         </div>
     </div>
-    
+
     <!-- Alpha -->
     <div class="card group hover:scale-105 transition-transform duration-300 border-l-4 border-danger-500">
         <div class="card-body">
@@ -71,10 +71,10 @@
 
 <!-- Main Content Grid -->
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-    
+
     <!-- Live Monitoring -->
     <div class="lg:col-span-2 space-y-6">
-        
+
         <!-- Scan Terbaru -->
         <div class="card">
             <div class="card-header flex items-center justify-between">
@@ -94,60 +94,60 @@
             </div>
             <div class="card-body p-0">
                 <div id="recentScans" class="divide-y divide-gray-200 max-h-96 overflow-y-auto">
-                    <?php 
+                    <?php
                     $scans = [
                         ['time' => '07:25:15', 'name' => 'Andi Wirawan', 'nis' => '12345', 'class' => 'XII RPL 1', 'status' => 'Tepat Waktu', 'photo' => 'success'],
                         ['time' => '07:26:30', 'name' => 'Sarah Putri', 'nis' => '12346', 'class' => 'XI TKJ 2', 'status' => 'Tepat Waktu', 'photo' => 'success'],
                         ['time' => '07:31:45', 'name' => 'Rizky Ramadhan', 'nis' => '12347', 'class' => 'X MM 1', 'status' => 'Terlambat', 'photo' => 'warning'],
                     ];
-                    foreach ($scans as $scan): 
+                    foreach ($scans as $scan):
                     ?>
-                    <div class="p-4 hover:bg-gray-50 transition-colors animate-slide-in">
-                        <div class="flex items-center space-x-4">
-                            <div class="flex-shrink-0">
-                                <div class="bg-<?= $scan['photo'] ?>-100 rounded-full p-3">
-                                    <span class="material-symbols-outlined text-<?= $scan['photo'] ?>-600 text-2xl">person</span>
+                        <div class="p-4 hover:bg-gray-50 transition-colors animate-slide-in">
+                            <div class="flex items-center space-x-4">
+                                <div class="flex-shrink-0">
+                                    <div class="bg-<?= $scan['photo'] ?>-100 rounded-full p-3">
+                                        <span class="material-symbols-outlined text-<?= $scan['photo'] ?>-600 text-2xl">person</span>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="flex-1 min-w-0">
-                                <div class="flex items-center justify-between mb-1">
-                                    <p class="text-sm font-bold text-gray-900"><?= $scan['name'] ?></p>
-                                    <span class="text-xs text-gray-500 flex items-center">
-                                        <span class="material-symbols-outlined text-xs mr-1">schedule</span>
-                                        <?= $scan['time'] ?>
-                                    </span>
+                                <div class="flex-1 min-w-0">
+                                    <div class="flex items-center justify-between mb-1">
+                                        <p class="text-sm font-bold text-gray-900"><?= $scan['name'] ?></p>
+                                        <span class="text-xs text-gray-500 flex items-center">
+                                            <span class="material-symbols-outlined text-xs mr-1">schedule</span>
+                                            <?= $scan['time'] ?>
+                                        </span>
+                                    </div>
+                                    <div class="flex items-center space-x-3 text-xs text-gray-500">
+                                        <span class="flex items-center">
+                                            <span class="material-symbols-outlined text-xs mr-1">badge</span>
+                                            <?= $scan['nis'] ?>
+                                        </span>
+                                        <span class="flex items-center">
+                                            <span class="material-symbols-outlined text-xs mr-1">class</span>
+                                            <?= $scan['class'] ?>
+                                        </span>
+                                    </div>
                                 </div>
-                                <div class="flex items-center space-x-3 text-xs text-gray-500">
-                                    <span class="flex items-center">
-                                        <span class="material-symbols-outlined text-xs mr-1">badge</span>
-                                        <?= $scan['nis'] ?>
-                                    </span>
-                                    <span class="flex items-center">
-                                        <span class="material-symbols-outlined text-xs mr-1">class</span>
-                                        <?= $scan['class'] ?>
-                                    </span>
+                                <div>
+                                    <?php if ($scan['status'] === 'Tepat Waktu'): ?>
+                                        <span class="badge-success">
+                                            <span class="material-symbols-outlined text-xs mr-1">check</span>
+                                            <?= $scan['status'] ?>
+                                        </span>
+                                    <?php else: ?>
+                                        <span class="badge-warning">
+                                            <span class="material-symbols-outlined text-xs mr-1">warning</span>
+                                            <?= $scan['status'] ?>
+                                        </span>
+                                    <?php endif; ?>
                                 </div>
-                            </div>
-                            <div>
-                                <?php if ($scan['status'] === 'Tepat Waktu'): ?>
-                                <span class="badge-success">
-                                    <span class="material-symbols-outlined text-xs mr-1">check</span>
-                                    <?= $scan['status'] ?>
-                                </span>
-                                <?php else: ?>
-                                <span class="badge-warning">
-                                    <span class="material-symbols-outlined text-xs mr-1">warning</span>
-                                    <?= $scan['status'] ?>
-                                </span>
-                                <?php endif; ?>
                             </div>
                         </div>
-                    </div>
                     <?php endforeach; ?>
                 </div>
             </div>
         </div>
-        
+
         <!-- Siswa Belum Scan -->
         <div class="card">
             <div class="card-header flex items-center justify-between">
@@ -178,50 +178,50 @@
                             </tr>
                         </thead>
                         <tbody class="table-body">
-                            <?php 
+                            <?php
                             $notScanned = [
                                 ['nis' => '12350', 'name' => 'Dedi Kurniawan', 'class' => 'XII RPL 2'],
                                 ['nis' => '12351', 'name' => 'Fitri Handayani', 'class' => 'XI TKJ 1'],
                                 ['nis' => '12352', 'name' => 'Galih Pratama', 'class' => 'X MM 2'],
                             ];
-                            foreach ($notScanned as $student): 
+                            foreach ($notScanned as $student):
                             ?>
-                            <tr class="hover:bg-gray-50 transition-colors">
-                                <td class="table-cell font-mono text-sm"><?= $student['nis'] ?></td>
-                                <td class="table-cell font-medium"><?= $student['name'] ?></td>
-                                <td class="table-cell text-gray-600"><?= $student['class'] ?></td>
-                                <td class="table-cell">
-                                    <div class="flex space-x-1">
-                                        <button onclick="markAs('sick', '<?= $student['nis'] ?>')" 
-                                                class="p-1.5 text-warning-600 hover:bg-warning-50 rounded transition-colors" 
+                                <tr class="hover:bg-gray-50 transition-colors">
+                                    <td class="table-cell font-mono text-sm"><?= $student['nis'] ?></td>
+                                    <td class="table-cell font-medium"><?= $student['name'] ?></td>
+                                    <td class="table-cell text-gray-600"><?= $student['class'] ?></td>
+                                    <td class="table-cell">
+                                        <div class="flex space-x-1">
+                                            <button onclick="markAs('sick', '<?= $student['nis'] ?>')"
+                                                class="p-1.5 text-warning-600 hover:bg-warning-50 rounded transition-colors"
                                                 title="Tandai Sakit">
-                                            <span class="material-symbols-outlined text-sm">medication</span>
-                                        </button>
-                                        <button onclick="markAs('permission', '<?= $student['nis'] ?>')" 
-                                                class="p-1.5 text-primary-600 hover:bg-primary-50 rounded transition-colors" 
+                                                <span class="material-symbols-outlined text-sm">medication</span>
+                                            </button>
+                                            <button onclick="markAs('permission', '<?= $student['nis'] ?>')"
+                                                class="p-1.5 text-primary-600 hover:bg-primary-50 rounded transition-colors"
                                                 title="Tandai Izin">
-                                            <span class="material-symbols-outlined text-sm">mail</span>
-                                        </button>
-                                        <button onclick="markAs('forgot', '<?= $student['nis'] ?>')" 
-                                                class="p-1.5 text-success-600 hover:bg-success-50 rounded transition-colors" 
+                                                <span class="material-symbols-outlined text-sm">mail</span>
+                                            </button>
+                                            <button onclick="markAs('forgot', '<?= $student['nis'] ?>')"
+                                                class="p-1.5 text-success-600 hover:bg-success-50 rounded transition-colors"
                                                 title="Lupa Scan">
-                                            <span class="material-symbols-outlined text-sm">edit</span>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
+                                                <span class="material-symbols-outlined text-sm">edit</span>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
                             <?php endforeach; ?>
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
-        
+
     </div>
-    
+
     <!-- Sidebar Info -->
     <div class="space-y-6">
-        
+
         <!-- Quick Actions -->
         <div class="card">
             <div class="card-header">
@@ -245,7 +245,7 @@
                 </button>
             </div>
         </div>
-        
+
         <!-- Statistics Pie -->
         <div class="card">
             <div class="card-header">
@@ -287,7 +287,7 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- Info -->
         <div class="alert-info">
             <span class="material-symbols-outlined text-xl">info</span>
@@ -296,9 +296,9 @@
                 <p class="text-sm">Segera input ketidakhadiran sebelum jam 08:00 agar data lebih akurat.</p>
             </div>
         </div>
-        
+
     </div>
-    
+
 </div>
 
 <?= $this->endSection() ?>
@@ -306,30 +306,30 @@
 <?= $this->section('scripts') ?>
 <script>
     let soundEnabled = true;
-    
+
     function toggleSound() {
         soundEnabled = !soundEnabled;
         const icon = document.getElementById('soundIcon');
         icon.textContent = soundEnabled ? 'volume_up' : 'volume_off';
     }
-    
+
     function markAs(type, nis) {
         const types = {
             'sick': 'Sakit',
             'permission': 'Izin',
             'forgot': 'Lupa Scan'
         };
-        
+
         if (confirm(`Tandai siswa ${nis} sebagai ${types[type]}?`)) {
             // Ajax call here
             console.log(`Mark ${nis} as ${type}`);
         }
     }
-    
+
     function showAddExceptionModal() {
         alert('Modal input ketidakhadiran akan muncul di sini');
     }
-    
+
     // Auto refresh every 5 seconds
     // setInterval(() => {
     //     // Fetch new scans via AJAX
