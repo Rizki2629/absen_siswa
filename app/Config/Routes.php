@@ -11,6 +11,14 @@ use CodeIgniter\Router\RouteCollection;
 // --------------------------------------------------------------------
 
 // Authentication Routes
+$routes->get('/debug-status', function () {
+    header('Content-Type: application/json');
+    return json_encode([
+        'status' => 'ok',
+        'environment' => ENVIRONMENT,
+        'time' => date('Y-m-d H:i:s'),
+    ]);
+});
 $routes->get('/', 'Auth::index');
 $routes->post('auth/login', 'Auth::login');
 $routes->get('logout', 'Auth::logout');
