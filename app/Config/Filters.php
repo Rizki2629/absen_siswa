@@ -55,10 +55,10 @@ class Filters extends BaseFilters
     public array $required = [
         'before' => [
             // 'forcehttps', // Disabled for Heroku - SSL termination at load balancer
-            'pagecache',  // Web Page Caching
+            // 'pagecache',  // DISABLED FOR DEBUGGING
         ],
         'after' => [
-            'pagecache',   // Web Page Caching
+            // 'pagecache',   // DISABLED FOR DEBUGGING
             // 'performance', // Performance Metrics - Disabled in production
             // 'toolbar',     // Debug Toolbar - Disabled in production
         ],
