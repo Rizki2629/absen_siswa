@@ -193,7 +193,12 @@
     // Load devices for filter
     function loadDevices() {
         fetch('<?= base_url('api/admin/devices') ?>', {
-                credentials: 'same-origin'
+                method: 'GET',
+                credentials: 'include',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json'
+                }
             })
             .then(response => response.json())
             .then(data => {
@@ -203,6 +208,9 @@
                         select.innerHTML += `<option value="${device.id}">${device.name} (${device.sn})</option>`;
                     });
                 }
+            })
+            .catch(error => {
+                console.error('Error loading devices:', error);
             });
     }
 
@@ -220,27 +228,48 @@
         console.log('Fetching logs from:', url);
 
         fetch(url, {
-                credentials: 'same-origin'
+                method: 'GET',
+                credentials: 'include',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json'
+                }
             })
             .then(response => {
                 console.log('Response status:', response.status);
-                console.log('Response headers:', [...response.headers.entries()]);
-                return response.text();
+                
+                if (response.status === 401) {
+                    // Session expired - reload page
+                    document.getElementById('logsTable').innerHTML = `
+                        <tr>
+                            <td colspan="6" class="text-center py-12">
+                                <div class="text-warning-600">
+                                    <span class="material-symbols-outlined text-4xl">lock</span>
+                                    <p class="mt-2 font-medium">Session Expired</p>
+                                    <p class="text-sm mt-2">Silakan refresh halaman atau login kembali</p>
+                                    <button onclick="location.reload()" class="btn-primary mt-4">Refresh Halaman</button>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                    return null;
+                }
+                
+                return response.json();
             })
-            .then(text => {
-                console.log('Raw response (first 500 chars):', text.substring(0, 500));
-                let data;
-                try {
-                    data = JSON.parse(text);
-                } catch (e) {
-                    console.error('Failed to parse JSON:', e);
+            .then(data => {
+                if (!data) return;
+                
+                console.log('Parsed data:', data);
+                
+                if (data.status === 'error') {
+                    console.error('API Error:', data.message);
                     document.getElementById('logsTable').innerHTML = `
                         <tr>
                             <td colspan="6" class="text-center py-12">
                                 <div class="text-red-600">
                                     <span class="material-symbols-outlined text-4xl">error</span>
-                                    <p class="mt-2">Error: Response bukan JSON</p>
-                                    <p class="text-sm mt-2">Mungkin session expired. Silakan refresh halaman.</p>
+                                    <p class="mt-2">${data.message}</p>
                                 </div>
                             </td>
                         </tr>

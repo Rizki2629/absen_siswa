@@ -52,7 +52,7 @@ $routes->group('api/admin', ['filter' => 'auth'], static function (RouteCollecti
 	$routes->post('students', 'Admin::apiCreateStudent');
 	$routes->put('students/(:num)', 'Admin::apiUpdateStudent/$1');
 	$routes->delete('students/(:num)', 'Admin::apiDeleteStudent/$1');
-	
+
 	$routes->get('classes', 'Admin::apiGetClasses');
 });
 

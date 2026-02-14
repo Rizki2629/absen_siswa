@@ -296,10 +296,10 @@
         try {
             const response = await fetch(`/api/admin/students/${id}`);
             const result = await response.json();
-            
+
             if (result.status === 'success') {
                 const student = result.data;
-                
+
                 // Fill form with student data
                 document.getElementById('studentModalTitle').textContent = 'Edit Data Siswa';
                 document.getElementById('studentId').value = student.id;
@@ -310,7 +310,7 @@
                 document.getElementById('parentPhone').value = student.parent_phone || '';
                 document.getElementById('studentAddress').value = student.address || '';
                 document.getElementById('studentActive').checked = student.active == 1;
-                
+
                 // Show modal
                 document.getElementById('studentModal').style.display = 'flex';
             } else {
@@ -326,7 +326,7 @@
         if (!confirm('Apakah Anda yakin ingin menghapus siswa ini?')) {
             return;
         }
-        
+
         try {
             const response = await fetch(`/api/admin/students/${id}`, {
                 method: 'DELETE',
@@ -335,9 +335,9 @@
                     'X-Requested-With': 'XMLHttpRequest'
                 }
             });
-            
+
             const result = await response.json();
-            
+
             if (result.status === 'success') {
                 alert('Siswa berhasil dihapus');
                 loadStudents();
@@ -352,7 +352,7 @@
 
     document.getElementById('studentForm').addEventListener('submit', async function(e) {
         e.preventDefault();
-        
+
         const studentId = document.getElementById('studentId').value;
         const formData = {
             nis: document.getElementById('studentNis').value,
@@ -363,11 +363,11 @@
             address: document.getElementById('studentAddress').value,
             is_active: document.getElementById('studentActive').checked
         };
-        
+
         try {
             const url = studentId ? `/api/admin/students/${studentId}` : '/api/admin/students';
             const method = studentId ? 'PUT' : 'POST';
-            
+
             const response = await fetch(url, {
                 method: method,
                 headers: {
@@ -376,9 +376,9 @@
                 },
                 body: JSON.stringify(formData)
             });
-            
+
             const result = await response.json();
-            
+
             if (result.status === 'success') {
                 alert(studentId ? 'Data siswa berhasil diperbarui' : 'Siswa berhasil ditambahkan');
                 closeStudentModal();

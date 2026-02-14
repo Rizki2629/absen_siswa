@@ -56,6 +56,16 @@ class Cookie extends BaseConfig
      */
     public bool $secure = false;
 
+    public function __construct()
+    {
+        parent::__construct();
+
+        // Force secure cookies on Heroku (HTTPS)
+        if (getenv('DYNO')) {
+            $this->secure = true;
+        }
+    }
+
     /**
      * --------------------------------------------------------------------------
      * Cookie HTTPOnly
