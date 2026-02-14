@@ -16,30 +16,42 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-echo "Test 1: Check if device_user_map table exists\n";
+echo "Test 1: Check if device_user_maps table exists\n";
 echo str_repeat('=', 80) . "\n";
-$result = $conn->query("SHOW TABLES LIKE 'device_user_map'");
+$result = $conn->query("SHOW TABLES LIKE 'device_user_maps'");
 if ($result->num_rows > 0) {
-    echo "✓ Table device_user_map exists\n\n";
+    echo "✓ Table device_user_maps exists\n\n";
 } else {
-    echo "✗ Table device_user_map NOT FOUND!\n\n";
-    $conn->close();
-    exit(1);
+    echo "✗ Table device_user_maps NOT FOUND!\n";
+    echo "Available tables:\n";
+    $tables = $conn->query("SHOW TABLES");
+    while ($row = $tables->fetch_array()) {
+        echo "  - {$row[0]}\n";
+    }
+    echo "\n";
 }
 
 echo "Test 2: Check table structure\n";
 echo str_repeat('=', 80) . "\n";
-$result = $conn->query("DESCRIBE device_user_map");
-while ($row = $result->fetch_assoc()) {
-    echo "{$row['Field']} - {$row['Type']} - {$row['Null']} - {$row['Key']}\n";
+$result = $conn->query("DESCRIBE device_user_maps");
+if ($result) {
+    while ($row = $result->fetch_assoc()) {
+        echo "{$row['Field']} - {$row['Type']} - {$row['Null']} - {$row['Key']}\n";
+    }
+    echo "\n";
+} else {
+    echo "✗ Cannot describe table\n\n";
 }
-echo "\n";
 
 echo "Test 3: Check existing mappings\n";
 echo str_repeat('=', 80) . "\n";
-$result = $conn->query("SELECT COUNT(*) as total FROM device_user_map");
-$row = $result->fetch_assoc();
-echo "Total mappings: {$row['total']}\n\n";
+$result = $conn->query("SELECT COUNT(*) as total FROM device_user_maps");
+if ($result) {
+    $row = $result->fetch_assoc();
+    echo "Total mappings: {$row['total']}\n\n";
+} else {
+    echo "✗ Cannot query table\n\n";
+}
 
 echo "Test 4: Check device and student data\n";
 echo str_repeat('=', 80) . "\n";
@@ -59,12 +71,12 @@ echo "\n";
 
 echo "Test 5: Try to insert test mapping\n";
 echo str_repeat('=', 80) . "\n";
-$sql = "INSERT INTO device_user_map (device_id, student_id, device_user_id, privilege_level) 
-        VALUES (1, 1, 123456, 0)";
+$sql = "INSERT INTO device_user_maps (device_id, student_id, device_user_id, privilege_level) 
+        VALUES (1, 1, '123456', 0)";
 if ($conn->query($sql)) {
     echo "✓ Insert successful! ID: " . $conn->insert_id . "\n";
     // Clean up test data
-    $conn->query("DELETE FROM device_user_map WHERE id = " . $conn->insert_id);
+    $conn->query("DELETE FROM device_user_maps WHERE id = " . $conn->insert_id);
     echo "✓ Test data cleaned up\n";
 } else {
     echo "✗ Insert failed: " . $conn->error . "\n";
