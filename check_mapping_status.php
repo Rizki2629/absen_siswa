@@ -22,7 +22,7 @@ echo "=== CHECKING DEVICE USER MAPPINGS ===\n\n";
 
 // Check mappings
 $sql = "SELECT dum.id, dum.device_id, dum.device_user_id, dum.privilege_level, 
-               dum.student_id, s.nis, s.name as student_name, s.rfid,
+               dum.student_id, s.nis, s.name as student_name,
                d.name as device_name, d.sn
         FROM device_user_maps dum
         LEFT JOIN students s ON dum.student_id = s.id
@@ -40,7 +40,6 @@ if ($result->num_rows > 0) {
         echo "  Device User ID (PIN): " . $row['device_user_id'] . "\n";
         echo "  Privilege Level: " . $row['privilege_level'] . "\n";
         echo "  Student: " . ($row['student_name'] ?? 'NULL') . " (ID: " . $row['student_id'] . ", NIS: " . ($row['nis'] ?? 'NULL') . ")\n";
-        echo "  Student RFID: " . ($row['rfid'] ?? 'NULL') . "\n";
         echo str_repeat("-", 100) . "\n";
     }
 } else {
