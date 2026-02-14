@@ -44,15 +44,15 @@
 <!-- Statistics Cards -->
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
     <!-- Total Siswa -->
-    <div class="card hover:scale-105 transition-transform duration-300">
+    <div class="card group hover:scale-105 transition-transform duration-300 border-l-4 border-primary-500">
         <div class="card-body">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm text-gray-500 font-medium mb-1">Total Siswa</p>
                     <h3 class="text-3xl font-bold text-gray-900"><?= $stats['total_students'] ?? 0 ?></h3>
                 </div>
-                <div class="bg-primary-100 rounded-full p-4">
-                    <span class="material-symbols-outlined text-primary-600 text-4xl">groups</span>
+                <div class="bg-primary-100 rounded-xl p-3 group-hover:scale-110 transition-transform">
+                    <span class="material-symbols-outlined text-primary-600 text-3xl">groups</span>
                 </div>
             </div>
             <div class="mt-4 flex items-center text-sm">
@@ -64,15 +64,15 @@
     </div>
 
     <!-- Hadir Hari Ini -->
-    <div class="card hover:scale-105 transition-transform duration-300">
+    <div class="card group hover:scale-105 transition-transform duration-300 border-l-4 border-success-500">
         <div class="card-body">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm text-gray-500 font-medium mb-1">Hadir Hari Ini</p>
                     <h3 class="text-3xl font-bold text-gray-900"><?= $stats['present_today'] ?? 0 ?></h3>
                 </div>
-                <div class="bg-success-100 rounded-full p-4">
-                    <span class="material-symbols-outlined text-success-600 text-4xl">check_circle</span>
+                <div class="bg-success-100 rounded-xl p-3 group-hover:scale-110 transition-transform">
+                    <span class="material-symbols-outlined text-success-600 text-3xl">check_circle</span>
                 </div>
             </div>
             <div class="mt-4 flex items-center text-sm">
@@ -84,15 +84,15 @@
     </div>
 
     <!-- Mesin Aktif -->
-    <div class="card hover:scale-105 transition-transform duration-300">
+    <div class="card group hover:scale-105 transition-transform duration-300 border-l-4 border-warning-500">
         <div class="card-body">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm text-gray-500 font-medium mb-1">Mesin Aktif</p>
                     <h3 class="text-3xl font-bold text-gray-900"><?= $stats['active_devices'] ?? 0 ?>/<?= $stats['total_devices'] ?? 0 ?></h3>
                 </div>
-                <div class="bg-warning-100 rounded-full p-4">
-                    <span class="material-symbols-outlined text-warning-600 text-4xl">devices</span>
+                <div class="bg-warning-100 rounded-xl p-3 group-hover:scale-110 transition-transform">
+                    <span class="material-symbols-outlined text-warning-600 text-3xl">devices</span>
                 </div>
             </div>
             <div class="mt-4 flex items-center text-sm">
@@ -104,15 +104,15 @@
     </div>
 
     <!-- Alpha Hari Ini -->
-    <div class="card hover:scale-105 transition-transform duration-300">
+    <div class="card group hover:scale-105 transition-transform duration-300 border-l-4 border-danger-500">
         <div class="card-body">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm text-gray-500 font-medium mb-1">Alpha Hari Ini</p>
                     <h3 class="text-3xl font-bold text-gray-900"><?= $stats['absent_today'] ?? 0 ?></h3>
                 </div>
-                <div class="bg-danger-100 rounded-full p-4">
-                    <span class="material-symbols-outlined text-danger-600 text-4xl">cancel</span>
+                <div class="bg-danger-100 rounded-xl p-3 group-hover:scale-110 transition-transform">
+                    <span class="material-symbols-outlined text-danger-600 text-3xl">cancel</span>
                 </div>
             </div>
             <div class="mt-4 flex items-center text-sm">

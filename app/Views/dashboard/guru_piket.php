@@ -28,14 +28,14 @@
 <!-- Quick Stats -->
 <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
     <!-- Hadir -->
-    <div class="card hover:scale-105 transition-transform duration-300 border-l-4 border-success-500">
+    <div class="card group hover:scale-105 transition-transform duration-300 border-l-4 border-success-500">
         <div class="card-body">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm text-gray-500 font-medium mb-1">Hadir</p>
                     <h3 class="text-3xl font-bold text-success-600"><?= $stats['present'] ?? 0 ?></h3>
                 </div>
-                <div class="bg-success-100 rounded-full p-3">
+                <div class="bg-success-100 rounded-xl p-3 group-hover:scale-110 transition-transform">
                     <span class="material-symbols-outlined text-success-600 text-3xl">check_circle</span>
                 </div>
             </div>
@@ -43,14 +43,14 @@
     </div>
     
     <!-- Sakit -->
-    <div class="card hover:scale-105 transition-transform duration-300 border-l-4 border-warning-500">
+    <div class="card group hover:scale-105 transition-transform duration-300 border-l-4 border-warning-500">
         <div class="card-body">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm text-gray-500 font-medium mb-1">Sakit</p>
                     <h3 class="text-3xl font-bold text-warning-600"><?= $stats['sick'] ?? 0 ?></h3>
                 </div>
-                <div class="bg-warning-100 rounded-full p-3">
+                <div class="bg-warning-100 rounded-xl p-3 group-hover:scale-110 transition-transform">
                     <span class="material-symbols-outlined text-warning-600 text-3xl">medication</span>
                 </div>
             </div>
@@ -58,14 +58,14 @@
     </div>
     
     <!-- Izin -->
-    <div class="card hover:scale-105 transition-transform duration-300 border-l-4 border-primary-500">
+    <div class="card group hover:scale-105 transition-transform duration-300 border-l-4 border-primary-500">
         <div class="card-body">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm text-gray-500 font-medium mb-1">Izin</p>
                     <h3 class="text-3xl font-bold text-primary-600"><?= $stats['permission'] ?? 0 ?></h3>
                 </div>
-                <div class="bg-primary-100 rounded-full p-3">
+                <div class="bg-primary-100 rounded-xl p-3 group-hover:scale-110 transition-transform">
                     <span class="material-symbols-outlined text-primary-600 text-3xl">mail</span>
                 </div>
             </div>
@@ -73,14 +73,14 @@
     </div>
     
     <!-- Alpha -->
-    <div class="card hover:scale-105 transition-transform duration-300 border-l-4 border-danger-500">
+    <div class="card group hover:scale-105 transition-transform duration-300 border-l-4 border-danger-500">
         <div class="card-body">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm text-gray-500 font-medium mb-1">Alpha</p>
                     <h3 class="text-3xl font-bold text-danger-600"><?= $stats['absent'] ?? 0 ?></h3>
                 </div>
-                <div class="bg-danger-100 rounded-full p-3">
+                <div class="bg-danger-100 rounded-xl p-3 group-hover:scale-110 transition-transform">
                     <span class="material-symbols-outlined text-danger-600 text-3xl">cancel</span>
                 </div>
             </div>

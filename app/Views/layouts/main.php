@@ -35,6 +35,9 @@
 </head>
 <body class="bg-gray-50 min-h-screen">
     
+    <!-- Sidebar Overlay -->
+    <div id="sidebarOverlay" class="sidebar-overlay" onclick="toggleSidebar()"></div>
+    
     <!-- Sidebar -->
     <aside id="sidebar" class="sidebar">
         <div class="flex flex-col h-full">
@@ -80,14 +83,21 @@
     </aside>
     
     <!-- Main Content -->
-    <div class="ml-64 min-h-screen flex flex-col">
+    <div class="ml-0 md:ml-64 min-h-screen flex flex-col">
         <!-- Header -->
         <header class="bg-white border-b border-gray-200 sticky top-0 z-20">
             <div class="px-6 py-4">
                 <div class="flex items-center justify-between">
-                    <div>
-                        <h2 class="text-2xl font-bold text-gray-900"><?= esc($pageTitle ?? 'Dashboard') ?></h2>
-                        <p class="text-sm text-gray-500 mt-1"><?= esc($pageDescription ?? '') ?></p>
+                    <div class="flex items-center space-x-4">
+                        <!-- Mobile Hamburger Button -->
+                        <button id="hamburgerBtn" class="md:hidden p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-all" onclick="toggleSidebar()">
+                            <span class="material-symbols-outlined text-2xl">menu</span>
+                        </button>
+                        
+                        <div>
+                            <h2 class="text-2xl font-bold text-gray-900"><?= esc($pageTitle ?? 'Dashboard') ?></h2>
+                            <p class="text-sm text-gray-500 mt-1"><?= esc($pageDescription ?? '') ?></p>
+                        </div>
                     </div>
                     
                     <div class="flex items-center space-x-4">
@@ -125,6 +135,14 @@
     
     <!-- Scripts -->
     <script>
+        // Toggle sidebar for mobile
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('active');
+        }
+        
         // Update current time
         function updateTime() {
             const now = new Date();
@@ -139,7 +157,10 @@
                 month: 'long',
                 day: 'numeric'
             });
-            document.getElementById('currentTime').textContent = timeString;
+            const timeElement = document.getElementById('currentTime');
+            if (timeElement) {
+                timeElement.textContent = timeString;
+            }
         }
         updateTime();
         setInterval(updateTime, 1000);
