@@ -59,6 +59,7 @@ class GuruPiket extends BaseController
             'title' => 'Dashboard Guru Piket',
             'pageTitle' => 'Dashboard Guru Piket',
             'pageDescription' => 'Monitoring kehadiran siswa real-time',
+            'activePage' => 'guru-piket/dashboard',
             'user' => [
                 'name' => session()->get('name'),
                 'role' => 'Guru Piket'
@@ -77,6 +78,7 @@ class GuruPiket extends BaseController
             'title' => 'Monitoring Real-time',
             'pageTitle' => 'Monitoring Real-time',
             'pageDescription' => 'Pantau scan siswa secara langsung',
+            'activePage' => 'guru-piket/monitoring',
             'user' => [
                 'name' => session()->get('name'),
                 'role' => 'Guru Piket'
@@ -93,6 +95,7 @@ class GuruPiket extends BaseController
             'title' => 'Rekap Harian',
             'pageTitle' => 'Rekap Harian',
             'pageDescription' => 'Laporan kehadiran harian',
+            'activePage' => 'guru-piket/daily-recap',
             'user' => [
                 'name' => session()->get('name'),
                 'role' => 'Guru Piket'
@@ -109,6 +112,7 @@ class GuruPiket extends BaseController
             'title' => 'Input Ketidakhadiran',
             'pageTitle' => 'Input Ketidakhadiran',
             'pageDescription' => 'Input sakit, izin, atau lupa scan',
+            'activePage' => 'guru-piket/exceptions',
             'user' => [
                 'name' => session()->get('name'),
                 'role' => 'Guru Piket'

@@ -1,26 +1,7 @@
 <?= $this->extend('layouts/main') ?>
 
 <?= $this->section('sidebar') ?>
-<a href="<?= base_url('guru-piket/dashboard') ?>" class="sidebar-item-active">
-    <span class="material-symbols-outlined mr-3">dashboard</span>
-    <span>Dashboard</span>
-</a>
-<a href="<?= base_url('guru-piket/monitoring') ?>" class="sidebar-item">
-    <span class="material-symbols-outlined mr-3">visibility</span>
-    <span>Monitoring Real-time</span>
-</a>
-<a href="<?= base_url('guru-piket/daily-recap') ?>" class="sidebar-item">
-    <span class="material-symbols-outlined mr-3">today</span>
-    <span>Rekap Harian</span>
-</a>
-<a href="<?= base_url('guru-piket/exceptions') ?>" class="sidebar-item">
-    <span class="material-symbols-outlined mr-3">edit_note</span>
-    <span>Input Ketidakhadiran</span>
-</a>
-<a href="<?= base_url('guru-piket/reports') ?>" class="sidebar-item">
-    <span class="material-symbols-outlined mr-3">assessment</span>
-    <span>Laporan</span>
-</a>
+<?= $this->include('partials/sidebar_guru_piket') ?>
 <?= $this->endSection() ?>
 
 <?= $this->section('content') ?>

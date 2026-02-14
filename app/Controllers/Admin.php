@@ -58,6 +58,7 @@ class Admin extends BaseController
             'title' => 'Dashboard Admin',
             'pageTitle' => 'Dashboard Admin',
             'pageDescription' => 'Selamat datang di panel administrator',
+            'activePage' => 'admin/dashboard',
             'user' => [
                 'name' => session()->get('name'),
                 'role' => 'Administrator'
@@ -76,6 +77,7 @@ class Admin extends BaseController
             'title' => 'Mesin Fingerprint',
             'pageTitle' => 'Mesin Fingerprint',
             'pageDescription' => 'Kelola mesin fingerprint',
+            'activePage' => 'admin/devices',
             'user' => [
                 'name' => session()->get('name'),
                 'role' => 'Administrator'
@@ -92,6 +94,7 @@ class Admin extends BaseController
             'title' => 'Mapping ID Mesin',
             'pageTitle' => '',
             'pageDescription' => '',
+            'activePage' => 'admin/device-mapping',
             'user' => [
                 'name' => session()->get('name'),
                 'role' => 'Administrator'
@@ -108,6 +111,7 @@ class Admin extends BaseController
             'title' => 'Pengaturan Shift',
             'pageTitle' => 'Pengaturan Shift',
             'pageDescription' => 'Kelola jam shift masuk dan pulang',
+            'activePage' => 'admin/shifts',
             'user' => [
                 'name' => session()->get('name'),
                 'role' => 'Administrator'
@@ -124,6 +128,7 @@ class Admin extends BaseController
             'title' => 'Data Siswa',
             'pageTitle' => 'Data Siswa',
             'pageDescription' => 'Kelola data siswa dan informasi absensi',
+            'activePage' => 'admin/students',
             'user' => [
                 'name' => session()->get('name'),
                 'role' => 'Administrator'
@@ -140,6 +145,7 @@ class Admin extends BaseController
             'title' => 'Data Kelas',
             'pageTitle' => 'Data Kelas',
             'pageDescription' => 'Kelola data kelas dan jumlah siswa',
+            'activePage' => 'admin/classes',
             'user' => [
                 'name' => session()->get('name'),
                 'role' => 'Administrator'
@@ -159,6 +165,7 @@ class Admin extends BaseController
             'title' => 'Manajemen User',
             'pageTitle' => 'Manajemen User',
             'pageDescription' => 'Kelola akun pengguna sistem',
+            'activePage' => 'admin/users',
             'user' => [
                 'name' => session()->get('name'),
                 'role' => 'Administrator'
@@ -176,6 +183,7 @@ class Admin extends BaseController
             'title' => 'Laporan',
             'pageTitle' => 'Laporan Absensi',
             'pageDescription' => 'Generate dan export laporan absensi siswa',
+            'activePage' => 'admin/reports',
             'user' => [
                 'name' => session()->get('name'),
                 'role' => 'Administrator'
@@ -192,6 +200,7 @@ class Admin extends BaseController
             'title' => 'Log Absensi',
             'pageTitle' => 'Log Absensi',
             'pageDescription' => 'Monitor log absensi real-time dari mesin fingerprint',
+            'activePage' => 'admin/attendance-logs',
             'user' => [
                 'name' => session()->get('name'),
                 'role' => 'Administrator'
@@ -208,6 +217,7 @@ class Admin extends BaseController
             'title' => 'Daftar Hadir',
             'pageTitle' => 'Daftar Hadir',
             'pageDescription' => 'Kelola kehadiran siswa per kelas dan tanggal',
+            'activePage' => 'admin/attendance',
             'user' => [
                 'name' => session()->get('name'),
                 'role' => 'Administrator'

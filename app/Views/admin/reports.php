@@ -1,46 +1,7 @@
 <?= $this->extend('layouts/main') ?>
 
 <?= $this->section('sidebar') ?>
-<a href="<?= base_url('admin/dashboard') ?>" class="sidebar-item">
-    <span class="material-symbols-outlined mr-3">dashboard</span>
-    <span>Dashboard</span>
-</a>
-<a href="<?= base_url('admin/devices') ?>" class="sidebar-item">
-    <span class="material-symbols-outlined mr-3">devices</span>
-    <span>Mesin Fingerprint</span>
-</a>
-<a href="<?= base_url('admin/device-mapping') ?>" class="sidebar-item">
-    <span class="material-symbols-outlined mr-3">link</span>
-    <span>Mapping ID Mesin</span>
-</a>
-<a href="<?= base_url('admin/attendance-logs') ?>" class="sidebar-item">
-    <span class="material-symbols-outlined mr-3">description</span>
-    <span>Log Absensi</span>
-</a>
-<a href="<?= base_url('admin/attendance') ?>" class="sidebar-item">
-    <span class="material-symbols-outlined mr-3">how_to_reg</span>
-    <span>Daftar Hadir</span>
-</a>
-<a href="<?= base_url('admin/shifts') ?>" class="sidebar-item">
-    <span class="material-symbols-outlined mr-3">schedule</span>
-    <span>Pengaturan Shift</span>
-</a>
-<a href="<?= base_url('admin/students') ?>" class="sidebar-item">
-    <span class="material-symbols-outlined mr-3">groups</span>
-    <span>Data Siswa</span>
-</a>
-<a href="<?= base_url('admin/classes') ?>" class="sidebar-item">
-    <span class="material-symbols-outlined mr-3">class</span>
-    <span>Data Kelas</span>
-</a>
-<a href="<?= base_url('admin/users') ?>" class="sidebar-item">
-    <span class="material-symbols-outlined mr-3">manage_accounts</span>
-    <span>Manajemen User</span>
-</a>
-<a href="<?= base_url('admin/reports') ?>" class="sidebar-item-active">
-    <span class="material-symbols-outlined mr-3">assessment</span>
-    <span>Laporan</span>
-</a>
+<?= $this->include('partials/sidebar_admin') ?>
 <?= $this->endSection() ?>
 
 <?= $this->section('content') ?>

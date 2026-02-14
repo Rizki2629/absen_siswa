@@ -1,22 +1,7 @@
 <?= $this->extend('layouts/main') ?>
 
 <?= $this->section('sidebar') ?>
-<a href="<?= base_url('student/dashboard') ?>" class="sidebar-item-active">
-    <span class="material-symbols-outlined mr-3">dashboard</span>
-    <span>Dashboard</span>
-</a>
-<a href="<?= base_url('student/attendance') ?>" class="sidebar-item">
-    <span class="material-symbols-outlined mr-3">calendar_month</span>
-    <span>Riwayat Kehadiran</span>
-</a>
-<a href="<?= base_url('student/notifications') ?>" class="sidebar-item">
-    <span class="material-symbols-outlined mr-3">notifications</span>
-    <span>Notifikasi</span>
-</a>
-<a href="<?= base_url('student/profile') ?>" class="sidebar-item">
-    <span class="material-symbols-outlined mr-3">person</span>
-    <span>Profil Saya</span>
-</a>
+<?= $this->include('partials/sidebar_student') ?>
 <?= $this->endSection() ?>
 
 <?= $this->section('content') ?>

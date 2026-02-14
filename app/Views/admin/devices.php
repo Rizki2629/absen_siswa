@@ -1,46 +1,7 @@
 <?= $this->extend('layouts/main') ?>
 
 <?= $this->section('sidebar') ?>
-<a href="<?= base_url('admin/dashboard') ?>" class="sidebar-item">
-    <span class="material-symbols-outlined mr-3">dashboard</span>
-    <span>Dashboard</span>
-</a>
-<a href="<?= base_url('admin/devices') ?>" class="sidebar-item-active">
-    <span class="material-symbols-outlined mr-3">devices</span>
-    <span>Mesin Fingerprint</span>
-</a>
-<a href="<?= base_url('admin/device-mapping') ?>" class="sidebar-item">
-    <span class="material-symbols-outlined mr-3">link</span>
-    <span>Mapping ID Mesin</span>
-</a>
-<a href="<?= base_url('admin/attendance-logs') ?>" class="sidebar-item">
-    <span class="material-symbols-outlined mr-3">description</span>
-    <span>Log Absensi</span>
-</a>
-<a href="<?= base_url('admin/attendance') ?>" class="sidebar-item">
-    <span class="material-symbols-outlined mr-3">how_to_reg</span>
-    <span>Daftar Hadir</span>
-</a>
-<a href="<?= base_url('admin/shifts') ?>" class="sidebar-item">
-    <span class="material-symbols-outlined mr-3">schedule</span>
-    <span>Pengaturan Shift</span>
-</a>
-<a href="<?= base_url('admin/students') ?>" class="sidebar-item">
-    <span class="material-symbols-outlined mr-3">groups</span>
-    <span>Data Siswa</span>
-</a>
-<a href="<?= base_url('admin/classes') ?>" class="sidebar-item">
-    <span class="material-symbols-outlined mr-3">class</span>
-    <span>Data Kelas</span>
-</a>
-<a href="<?= base_url('admin/users') ?>" class="sidebar-item">
-    <span class="material-symbols-outlined mr-3">manage_accounts</span>
-    <span>Manajemen User</span>
-</a>
-<a href="<?= base_url('admin/reports') ?>" class="sidebar-item">
-    <span class="material-symbols-outlined mr-3">assessment</span>
-    <span>Laporan</span>
-</a>
+<?= $this->include('partials/sidebar_admin') ?>
 <?= $this->endSection() ?>
 
 <?= $this->section('content') ?>
@@ -58,25 +19,7 @@
 </div>
 
 <!-- Alert Messages -->
-<?php if (session()->getFlashdata('success')): ?>
-    <div class="bg-success-50 border-l-4 border-success-500 p-4 mb-6 rounded-lg flex items-start">
-        <span class="material-symbols-outlined text-success-500 mr-3">check_circle</span>
-        <div>
-            <p class="text-success-800 font-medium">Berhasil!</p>
-            <p class="text-success-700 text-sm"><?= session()->getFlashdata('success') ?></p>
-        </div>
-    </div>
-<?php endif; ?>
-
-<?php if (session()->getFlashdata('error')): ?>
-    <div class="bg-danger-50 border-l-4 border-danger-500 p-4 mb-6 rounded-lg flex items-start">
-        <span class="material-symbols-outlined text-danger-500 mr-3">error</span>
-        <div>
-            <p class="text-danger-800 font-medium">Gagal!</p>
-            <p class="text-danger-700 text-sm"><?= session()->getFlashdata('error') ?></p>
-        </div>
-    </div>
-<?php endif; ?>
+<?= $this->include('partials/flash_messages') ?>
 
 <!-- Devices Grid -->
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="devicesContainer">

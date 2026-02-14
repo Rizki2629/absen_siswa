@@ -72,6 +72,7 @@ class Student extends BaseController
             'title' => 'Dashboard Siswa',
             'pageTitle' => 'Dashboard Siswa',
             'pageDescription' => 'Lihat riwayat kehadiran Anda',
+            'activePage' => 'student/dashboard',
             'user' => [
                 'name' => session()->get('name'),
                 'role' => $role === 'student' ? 'Siswa' : 'Orang Tua'
@@ -104,6 +105,7 @@ class Student extends BaseController
             'title' => 'Riwayat Kehadiran',
             'pageTitle' => 'Riwayat Kehadiran',
             'pageDescription' => 'Lihat detail kehadiran Anda',
+            'activePage' => 'student/attendance',
             'user' => [
                 'name' => session()->get('name'),
                 'role' => session()->get('role') === 'student' ? 'Siswa' : 'Orang Tua'
@@ -120,6 +122,7 @@ class Student extends BaseController
             'title' => 'Notifikasi',
             'pageTitle' => 'Notifikasi',
             'pageDescription' => 'Lihat semua notifikasi Anda',
+            'activePage' => 'student/notifications',
             'user' => [
                 'name' => session()->get('name'),
                 'role' => session()->get('role') === 'student' ? 'Siswa' : 'Orang Tua'
@@ -136,6 +139,7 @@ class Student extends BaseController
             'title' => 'Profil',
             'pageTitle' => 'Profil Saya',
             'pageDescription' => 'Informasi profil Anda',
+            'activePage' => 'student/profile',
             'user' => [
                 'name' => session()->get('name'),
                 'role' => session()->get('role') === 'student' ? 'Siswa' : 'Orang Tua'
