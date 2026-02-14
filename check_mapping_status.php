@@ -1,15 +1,16 @@
 <?php
-require_once __DIR__ . '/vendor/autoload.php';
+// Parse DATABASE_URL from environment
+$dbUrl = getenv('JAWSDB_URL');
+if (!$dbUrl) {
+    die("JAWSDB_URL not found\n");
+}
 
-// Load environment
-$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
-$dotenv->load();
-
-// Database connection
-$host = $_ENV['database_default_hostname'];
-$user = $_ENV['database_default_username'];
-$pass = $_ENV['database_default_password'];
-$db   = $_ENV['database_default_database'];
+// Parse URL: mysql://username:password@hostname/database
+preg_match('/mysql:\/\/([^:]+):([^@]+)@([^\/]+)\/(.+)/', $dbUrl, $matches);
+$user = $matches[1];
+$pass = $matches[2];
+$host = $matches[3];
+$db   = $matches[4];
 
 $conn = new mysqli($host, $user, $pass, $db);
 
