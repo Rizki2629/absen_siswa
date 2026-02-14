@@ -1,5 +1,11 @@
 <?php
 
+// For development debugging on Heroku
+if (getenv('CI_DEBUG')) {
+    error_reporting(-1);
+    ini_set('display_errors', '1');
+}
+
 use CodeIgniter\Boot;
 use Config\Paths;
 
