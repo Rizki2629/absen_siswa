@@ -248,8 +248,8 @@
 .background-gradient {
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, #f8fafc 0%, #e0e7ff 50%, #eef2ff 100%);
-  z-index: -10;
+  background: linear-gradient(135deg, #e0e7ff 0%, #ddd6fe 50%, #e0e7ff 100%);
+  z-index: -1;
 }
 
 /* Animated blobs */
@@ -363,16 +363,18 @@
 
 /* Login card */
 .login-card {
+  max-width: 448px;
+  width: 100%;
   background-color: rgba(255, 255, 255, 0.8);
   backdrop-filter: blur(24px);
   border-radius: 1.5rem;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
-  padding: 2rem;
+  padding: 1.75rem;
   border: 1px solid rgba(255, 255, 255, 0.5);
 }
 
 .welcome-section {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.25rem;
 }
 
 .welcome-section h2 {
@@ -396,7 +398,7 @@
 #loginForm {
   display: flex;
   flex-direction: column;
-  gap: 0.625rem;
+  gap: 0.75rem;
 }
 
 .login-form-group {
@@ -433,14 +435,15 @@
 .login-form-group input[type=\"text\"],
 .login-form-group input[type=\"password\"] {
   width: 100%;
-  height: 50px;
-  padding-left: 14px;
+  max-width: 382px;
+  height: 34px;
+  padding-left: 12px;
   padding-right: 12px;
   background-color: #ffffff;
   border: 1.5px solid #cbd5e1;
   border-radius: 5px;
   color: #1e293b;
-  font-size: 0.9375rem;
+  font-size: 0.875rem;
   transition: all 0.2s ease;
   font-family: "Inter", sans-serif;
   box-shadow: none;
@@ -562,7 +565,7 @@
   cursor: pointer;
   transition: all 0.2s ease;
   box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.3);
-  font-size: 0.9375rem;
+  font-size: 0.875rem;
   display: flex;
   align-items: center;
   justify-content: center;
