@@ -90,8 +90,8 @@ class Admin extends BaseController
         // Device to student mapping page
         $data = [
             'title' => 'Mapping ID Mesin',
-            'pageTitle' => 'Mapping ID Mesin',
-            'pageDescription' => 'Hubungkan ID mesin dengan data siswa',
+            'pageTitle' => '',
+            'pageDescription' => '',
             'user' => [
                 'name' => session()->get('name'),
                 'role' => 'Administrator'
