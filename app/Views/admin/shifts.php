@@ -144,7 +144,13 @@
     let allClasses = [];
     let shifts = [];
     const API_BASE = '<?= base_url('api/admin') ?>';
-    const fetchOpts = { credentials: 'include', headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' } };
+    const fetchOpts = {
+        credentials: 'include',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'Accept': 'application/json'
+        }
+    };
 
     document.addEventListener('DOMContentLoaded', function() {
         loadClasses();
@@ -156,7 +162,7 @@
             const resp = await fetch(`${API_BASE}/classes`, fetchOpts);
             const data = await resp.json();
             allClasses = data.data || [];
-        } catch(e) {
+        } catch (e) {
             console.error('Gagal memuat kelas:', e);
         }
     }
@@ -167,7 +173,7 @@
             const data = await resp.json();
             shifts = data.data || [];
             renderShifts();
-        } catch(e) {
+        } catch (e) {
             console.error('Gagal memuat shift:', e);
             document.getElementById('shiftsContainer').innerHTML = `
                 <div class="card p-8 text-center text-red-500">
@@ -198,9 +204,9 @@
 
         shifts.forEach(shift => {
             const classNames = (shift.classes || []).map(c => c.name).join(', ') || '<span class="text-gray-400 italic">Belum ada kelas</span>';
-            const statusBadge = shift.is_active == 1
-                ? '<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">Aktif</span>'
-                : '<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">Nonaktif</span>';
+            const statusBadge = shift.is_active == 1 ?
+                '<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">Aktif</span>' :
+                '<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">Nonaktif</span>';
 
             html += `
                 <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
@@ -276,7 +282,7 @@
             renderClassCheckboxes(assignedIds);
 
             document.getElementById('shiftModal').style.display = 'flex';
-        } catch(e) {
+        } catch (e) {
             showToast('Gagal memuat data shift', 'error');
         }
     }
@@ -311,7 +317,10 @@
             const resp = await fetch(`${API_BASE}/shifts/${id}`, {
                 method: 'DELETE',
                 credentials: 'include',
-                headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' }
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json'
+                }
             });
             const data = await resp.json();
             if (data.success) {
@@ -320,7 +329,7 @@
             } else {
                 showToast(data.message || 'Gagal menghapus shift', 'error');
             }
-        } catch(e) {
+        } catch (e) {
             showToast('Gagal menghapus shift', 'error');
         }
     }
@@ -370,7 +379,7 @@
             } else {
                 showToast(data.message || 'Gagal menyimpan shift', 'error');
             }
-        } catch(e) {
+        } catch (e) {
             showToast('Gagal menyimpan shift', 'error');
         } finally {
             saveBtn.disabled = false;

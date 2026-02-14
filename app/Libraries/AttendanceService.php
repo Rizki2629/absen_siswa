@@ -81,7 +81,7 @@ class AttendanceService
         // If student is mapped, process attendance summary
         if ($studentId) {
             $this->processAttendanceSummary($studentId, date('Y-m-d', strtotime($attTime)));
-            
+
             // Create notification for parent
             $this->notificationModel->createCheckInNotification($studentId, $attTime);
         }
@@ -117,9 +117,9 @@ class AttendanceService
 
             if ($exception['exception_type'] === 'lupa_scan') {
                 $summaryData['status'] = 'hadir';
-                $summaryData['check_in_time'] = $exception['check_in_time'] ? 
+                $summaryData['check_in_time'] = $exception['check_in_time'] ?
                     $date . ' ' . $exception['check_in_time'] : null;
-                $summaryData['check_out_time'] = $exception['check_out_time'] ? 
+                $summaryData['check_out_time'] = $exception['check_out_time'] ?
                     $date . ' ' . $exception['check_out_time'] : null;
             }
 
@@ -160,11 +160,11 @@ class AttendanceService
             ->where('students.id', $studentId)
             ->get()
             ->getRowArray();
-        
+
         if ($studentClass && !empty($studentClass['shift_id'])) {
             $shift = $this->shiftModel->find($studentClass['shift_id']);
         }
-        
+
         // Fallback to any active shift
         if (!$shift) {
             $shift = $this->shiftModel->getActiveShift();
@@ -177,7 +177,7 @@ class AttendanceService
             $checkInTime = strtotime(date('H:i:s', strtotime($checkInLog['att_time'])));
             $expectedTime = strtotime($shift['check_in_end']);
             $tolerance = $shift['late_tolerance'] * 60; // Convert minutes to seconds
-            
+
             if ($checkInTime > ($expectedTime + $tolerance)) {
                 $isLate = true;
                 $lateMinutes = floor(($checkInTime - $expectedTime) / 60);
@@ -259,7 +259,7 @@ class AttendanceService
     public function generateDailySummary($date)
     {
         $db = \Config\Database::connect();
-        
+
         // Get all active students
         $students = $db->table('students')
             ->where('active', 1)
@@ -287,23 +287,23 @@ class AttendanceService
     public function filterDoubleScan($logs)
     {
         $filtered = [];
-        
+
         // Group logs by student and date
         $grouped = [];
         foreach ($logs as $log) {
             $date = date('Y-m-d', strtotime($log['att_time']));
             $key = $log['student_id'] . '_' . $date;
-            
+
             if (!isset($grouped[$key])) {
                 $grouped[$key] = [];
             }
-            
+
             $grouped[$key][] = $log;
         }
 
         // For each group, get first and last scan
         foreach ($grouped as $key => $group) {
-            usort($group, function($a, $b) {
+            usort($group, function ($a, $b) {
                 return strtotime($a['att_time']) - strtotime($b['att_time']);
             });
 
