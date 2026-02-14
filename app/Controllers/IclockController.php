@@ -114,22 +114,31 @@ class IclockController extends BaseController
         $device      = $sn !== '' ? $deviceModel->where('sn', $sn)->first() : null;
 
         $now = date('Y-m-d H:i:s');
+        
+        // Get real IP from X-Forwarded-For header (for Heroku/proxy) or fallback to request IP
+        $realIp = $this->getRealIpAddress();
 
         if ($device === null) {
             $id = $deviceModel->insert([
                 'sn'           => $sn !== '' ? $sn : ('UNKNOWN-' . bin2hex(random_bytes(4))),
                 'name'         => $deviceName !== '' ? $deviceName : null,
-                'ip_address'   => $this->request->getIPAddress(),
+                'ip_address'   => $realIp,
                 'location'     => $deviceLocation !== '' ? $deviceLocation : null,
+                'status'       => 'online',
                 'last_seen_at' => $now,
             ], true);
 
             $device = $deviceModel->find($id);
         } else {
             $payload = [
-                'ip_address'   => $this->request->getIPAddress(),
+                'status'       => 'online',
                 'last_seen_at' => $now,
             ];
+            
+            // Only update IP if it changed and is not internal Heroku IP
+            if (!str_starts_with($realIp, '10.') && $realIp !== $device['ip_address']) {
+                $payload['ip_address'] = $realIp;
+            }
 
             if ($deviceName !== '' && ($device['name'] === null || $device['name'] === '')) {
                 $payload['name'] = $deviceName;
@@ -151,6 +160,27 @@ class IclockController extends BaseController
             ->setStatusCode(200)
             ->setHeader('Content-Type', 'text/plain')
             ->setBody('OK');
+    }
+
+    /**
+     * Get real IP address from X-Forwarded-For header (for Heroku/proxy)
+     * Falls back to request IP if header not present
+     */
+    private function getRealIpAddress(): string
+    {
+        // Check X-Forwarded-For header (set by Heroku/proxies)
+        $forwardedFor = $this->request->getHeaderLine('X-Forwarded-For');
+        if ($forwardedFor !== '') {
+            // X-Forwarded-For can contain multiple IPs: client, proxy1, proxy2...
+            // The first IP is the original client
+            $ips = array_map('trim', explode(',', $forwardedFor));
+            if (!empty($ips[0]) && filter_var($ips[0], FILTER_VALIDATE_IP)) {
+                return $ips[0];
+            }
+        }
+        
+        // Fallback to request IP
+        return $this->request->getIPAddress();
     }
 
     private function ingestAttlog(int $deviceId, string $rawBody): int
