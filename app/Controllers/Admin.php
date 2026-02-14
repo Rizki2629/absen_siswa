@@ -101,6 +101,9 @@ class Admin extends BaseController
     public function shifts()
     {
         // Shifts management page
+        $shiftModel = model(\App\Models\ShiftModel::class);
+        $shifts = $shiftModel->findAll();
+        
         $data = [
             'title' => 'Pengaturan Shift',
             'pageTitle' => 'Pengaturan Shift',
@@ -109,9 +112,78 @@ class Admin extends BaseController
                 'name' => session()->get('name'),
                 'role' => 'Administrator'
             ],
+            'shifts' => $shifts,
         ];
 
         return view('admin/shifts', $data);
+    }
+
+    public function students()
+    {
+        // Students management page
+        $data = [
+            'title' => 'Data Siswa',
+            'pageTitle' => 'Data Siswa',
+            'pageDescription' => 'Kelola data siswa dan informasi absensi',
+            'user' => [
+                'name' => session()->get('name'),
+                'role' => 'Administrator'
+            ],
+        ];
+
+        return view('admin/students', $data);
+    }
+
+    public function classes()
+    {
+        // Classes management page
+        $data = [
+            'title' => 'Data Kelas',
+            'pageTitle' => 'Data Kelas',
+            'pageDescription' => 'Kelola data kelas dan jumlah siswa',
+            'user' => [
+                'name' => session()->get('name'),
+                'role' => 'Administrator'
+            ],
+        ];
+
+        return view('admin/classes', $data);
+    }
+
+    public function users()
+    {
+        // Users management page
+        $userModel = model(\App\Models\UserModel::class);
+        $users = $userModel->findAll();
+        
+        $data = [
+            'title' => 'Manajemen User',
+            'pageTitle' => 'Manajemen User',
+            'pageDescription' => 'Kelola akun pengguna sistem',
+            'user' => [
+                'name' => session()->get('name'),
+                'role' => 'Administrator'
+            ],
+            'users' => $users,
+        ];
+
+        return view('admin/users', $data);
+    }
+
+    public function reports()
+    {
+        // Reports page
+        $data = [
+            'title' => 'Laporan',
+            'pageTitle' => 'Laporan Absensi',
+            'pageDescription' => 'Generate dan export laporan absensi siswa',
+            'user' => [
+                'name' => session()->get('name'),
+                'role' => 'Administrator'
+            ],
+        ];
+
+        return view('admin/reports', $data);
     }
 
     public function attendanceLogs()
