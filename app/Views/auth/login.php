@@ -7,7 +7,8 @@
     <title>Absensi Siswa - Login</title>
 
     <!-- Tailwind CSS -->
-    <link rel="stylesheet" href="<?= base_url('css/style.css?v=' . filemtime(FCPATH . 'css/style.css')) ?>">
+    <?php $cssPath = FCPATH . 'css/style.css'; ?>
+    <link rel="stylesheet" href="<?= base_url('css/style.css' . (is_file($cssPath) ? '?v=' . filemtime($cssPath) : '')) ?>">
 
     <!-- Material Symbols -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
