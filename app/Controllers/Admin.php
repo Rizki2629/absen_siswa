@@ -817,11 +817,19 @@ class Admin extends BaseController
             log_message('debug', 'Executing query...');
             $logs = $builder->findAll();
             log_message('debug', 'Query result: ' . count($logs) . ' records');
+            
+            // Debug: log the actual SQL query
+            log_message('debug', 'SQL: ' . $this->attendanceLogModel->getLastQuery());
 
             return $this->response->setJSON([
                 'status' => 'success',
                 'data' => $logs,
-                'total' => count($logs)
+                'total' => count($logs),
+                'debug' => [
+                    'date_filter' => $date,
+                    'device_filter' => $deviceId,
+                    'limit' => $limit
+                ]
             ]);
         } catch (\Throwable $e) {
             log_message('error', 'apiGetAttendanceLogs error: ' . $e->getMessage());

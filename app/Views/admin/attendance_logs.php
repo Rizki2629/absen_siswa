@@ -124,7 +124,7 @@
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Filter Tanggal</label>
-                <input type="date" id="filterDate" value="<?= date('Y-m-d') ?>" onchange="loadLogs()"
+                <input type="date" id="filterDate" value="" placeholder="Semua tanggal" onchange="loadLogs()"
                     class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500">
             </div>
             <div>
@@ -388,7 +388,7 @@
 
     // Clear filters
     function clearFilters() {
-        document.getElementById('filterDate').value = '<?= date('Y-m-d') ?>';
+        document.getElementById('filterDate').value = '';
         document.getElementById('filterDevice').value = '';
         document.getElementById('filterLimit').value = '100';
         loadLogs();
