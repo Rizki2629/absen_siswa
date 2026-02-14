@@ -20,4 +20,3 @@ echo "Response Length: " . strlen($response) . " bytes\n";
 echo "Response:\n";
 echo $response;
 echo "\n";
-?>

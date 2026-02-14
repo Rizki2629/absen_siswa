@@ -30,27 +30,27 @@ $result = $conn->query($sql);
 if ($result->num_rows == 0) {
     echo "❌ No mapping found with device_user_id = '123456'\n";
     echo "Creating new mapping with PIN 12345...\n";
-    
+
     // Get student and device IDs
     $sql = "SELECT id FROM students WHERE nis = '123456' LIMIT 1";
     $studentResult = $conn->query($sql);
     $studentRow = $studentResult->fetch_assoc();
-    
+
     $sql = "SELECT id FROM devices WHERE sn = 'WAE4240200013' LIMIT 1";
     $deviceResult = $conn->query($sql);
     $deviceRow = $deviceResult->fetch_assoc();
-    
+
     if (!$studentRow || !$deviceRow) {
         die("❌ Student or device not found!\n");
     }
-    
+
     $studentId = $studentRow['id'];
     $deviceId = $deviceRow['id'];
-    
+
     // Insert new mapping
     $sql = "INSERT INTO device_user_maps (device_id, student_id, device_user_id, privilege_level, created_at, updated_at) 
             VALUES ($deviceId, $studentId, '12345', 0, NOW(), NOW())";
-    
+
     if ($conn->query($sql)) {
         echo "✅ New mapping created successfully!\n";
         echo "   Device ID: $deviceId\n";
@@ -67,10 +67,10 @@ if ($result->num_rows == 0) {
     echo "  Student ID: " . $row['student_id'] . "\n";
     echo "  Current PIN: " . $row['device_user_id'] . "\n";
     echo "\nUpdating PIN from 123456 to 12345...\n\n";
-    
+
     // Update the mapping
     $sql = "UPDATE device_user_maps SET device_user_id = '12345', updated_at = NOW() WHERE id = " . $row['id'];
-    
+
     if ($conn->query($sql)) {
         echo "✅ Mapping updated successfully!\n";
         echo "   Old PIN: 123456\n";
@@ -115,4 +115,3 @@ echo "Found " . $row['count'] . " attendance log(s) with PIN 12345\n";
 echo "These logs will now show student name in the UI!\n";
 
 $conn->close();
-?>

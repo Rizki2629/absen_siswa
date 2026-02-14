@@ -237,7 +237,9 @@
             })
             .then(response => {
                 console.log('Response status:', response.status);
-                
+                console.log('Response ok:', response.ok);
+                console.log('Response headers:', Object.fromEntries(response.headers.entries()));
+
                 if (response.status === 401) {
                     // Session expired - reload page
                     document.getElementById('logsTable').innerHTML = `
@@ -255,13 +257,19 @@
                     return null;
                 }
                 
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+
                 return response.json();
             })
             .then(data => {
                 if (!data) return;
-                
+
                 console.log('Parsed data:', data);
-                
+                console.log('Data status:', data.status);
+                console.log('Data length:', data.data ? data.data.length : 0);
+
                 if (data.status === 'error') {
                     console.error('API Error:', data.message);
                     document.getElementById('logsTable').innerHTML = `
@@ -341,6 +349,18 @@
             })
             .catch(error => {
                 console.error('Error:', error);
+                document.getElementById('logsTable').innerHTML = `
+                    <tr>
+                        <td colspan="6" class="text-center py-12">
+                            <div class="text-red-600">
+                                <span class="material-symbols-outlined text-4xl">error</span>
+                                <p class="mt-2 font-medium">Terjadi Kesalahan</p>
+                                <p class="text-sm mt-2">${error.message || 'Tidak dapat memuat data log'}</p>
+                                <button onclick="loadLogs()" class="btn-primary mt-4">Coba Lagi</button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
             });
     }
 
