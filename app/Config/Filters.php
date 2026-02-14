@@ -54,7 +54,7 @@ class Filters extends BaseFilters
      */
     public array $required = [
         'before' => [
-            'forcehttps', // Force Global Secure Requests
+            // 'forcehttps', // Disabled for Heroku - SSL termination at load balancer
             'pagecache',  // Web Page Caching
         ],
         'after' => [
