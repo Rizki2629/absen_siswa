@@ -589,7 +589,9 @@ class Admin extends BaseController
     public function apiGetClasses()
     {
         try {
-            $classes = $this->classModel->findAll();
+            $classes = $this->classModel
+                ->select('classes.*, (SELECT COUNT(*) FROM students WHERE students.class_id = classes.id AND students.deleted_at IS NULL) as student_count')
+                ->findAll();
 
             return $this->response->setJSON([
                 'status' => 'success',
