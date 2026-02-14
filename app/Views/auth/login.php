@@ -83,6 +83,7 @@
                                 id="passwordInput"
                                 placeholder="Masukan password"
                                 required />
+                            <a href="#" class="forgot-password-inside">Lupa password?</a>
                             <button
                                 type="button"
                                 class="toggle-password"
@@ -92,7 +93,7 @@
                         </div>
                     </div>
 
-                    <!-- Remember me & Forgot Password -->
+                    <!-- Remember me -->
                     <div class="remember-forgot-row">
                         <div class="remember-section">
                             <input
@@ -101,7 +102,6 @@
                                 name="remember" />
                             <label for="remember">Ingat saya</label>
                         </div>
-                        <a href="#" class="forgot-password">Lupa password?</a>
                     </div>
 
                     <!-- Login button -->
