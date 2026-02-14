@@ -611,23 +611,27 @@ class Admin extends BaseController
     public function apiGetAttendanceLogs()
     {
         try {
+            log_message('debug', 'apiGetAttendanceLogs called');
+            
             $date = $this->request->getGet('date');
             $deviceId = $this->request->getGet('device_id');
             $studentId = $this->request->getGet('student_id');
             $limit = $this->request->getGet('limit') ?? 100;
+
+            log_message('debug', 'Params: date=' . $date . ', deviceId=' . $deviceId . ', limit=' . $limit);
 
             $builder = $this->attendanceLogModel
                 ->select('attendance_logs.*, students.nis, students.name as student_name, devices.name as device_name, devices.sn as device_sn')
                 ->join('students', 'students.id = attendance_logs.student_id', 'left')
                 ->join('devices', 'devices.id = attendance_logs.device_id', 'left')
                 ->orderBy('attendance_logs.att_time', 'DESC')
-                ->limit($limit);
+                ->limit((int)$limit);
 
             if ($date) {
                 $builder->where('DATE(attendance_logs.att_time)', $date);
             }
 
-            if ($deviceId) {
+            if ($deviceId && $deviceId !== 'all') {
                 $builder->where('attendance_logs.device_id', $deviceId);
             }
 
@@ -635,17 +639,23 @@ class Admin extends BaseController
                 $builder->where('attendance_logs.student_id', $studentId);
             }
 
+            log_message('debug', 'Executing query...');
             $logs = $builder->findAll();
+            log_message('debug', 'Query result: ' . count($logs) . ' records');
 
             return $this->response->setJSON([
                 'status' => 'success',
                 'data' => $logs,
                 'total' => count($logs)
             ]);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
+            log_message('error', 'apiGetAttendanceLogs error: ' . $e->getMessage());
+            log_message('error', 'Stack trace: ' . $e->getTraceAsString());
+            
             return $this->response->setStatusCode(500)->setJSON([
                 'status' => 'error',
-                'message' => 'Gagal mengambil log absensi: ' . $e->getMessage()
+                'message' => 'Gagal mengambil log absensi: ' . $e->getMessage(),
+                'trace' => ENVIRONMENT === 'development' ? $e->getTraceAsString() : null
             ]);
         }
     }
