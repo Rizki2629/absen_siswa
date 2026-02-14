@@ -13,8 +13,9 @@ class DeviceUserMapModel extends Model
 
     protected $allowedFields = [
         'device_id',
-        'pin',
         'student_id',
+        'device_user_id',
+        'privilege_level',
     ];
 
     protected $useTimestamps = true;
