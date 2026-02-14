@@ -817,7 +817,7 @@ class Admin extends BaseController
             log_message('debug', 'Executing query...');
             $logs = $builder->findAll();
             log_message('debug', 'Query result: ' . count($logs) . ' records');
-            
+
             // Debug: log the actual SQL query
             log_message('debug', 'SQL: ' . $this->attendanceLogModel->getLastQuery());
 

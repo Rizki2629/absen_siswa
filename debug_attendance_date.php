@@ -70,4 +70,3 @@ echo "Server CURDATE(): " . $row['curdate'] . "\n";
 echo "Server DATE(NOW()): " . $row['date_now'] . "\n";
 
 $conn->close();
-?>

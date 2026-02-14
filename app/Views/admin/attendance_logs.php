@@ -219,6 +219,7 @@
         const date = document.getElementById('filterDate').value;
         const deviceId = document.getElementById('filterDevice').value;
         const limit = document.getElementById('filterLimit').value;
+        const tbody = document.getElementById('logsTable');
 
         let url = '<?= base_url('api/admin/attendance-logs') ?>?';
         if (date) url += `date=${date}&`;
@@ -256,7 +257,7 @@
                     `;
                     return null;
                 }
-                
+
                 if (!response.ok) {
                     throw new Error(`HTTP ${response.status}: ${response.statusText}`);
                 }
@@ -288,6 +289,13 @@
                 if (data.data && data.data.length > 0) {
                     const lastLogTime = data.data[0].att_time;
                     document.getElementById('lastLog').textContent = formatDateTime(lastLogTime);
+
+                    // Update stats
+                    const checkInCount = data.data.filter(log => log.status === 0).length;
+                    const checkOutCount = data.data.filter(log => log.status === 1).length;
+                    document.getElementById('totalLogs').textContent = data.data.length;
+                    document.getElementById('checkInCount').textContent = checkInCount;
+                    document.getElementById('checkOutCount').textContent = checkOutCount;
 
                     // Render table
                     tbody.innerHTML = data.data.map(log => {
