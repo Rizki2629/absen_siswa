@@ -1,27 +1,18 @@
 # Disable directory browsing
 Options -Indexes
+DirectoryIndex index.php
 
-# ----------------------------------------------------------------------
 # Rewrite engine
-# ----------------------------------------------------------------------
-
-# Turning on the rewrite engine is necessary for the following rules and features.
-# FollowSymLinks must be enabled for this to work.
 <IfModule mod_rewrite.c>
 	Options +FollowSymlinks
 	RewriteEngine On
 
-	# If you installed CodeIgniter in a subfolder, you will need to
-	# change the following line to match the subfolder you need.
-	# http://httpd.apache.org/docs/current/mod/mod_rewrite.html#rewritebase
-	# RewriteBase /
-
-	# Redirect Trailing Slashes...
+	# Redirect Trailing Slashes
 	RewriteCond %{REQUEST_FILENAME} !-d
 	RewriteCond %{REQUEST_URI} (.+)/$
 	RewriteRule ^ %1 [L,R=301]
 
-	# Rewrite "www.example.com -> example.com" - COMMENTED OUT FOR HEROKU
+	# Rewrite "www example.com -> example.com" - DISABLED FOR HEROKU
 	# RewriteCond %{HTTPS} !=on
 	# RewriteCond %{HTTP_HOST} ^www\.(.+)$ [NC]
 	# RewriteRule ^ http://%1%{REQUEST_URI} [R=301,L]
@@ -44,6 +35,5 @@ Options -Indexes
 	ErrorDocument 404 index.php
 </IfModule>
 
-# Disable server signature start
+# Disable server signature
 ServerSignature Off
-# Disable server signature end
