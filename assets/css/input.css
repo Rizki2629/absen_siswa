@@ -190,13 +190,6 @@
   background: #94a3b8;
 }
 
-/* Smooth Transitions */
-* {
-  transition-property: background-color, border-color, color, fill, stroke;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  transition-duration: 150ms;
-}
-
 /* ========================================
    LOGIN PAGE STYLES
    ======================================== */
@@ -229,7 +222,7 @@
 .background-gradient {
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, #f8fafc 0%, #dbeafe 50%, #e0e7ff 100%);
+  background: linear-gradient(135deg, #f8fafc 0%, #e0e7ff 50%, #eef2ff 100%);
   z-index: -10;
 }
 
@@ -248,7 +241,7 @@
 .blob-1 {
   top: 0;
   left: 0;
-  background-color: #bfdbfe;
+  background-color: #c7d2fe;
 }
 
 .blob-2 {
@@ -261,7 +254,7 @@
 .blob-3 {
   bottom: 0;
   left: 50%;
-  background-color: #c7d2fe;
+  background-color: #e0e7ff;
   animation-delay: 4s;
 }
 
@@ -359,7 +352,7 @@
 .welcome-section h2 {
   font-size: 2rem;
   font-weight: 700;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -413,28 +406,18 @@
 
 .login-form-group input[type=\"text\"],
 .login-form-group input[type=\"password\"] {
-  width: 100% !important;
-  height: 40px !important;
-  padding-left: 4px !important;
+  width: 100%;
+  height: 44px;
+  padding-left: 14px;
   padding-right: 12px;
   background-color: #ffffff;
-  border: 1px solid #ccc !important;
-  border-radius: 8px !important;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
   color: #1e293b;
   font-size: 0.9375rem;
   transition: all 0.3s ease;
   font-family: "Inter", sans-serif;
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.04);
-}
-
-/* Specific styling for username and password inputs */
-input#username,
-input[type="password"] {
-  border-radius: 8px !important;
-  width: 100% !important;
-  height: 40px !important;
-  border: 1px solid #ccc !important;
-  padding-left: 4px !important;
 }
 
 .login-form-group input::placeholder {
@@ -463,7 +446,7 @@ input[type="password"] {
 }
 
 .password-wrapper input {
-  padding-right: 2.5rem !important;
+  padding-right: 2.5rem;
 }
 
 .toggle-password {
