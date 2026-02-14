@@ -1,5 +1,10 @@
 <?php
 
+// Enable all error reporting for debugging
+ini_set('log_errors', 1);
+ini_set('error_log', '/tmp/php-errors.log');
+error_reporting(E_ALL);
+
 // For development debugging on Heroku
 if (getenv('CI_DEBUG')) {
     error_reporting(-1);
