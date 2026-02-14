@@ -468,35 +468,17 @@
 /* Password wrapper */
 .password-wrapper {
   position: relative;
-  display: flex;
-  align-items: center;
+  display: block;
 }
 
 .password-wrapper input {
-  padding-right: 8rem;
-}
-
-.forgot-password-inside {
-  position: absolute;
-  right: 2.75rem;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 0.8125rem;
-  color: #6366f1;
-  font-weight: 600;
-  text-decoration: none;
-  white-space: nowrap;
-  transition: color 0.2s ease;
-  z-index: 1;
-}
-
-.forgot-password-inside:hover {
-  color: #4338ca;
+  width: 100%;
+  padding-right: 3rem;
 }
 
 .toggle-password {
   position: absolute;
-  right: 0.75rem;
+  right: 12px;
   top: 50%;
   transform: translateY(-50%);
   background: none;
@@ -504,11 +486,12 @@
   color: #94a3b8;
   cursor: pointer;
   padding: 0.25rem;
+  margin: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: color 0.2s ease;
-  z-index: 1;
+  z-index: 2;
 }
 
 .toggle-password:hover {
@@ -555,6 +538,19 @@
   font-size: 0.875rem;
   color: #475569;
   cursor: pointer;
+}
+
+.forgot-password {
+  font-size: 0.8125rem;
+  color: #6366f1;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color 0.2s ease;
+}
+
+.forgot-password:hover {
+  color: #4338ca;
 }
 
 /* Login button */
