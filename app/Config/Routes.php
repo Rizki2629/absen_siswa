@@ -51,6 +51,13 @@ $routes->group('api/admin', ['filter' => 'auth'], static function (RouteCollecti
 	$routes->get('attendance', 'Admin::apiGetAttendance');
 	$routes->post('attendance', 'Admin::apiSaveAttendance');
 
+	// Shifts API
+	$routes->get('shifts', 'Admin::apiGetShifts');
+	$routes->get('shifts/(:num)', 'Admin::apiGetShift/$1');
+	$routes->post('shifts', 'Admin::apiCreateShift');
+	$routes->put('shifts/(:num)', 'Admin::apiUpdateShift/$1');
+	$routes->delete('shifts/(:num)', 'Admin::apiDeleteShift/$1');
+
 	// Students & Classes API
 	$routes->get('students', 'Admin::apiGetStudents');
 	$routes->get('students/(:num)', 'Admin::apiGetStudent/$1');

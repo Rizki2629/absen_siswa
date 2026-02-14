@@ -37,7 +37,7 @@ class AttendanceService
         // Get student ID from device user mapping
         $mapping = $this->deviceUserMapModel
             ->where('device_id', $deviceId)
-            ->where('pin', $pin)
+            ->where('device_user_id', $pin)
             ->first();
 
         $studentId = $mapping ? $mapping['student_id'] : null;
@@ -151,8 +151,24 @@ class AttendanceService
         $checkInLog = $logs[0];
         $checkOutLog = count($logs) > 1 ? end($logs) : null;
 
-        // Get active shift
-        $shift = $this->shiftModel->getActiveShift();
+        // Get shift for this student's class (or fallback to active shift)
+        $shift = null;
+        $db = \Config\Database::connect();
+        $studentClass = $db->table('students')
+            ->select('classes.shift_id')
+            ->join('classes', 'classes.id = students.class_id', 'left')
+            ->where('students.id', $studentId)
+            ->get()
+            ->getRowArray();
+        
+        if ($studentClass && !empty($studentClass['shift_id'])) {
+            $shift = $this->shiftModel->find($studentClass['shift_id']);
+        }
+        
+        // Fallback to any active shift
+        if (!$shift) {
+            $shift = $this->shiftModel->getActiveShift();
+        }
 
         $isLate = false;
         $lateMinutes = 0;

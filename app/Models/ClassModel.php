@@ -17,6 +17,7 @@ class ClassModel extends Model
         'grade',
         'year',
         'homeroom_teacher',
+        'shift_id',
     ];
 
     protected $useTimestamps = true;

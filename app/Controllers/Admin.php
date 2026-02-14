@@ -8,6 +8,7 @@ use App\Models\AttendanceSummaryModel;
 use App\Models\AttendanceLogModel;
 use App\Models\DeviceUserMapModel;
 use App\Models\ClassModel;
+use App\Models\ShiftModel;
 
 class Admin extends BaseController
 {
@@ -17,6 +18,7 @@ class Admin extends BaseController
     protected $attendanceLogModel;
     protected $deviceUserMapModel;
     protected $classModel;
+    protected $shiftModel;
 
     public function __construct()
     {
@@ -26,6 +28,7 @@ class Admin extends BaseController
         $this->attendanceLogModel = new AttendanceLogModel();
         $this->deviceUserMapModel = new DeviceUserMapModel();
         $this->classModel = new ClassModel();
+        $this->shiftModel = new ShiftModel();
     }
 
     public function dashboard()
@@ -101,9 +104,6 @@ class Admin extends BaseController
     public function shifts()
     {
         // Shifts management page
-        $shiftModel = model(\App\Models\ShiftModel::class);
-        $shifts = $shiftModel->findAll();
-
         $data = [
             'title' => 'Pengaturan Shift',
             'pageTitle' => 'Pengaturan Shift',
@@ -112,7 +112,6 @@ class Admin extends BaseController
                 'name' => session()->get('name'),
                 'role' => 'Administrator'
             ],
-            'shifts' => $shifts,
         ];
 
         return view('admin/shifts', $data);
@@ -964,6 +963,214 @@ class Admin extends BaseController
                 'success' => false,
                 'message' => 'Gagal menyimpan kehadiran: ' . $e->getMessage()
             ]);
+        }
+    }
+
+    // ==================== Shift API Methods ====================
+
+    /**
+     * API: Get all shifts (with assigned classes)
+     */
+    public function apiGetShifts()
+    {
+        try {
+            $shifts = $this->shiftModel->findAll();
+
+            // Get classes for each shift
+            $db = \Config\Database::connect();
+            foreach ($shifts as &$shift) {
+                $shift['classes'] = $db->table('classes')
+                    ->select('id, name')
+                    ->where('shift_id', $shift['id'])
+                    ->where('deleted_at', null)
+                    ->get()
+                    ->getResultArray();
+            }
+
+            return $this->response->setJSON([
+                'success' => true,
+                'data' => $shifts
+            ]);
+        } catch (\Throwable $e) {
+            return $this->response->setStatusCode(500)->setJSON([
+                'success' => false,
+                'message' => 'Gagal mengambil data shift: ' . $e->getMessage()
+            ]);
+        }
+    }
+
+    /**
+     * API: Get single shift
+     */
+    public function apiGetShift($id)
+    {
+        try {
+            $shift = $this->shiftModel->find($id);
+            if (!$shift) {
+                return $this->response->setStatusCode(404)->setJSON([
+                    'success' => false,
+                    'message' => 'Shift tidak ditemukan'
+                ]);
+            }
+
+            // Get assigned classes
+            $db = \Config\Database::connect();
+            $shift['classes'] = $db->table('classes')
+                ->select('id, name')
+                ->where('shift_id', $shift['id'])
+                ->where('deleted_at', null)
+                ->get()
+                ->getResultArray();
+
+            return $this->response->setJSON([
+                'success' => true,
+                'data' => $shift
+            ]);
+        } catch (\Throwable $e) {
+            return $this->response->setStatusCode(500)->setJSON([
+                'success' => false,
+                'message' => 'Gagal mengambil data shift: ' . $e->getMessage()
+            ]);
+        }
+    }
+
+    /**
+     * API: Create shift
+     */
+    public function apiCreateShift()
+    {
+        try {
+            $json = $this->request->getJSON(true);
+
+            $data = [
+                'name'            => $json['name'] ?? '',
+                'check_in_start'  => $json['check_in_start'] ?? '',
+                'check_in_end'    => $json['check_in_end'] ?? $json['check_in_start'] ?? '',
+                'check_out_start' => $json['check_out_start'] ?? '',
+                'check_out_end'   => $json['check_out_end'] ?? $json['check_out_start'] ?? '',
+                'late_tolerance'  => (int)($json['late_tolerance'] ?? 15),
+                'is_active'       => isset($json['is_active']) ? (int)$json['is_active'] : 1,
+            ];
+
+            if (empty($data['name']) || empty($data['check_in_start']) || empty($data['check_out_start'])) {
+                return $this->response->setStatusCode(400)->setJSON([
+                    'success' => false,
+                    'message' => 'Nama, jam masuk, dan jam pulang wajib diisi'
+                ]);
+            }
+
+            $id = $this->shiftModel->insert($data);
+
+            // Assign classes if provided
+            if (!empty($json['class_ids'])) {
+                $this->assignClassesToShift($id, $json['class_ids']);
+            }
+
+            return $this->response->setJSON([
+                'success' => true,
+                'message' => 'Shift berhasil ditambahkan',
+                'data' => $this->shiftModel->find($id)
+            ]);
+        } catch (\Throwable $e) {
+            return $this->response->setStatusCode(500)->setJSON([
+                'success' => false,
+                'message' => 'Gagal menambah shift: ' . $e->getMessage()
+            ]);
+        }
+    }
+
+    /**
+     * API: Update shift
+     */
+    public function apiUpdateShift($id)
+    {
+        try {
+            $shift = $this->shiftModel->find($id);
+            if (!$shift) {
+                return $this->response->setStatusCode(404)->setJSON([
+                    'success' => false,
+                    'message' => 'Shift tidak ditemukan'
+                ]);
+            }
+
+            $json = $this->request->getJSON(true);
+
+            $data = [];
+            if (isset($json['name']))            $data['name'] = $json['name'];
+            if (isset($json['check_in_start']))   $data['check_in_start'] = $json['check_in_start'];
+            if (isset($json['check_in_end']))     $data['check_in_end'] = $json['check_in_end'];
+            if (isset($json['check_out_start']))  $data['check_out_start'] = $json['check_out_start'];
+            if (isset($json['check_out_end']))    $data['check_out_end'] = $json['check_out_end'];
+            if (isset($json['late_tolerance']))   $data['late_tolerance'] = (int)$json['late_tolerance'];
+            if (isset($json['is_active']))        $data['is_active'] = (int)$json['is_active'];
+
+            if (!empty($data)) {
+                $this->shiftModel->update($id, $data);
+            }
+
+            // Update class assignments if provided
+            if (isset($json['class_ids'])) {
+                $this->assignClassesToShift($id, $json['class_ids']);
+            }
+
+            return $this->response->setJSON([
+                'success' => true,
+                'message' => 'Shift berhasil diperbarui',
+                'data' => $this->shiftModel->find($id)
+            ]);
+        } catch (\Throwable $e) {
+            return $this->response->setStatusCode(500)->setJSON([
+                'success' => false,
+                'message' => 'Gagal memperbarui shift: ' . $e->getMessage()
+            ]);
+        }
+    }
+
+    /**
+     * API: Delete shift
+     */
+    public function apiDeleteShift($id)
+    {
+        try {
+            $shift = $this->shiftModel->find($id);
+            if (!$shift) {
+                return $this->response->setStatusCode(404)->setJSON([
+                    'success' => false,
+                    'message' => 'Shift tidak ditemukan'
+                ]);
+            }
+
+            // Unassign classes from this shift
+            $db = \Config\Database::connect();
+            $db->table('classes')->where('shift_id', $id)->update(['shift_id' => null]);
+
+            $this->shiftModel->delete($id);
+
+            return $this->response->setJSON([
+                'success' => true,
+                'message' => 'Shift berhasil dihapus'
+            ]);
+        } catch (\Throwable $e) {
+            return $this->response->setStatusCode(500)->setJSON([
+                'success' => false,
+                'message' => 'Gagal menghapus shift: ' . $e->getMessage()
+            ]);
+        }
+    }
+
+    /**
+     * Helper: Assign classes to a shift
+     */
+    private function assignClassesToShift($shiftId, array $classIds)
+    {
+        $db = \Config\Database::connect();
+
+        // Remove old assignments for this shift
+        $db->table('classes')->where('shift_id', $shiftId)->update(['shift_id' => null]);
+
+        // Assign new classes
+        if (!empty($classIds)) {
+            $db->table('classes')->whereIn('id', $classIds)->update(['shift_id' => $shiftId]);
         }
     }
 }
