@@ -202,6 +202,22 @@ class Admin extends BaseController
         return view('admin/attendance_logs', $data);
     }
 
+    public function attendance()
+    {
+        // Daftar Hadir page
+        $data = [
+            'title' => 'Daftar Hadir',
+            'pageTitle' => 'Daftar Hadir',
+            'pageDescription' => 'Kelola kehadiran siswa per kelas dan tanggal',
+            'user' => [
+                'name' => session()->get('name'),
+                'role' => 'Administrator'
+            ],
+        ];
+
+        return view('admin/attendance', $data);
+    }
+
     // ==================== API Methods ====================
 
     /**
@@ -839,6 +855,114 @@ class Admin extends BaseController
                 'status' => 'error',
                 'message' => 'Gagal mengambil log absensi: ' . $e->getMessage(),
                 'trace' => ENVIRONMENT === 'development' ? $e->getTraceAsString() : null
+            ]);
+        }
+    }
+
+    /**
+     * API: Get attendance records for a class on a date
+     */
+    public function apiGetAttendance()
+    {
+        try {
+            $classId = $this->request->getGet('class_id');
+            $date = $this->request->getGet('date') ?? date('Y-m-d');
+
+            if (!$classId) {
+                return $this->response->setStatusCode(400)->setJSON([
+                    'success' => false,
+                    'message' => 'class_id diperlukan'
+                ]);
+            }
+
+            // Get attendance summaries for students in this class on this date
+            $db = \Config\Database::connect();
+            $records = $db->table('attendance_summaries AS a')
+                ->select('a.id, a.student_id, a.status, a.notes, a.date')
+                ->join('students AS s', 's.id = a.student_id')
+                ->where('s.class_id', $classId)
+                ->where('a.date', $date)
+                ->where('s.active', 1)
+                ->get()
+                ->getResultArray();
+
+            return $this->response->setJSON([
+                'success' => true,
+                'data' => $records
+            ]);
+        } catch (\Throwable $e) {
+            return $this->response->setStatusCode(500)->setJSON([
+                'success' => false,
+                'message' => 'Gagal mengambil data kehadiran: ' . $e->getMessage()
+            ]);
+        }
+    }
+
+    /**
+     * API: Save attendance records (bulk)
+     */
+    public function apiSaveAttendance()
+    {
+        try {
+            $json = $this->request->getJSON(true);
+            $date = $json['date'] ?? date('Y-m-d');
+            $classId = $json['class_id'] ?? null;
+            $records = $json['records'] ?? [];
+
+            if (!$classId || empty($records)) {
+                return $this->response->setStatusCode(400)->setJSON([
+                    'success' => false,
+                    'message' => 'class_id dan records diperlukan'
+                ]);
+            }
+
+            $saved = 0;
+            $updated = 0;
+
+            foreach ($records as $record) {
+                $studentId = $record['student_id'];
+                $status = $record['status'];
+                $existingId = $record['id'] ?? null;
+
+                $data = [
+                    'student_id' => $studentId,
+                    'date' => $date,
+                    'status' => $status,
+                    'notes' => $record['notes'] ?? null,
+                ];
+
+                if ($existingId) {
+                    // Update existing record
+                    $this->attendanceSummaryModel->update($existingId, $data);
+                    $updated++;
+                } else {
+                    // Check if record already exists
+                    $existing = $this->attendanceSummaryModel
+                        ->where('student_id', $studentId)
+                        ->where('date', $date)
+                        ->first();
+
+                    if ($existing) {
+                        $this->attendanceSummaryModel->update($existing['id'], $data);
+                        $updated++;
+                    } else {
+                        $this->attendanceSummaryModel->insert($data);
+                        $saved++;
+                    }
+                }
+            }
+
+            return $this->response->setJSON([
+                'success' => true,
+                'message' => "Berhasil menyimpan kehadiran ({$saved} baru, {$updated} diperbarui)",
+                'saved' => $saved,
+                'updated' => $updated
+            ]);
+        } catch (\Throwable $e) {
+            log_message('error', 'apiSaveAttendance error: ' . $e->getMessage());
+            return $this->response->setStatusCode(500)->setJSON([
+                'success' => false,
+                'message' => 'Gagal menyimpan kehadiran: ' . $e->getMessage()
             ]);
         }
     }

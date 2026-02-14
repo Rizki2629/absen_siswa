@@ -21,6 +21,7 @@ $routes->group('admin', ['filter' => 'auth'], static function (RouteCollection $
 	$routes->get('devices', 'Admin::devices');
 	$routes->get('device-mapping', 'Admin::deviceMapping');
 	$routes->get('attendance-logs', 'Admin::attendanceLogs');
+	$routes->get('attendance', 'Admin::attendance');
 	$routes->get('shifts', 'Admin::shifts');
 	$routes->get('students', 'Admin::students');
 	$routes->get('classes', 'Admin::classes');
@@ -45,6 +46,10 @@ $routes->group('api/admin', ['filter' => 'auth'], static function (RouteCollecti
 
 	// Attendance Logs API
 	$routes->get('attendance-logs', 'Admin::apiGetAttendanceLogs');
+
+	// Attendance (Daftar Hadir) API
+	$routes->get('attendance', 'Admin::apiGetAttendance');
+	$routes->post('attendance', 'Admin::apiSaveAttendance');
 
 	// Students & Classes API
 	$routes->get('students', 'Admin::apiGetStudents');

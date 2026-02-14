@@ -17,6 +17,10 @@
     <span class="material-symbols-outlined mr-3">description</span>
     <span>Log Absensi</span>
 </a>
+<a href="<?= base_url('admin/attendance') ?>" class="sidebar-item">
+    <span class="material-symbols-outlined mr-3">how_to_reg</span>
+    <span>Daftar Hadir</span>
+</a>
 <a href="<?= base_url('admin/shifts') ?>" class="sidebar-item-active">
     <span class="material-symbols-outlined mr-3">schedule</span>
     <span>Pengaturan Shift</span>
