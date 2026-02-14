@@ -11,41 +11,9 @@ use CodeIgniter\Router\RouteCollection;
 // --------------------------------------------------------------------
 
 // Authentication Routes
-$routes->get('/debug-status', function () {
-	header('Content-Type: application/json');
-	return json_encode([
-		'status' => 'ok',
-		'environment' => ENVIRONMENT,
-		'time' => date('Y-m-d H:i:s'),
-	]);
-});
-$routes->get('/debug-dashboard', function () {
-	// Simulate dashboard data
-	$data = [
-		'title' => 'Dashboard Admin',
-		'pageTitle' => 'Dashboard Admin',
-		'pageDescription' => 'Selamat datang di panel administrator',
-		'user' => [
-			'name' => 'Test User',
-			'role' => 'Administrator'
-		],
-		'stats' => [
-			'total_students' => 0,
-			'present_today' => 0,
-			'absent_today' => 0,
-			'total_devices' => 0,
-			'active_devices' => 0,
-		],
-		'unreadNotifications' => 0
-	];
-	return view('dashboard/admin', $data);
-});
 $routes->get('/', 'Auth::index');
 $routes->post('auth/login', 'Auth::login');
 $routes->get('logout', 'Auth::logout');
-$routes->get('test-api', function () {
-	return view('test_api');
-});
 
 // Admin Routes
 $routes->group('admin', ['filter' => 'auth'], static function (RouteCollection $routes): void {
