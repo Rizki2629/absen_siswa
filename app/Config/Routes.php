@@ -27,6 +27,7 @@ $routes->group('admin', ['filter' => 'auth'], static function (RouteCollection $
 	$routes->get('classes', 'Admin::classes');
 	$routes->get('users', 'Admin::users');
 	$routes->get('reports', 'Admin::reports');
+	$routes->get('calendar', 'Admin::calendar');
 });
 
 // Admin API Routes (for AJAX calls)
@@ -66,6 +67,10 @@ $routes->group('api/admin', ['filter' => 'auth'], static function (RouteCollecti
 	$routes->delete('students/(:num)', 'Admin::apiDeleteStudent/$1');
 
 	$routes->get('classes', 'Admin::apiGetClasses');
+
+	// School Holidays API
+	$routes->get('school-holidays', 'Admin::apiGetSchoolHolidays');
+	$routes->post('school-holidays', 'Admin::apiSaveSchoolHoliday');
 });
 
 // Student/Parent Routes

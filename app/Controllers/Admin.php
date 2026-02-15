@@ -9,6 +9,7 @@ use App\Models\AttendanceLogModel;
 use App\Models\DeviceUserMapModel;
 use App\Models\ClassModel;
 use App\Models\ShiftModel;
+use App\Models\SchoolHolidayModel;
 
 class Admin extends BaseController
 {
@@ -19,6 +20,7 @@ class Admin extends BaseController
     protected $deviceUserMapModel;
     protected $classModel;
     protected $shiftModel;
+    protected $schoolHolidayModel;
 
     public function __construct()
     {
@@ -29,6 +31,7 @@ class Admin extends BaseController
         $this->deviceUserMapModel = new DeviceUserMapModel();
         $this->classModel = new ClassModel();
         $this->shiftModel = new ShiftModel();
+        $this->schoolHolidayModel = new SchoolHolidayModel();
     }
 
     public function dashboard()
@@ -202,6 +205,22 @@ class Admin extends BaseController
         ];
 
         return view('admin/reports', $data);
+    }
+
+    public function calendar()
+    {
+        $data = [
+            'title' => 'Kalender Akademik',
+            'pageTitle' => 'Kalender Akademik',
+            'pageDescription' => 'Lihat dan atur hari libur sekolah',
+            'activePage' => 'admin/calendar',
+            'user' => [
+                'name' => session()->get('name'),
+                'role' => 'Administrator'
+            ],
+        ];
+
+        return view('admin/calendar', $data);
     }
 
     public function attendanceLogs()
@@ -1193,5 +1212,58 @@ class Admin extends BaseController
         if (!empty($classIds)) {
             $db->table('classes')->whereIn('id', $classIds)->update(['shift_id' => $shiftId]);
         }
+    }
+
+    // ==========================================
+    // School Holidays API
+    // ==========================================
+
+    public function apiGetSchoolHolidays()
+    {
+        $year = $this->request->getGet('year') ?? date('Y');
+        $month = $this->request->getGet('month') ?? date('m');
+
+        $holidays = $this->schoolHolidayModel->getHolidaysByMonth((int) $year, (int) $month);
+
+        return $this->response->setJSON([
+            'success' => true,
+            'data' => $holidays
+        ]);
+    }
+
+    public function apiSaveSchoolHoliday()
+    {
+        $json = $this->request->getJSON(true);
+        $date = $json['date'] ?? null;
+        $name = $json['name'] ?? 'Libur Sekolah';
+        $isHoliday = $json['is_holiday'] ?? false;
+
+        if (!$date) {
+            return $this->response->setJSON(['success' => false, 'message' => 'Tanggal wajib diisi']);
+        }
+
+        // Check if school holiday exists for this date
+        $existing = $this->schoolHolidayModel->where('date', $date)->where('type', 'school')->first();
+
+        if ($isHoliday) {
+            if ($existing) {
+                // Update
+                $this->schoolHolidayModel->update($existing['id'], ['name' => $name]);
+            } else {
+                // Create
+                $this->schoolHolidayModel->insert([
+                    'date' => $date,
+                    'name' => $name,
+                    'type' => 'school',
+                ]);
+            }
+        } else {
+            // Remove school holiday
+            if ($existing) {
+                $this->schoolHolidayModel->delete($existing['id']);
+            }
+        }
+
+        return $this->response->setJSON(['success' => true, 'message' => 'Berhasil disimpan']);
     }
 }

@@ -127,6 +127,8 @@
                         <th class="text-left py-3 px-4 font-semibold text-gray-700">NIS</th>
                         <th class="text-left py-3 px-4 font-semibold text-gray-700">Nama Siswa</th>
                         <th class="text-left py-3 px-4 font-semibold text-gray-700">Kelas</th>
+                        <th class="text-center py-3 px-4 font-semibold text-gray-700">Jam Datang</th>
+                        <th class="text-center py-3 px-4 font-semibold text-gray-700">Jam Pulang</th>
                         <th class="text-center py-3 px-4 font-semibold text-gray-700">Hadir</th>
                         <th class="text-center py-3 px-4 font-semibold text-gray-700">Terlambat</th>
                         <th class="text-center py-3 px-4 font-semibold text-gray-700">Ijin</th>
@@ -137,7 +139,7 @@
                 </thead>
                 <tbody id="reportTable">
                     <tr>
-                        <td colspan="10" class="text-center py-12 text-gray-500">
+                        <td colspan="12" class="text-center py-12 text-gray-500">
                             Klik "Generate Laporan" untuk menampilkan data
                         </td>
                     </tr>
@@ -205,6 +207,8 @@
             <td class="py-3 px-4">12345</td>
             <td class="py-3 px-4">Ahmad Fauzan</td>
             <td class="py-3 px-4">X IPA 1</td>
+            <td class="py-3 px-4 text-center text-primary-600">07:15</td>
+            <td class="py-3 px-4 text-center text-primary-600">15:30</td>
             <td class="py-3 px-4 text-center text-success-600 font-bold">20</td>
             <td class="py-3 px-4 text-center text-warning-600">2</td>
             <td class="py-3 px-4 text-center">1</td>
@@ -217,12 +221,42 @@
             <td class="py-3 px-4">12346</td>
             <td class="py-3 px-4">Budi Santoso</td>
             <td class="py-3 px-4">X IPA 1</td>
+            <td class="py-3 px-4 text-center text-primary-600">07:05</td>
+            <td class="py-3 px-4 text-center text-primary-600">15:25</td>
             <td class="py-3 px-4 text-center text-success-600 font-bold">22</td>
             <td class="py-3 px-4 text-center text-warning-600">0</td>
             <td class="py-3 px-4 text-center">0</td>
             <td class="py-3 px-4 text-center">1</td>
             <td class="py-3 px-4 text-center text-danger-600">0</td>
             <td class="py-3 px-4 text-center font-bold">100%</td>
+        </tr>
+        <tr class="border-b border-gray-100">
+            <td class="py-3 px-4">3</td>
+            <td class="py-3 px-4">12347</td>
+            <td class="py-3 px-4">Citra Dewi</td>
+            <td class="py-3 px-4">X IPA 1</td>
+            <td class="py-3 px-4 text-center text-gray-400">-</td>
+            <td class="py-3 px-4 text-center text-gray-400">-</td>
+            <td class="py-3 px-4 text-center text-success-600 font-bold">18</td>
+            <td class="py-3 px-4 text-center text-warning-600">0</td>
+            <td class="py-3 px-4 text-center">0</td>
+            <td class="py-3 px-4 text-center font-bold">3</td>
+            <td class="py-3 px-4 text-center text-danger-600">0</td>
+            <td class="py-3 px-4 text-center font-bold">86%</td>
+        </tr>
+        <tr class="border-b border-gray-100">
+            <td class="py-3 px-4">4</td>
+            <td class="py-3 px-4">12348</td>
+            <td class="py-3 px-4">Deni Pratama</td>
+            <td class="py-3 px-4">X IPA 1</td>
+            <td class="py-3 px-4 text-center text-gray-400">-</td>
+            <td class="py-3 px-4 text-center text-gray-400">-</td>
+            <td class="py-3 px-4 text-center text-success-600 font-bold">15</td>
+            <td class="py-3 px-4 text-center text-warning-600">0</td>
+            <td class="py-3 px-4 text-center">2</td>
+            <td class="py-3 px-4 text-center">0</td>
+            <td class="py-3 px-4 text-center text-danger-600 font-bold">3</td>
+            <td class="py-3 px-4 text-center font-bold">75%</td>
         </tr>
     `;
 

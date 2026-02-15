@@ -85,6 +85,42 @@
         overflow: hidden;
     }
 
+    .jam-row {
+        display: flex;
+        gap: 8px;
+        margin-top: 10px;
+        margin-bottom: 6px;
+    }
+
+    .jam-item {
+        flex: 1;
+        background: #f9fafb;
+        border-radius: 10px;
+        padding: 8px 10px;
+        text-align: center;
+        border: 1px solid #e5e7eb;
+    }
+
+    .jam-item label {
+        display: block;
+        font-size: 10px;
+        font-weight: 600;
+        color: #6b7280;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 4px;
+    }
+
+    .jam-item .jam-value {
+        font-size: 14px;
+        font-weight: 700;
+        color: #1f2937;
+    }
+
+    .jam-item .jam-value.empty {
+        color: #9ca3af;
+    }
+
     .student-card::before {
         content: '';
         position: absolute;
@@ -193,6 +229,44 @@
         border: 2px solid;
         transition: all 0.2s ease;
     }
+
+    .lock-banner {
+        background: linear-gradient(135deg, #fef3c7, #fde68a);
+        border: 2px solid #f59e0b;
+        border-radius: 16px;
+        padding: 16px 24px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        margin-bottom: 24px;
+    }
+
+    .lock-banner .lock-icon {
+        width: 48px;
+        height: 48px;
+        background: #f59e0b;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    .lock-banner .lock-icon span {
+        color: white;
+        font-size: 24px;
+    }
+
+    .page-locked .student-card {
+        opacity: 0.5;
+        pointer-events: none;
+    }
+
+    .page-locked .mark-all-btn,
+    .page-locked .submit-btn {
+        opacity: 0.5;
+        pointer-events: none;
+    }
 </style>
 <?= $this->endSection() ?>
 
@@ -237,6 +311,17 @@
                 <span class="material-symbols-outlined text-sm align-middle mr-1">check_circle</span>Semua Hadir
             </button>
         </div>
+    </div>
+</div>
+
+<!-- Lock Banner -->
+<div id="lockBanner" class="lock-banner hidden">
+    <div class="lock-icon">
+        <span class="material-symbols-outlined">lock</span>
+    </div>
+    <div>
+        <h3 class="font-bold text-amber-900 text-base">Absensi Dikunci</h3>
+        <p class="text-amber-800 text-sm mt-0.5" id="lockReason">Hari ini adalah hari libur</p>
     </div>
 </div>
 
@@ -317,6 +402,8 @@
     let students = [];
     let attendanceData = {}; // { studentId: status }
     let existingSummaries = {}; // loaded from server
+    let holidayCache = {}; // { 'YYYY-MM': { national: [], school: [] } }
+    let isLocked = false;
     const avatarColors = ['#6366f1', '#8b5cf6', '#ec4899', '#f43f5e', '#f97316', '#eab308', '#22c55e', '#14b8a6', '#06b6d4', '#3b82f6'];
 
     // Init
@@ -356,10 +443,80 @@
         }
     }
 
+    /**
+     * Fetch holidays for a given month (cached)
+     */
+    async function fetchHolidaysForDate(dateStr) {
+        const [year, month] = dateStr.split('-');
+        const key = `${year}-${month}`;
+        if (holidayCache[key]) return holidayCache[key];
+
+        let national = [], school = [];
+        try {
+            const [natResp, schResp] = await Promise.all([
+                fetch(`https://api-harilibur.vercel.app/api?year=${year}&month=${parseInt(month)}`).then(r => r.json()).catch(() => []),
+                fetch(`<?= base_url('api/admin/school-holidays') ?>?year=${year}&month=${parseInt(month)}`, {
+                    credentials: 'include',
+                    headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' }
+                }).then(r => r.json()).catch(() => ({ data: [] }))
+            ]);
+            national = (natResp || []).filter(h => h.is_national_holiday).map(h => ({ date: h.holiday_date, name: h.holiday_name }));
+            school = schResp.data || [];
+        } catch (e) {}
+
+        holidayCache[key] = { national, school };
+        return holidayCache[key];
+    }
+
+    /**
+     * Check if a date is disabled/locked for attendance
+     */
+    function isDateDisabled(dateStr, holidays) {
+        const d = new Date(dateStr);
+        const day = d.getDay();
+        const isWeekend = (day === 0 || day === 6);
+        const natHoliday = holidays.national.find(h => h.date === dateStr);
+        const schHoliday = holidays.school.find(h => h.date === dateStr);
+
+        if (isWeekend || natHoliday || schHoliday) {
+            let reason = 'Libur Akhir Pekan';
+            if (natHoliday) reason = natHoliday.name;
+            else if (schHoliday) reason = schHoliday.name;
+            return { locked: true, reason };
+        }
+        return { locked: false, reason: null };
+    }
+
+    /**
+     * Apply or remove lock state on the page
+     */
+    function applyLockState(lockStatus) {
+        const banner = document.getElementById('lockBanner');
+        const content = document.querySelector('#studentGrid').parentElement;
+        isLocked = lockStatus.locked;
+
+        if (lockStatus.locked) {
+            banner.classList.remove('hidden');
+            document.getElementById('lockReason').textContent = `Absensi dikunci karena: ${lockStatus.reason}`;
+            document.getElementById('submitBtn').disabled = true;
+            document.body.classList.add('page-locked');
+        } else {
+            banner.classList.add('hidden');
+            document.body.classList.remove('page-locked');
+        }
+    }
+
     // Load Students & existing attendance
     async function loadStudents() {
         const classId = document.getElementById('classFilter').value;
         const date = document.getElementById('dateFilter').value;
+
+        // Check lock status for the selected date
+        if (date) {
+            const holidays = await fetchHolidaysForDate(date);
+            const lockStatus = isDateDisabled(date, holidays);
+            applyLockState(lockStatus);
+        }
 
         if (!classId) {
             document.getElementById('emptyState').classList.remove('hidden');
@@ -444,6 +601,10 @@
             const card = document.createElement('div');
             card.className = `student-card ${statusClass}`;
             card.id = `card-${student.id}`;
+            const isHadir = (status === 'hadir' || status === 'terlambat');
+            const jamDatang = isHadir ? (student.check_in || '-') : '-';
+            const jamPulang = isHadir ? (student.check_out || '-') : '-';
+
             card.innerHTML = `
                 <div class="flex items-center gap-3 mb-4">
                     <div class="avatar" style="background:${color}">
@@ -452,6 +613,16 @@
                     <div class="flex-1 min-w-0">
                         <h4 class="font-semibold text-gray-900 text-sm truncate">${escHtml(student.name)}</h4>
                         <p class="text-xs text-gray-500">NIS: ${escHtml(student.nis)}</p>
+                    </div>
+                </div>
+                <div class="jam-row" id="jam-row-${student.id}">
+                    <div class="jam-item">
+                        <label>Jam Datang</label>
+                        <span class="jam-value ${jamDatang === '-' ? 'empty' : ''}">${jamDatang}</span>
+                    </div>
+                    <div class="jam-item">
+                        <label>Jam Pulang</label>
+                        <span class="jam-value ${jamPulang === '-' ? 'empty' : ''}">${jamPulang}</span>
                     </div>
                 </div>
                 <div class="flex gap-2">
@@ -486,6 +657,22 @@
             if (attendanceData[studentId]) {
                 const activeBtn = card.querySelector(`.btn-${attendanceData[studentId]}`);
                 if (activeBtn) activeBtn.classList.add('active');
+            }
+
+            // Update jam datang/pulang display
+            const jamRow = document.getElementById(`jam-row-${studentId}`);
+            if (jamRow) {
+                const currentStatus = attendanceData[studentId] || '';
+                const isHadir = (currentStatus === 'hadir' || currentStatus === 'terlambat');
+                const student = students.find(s => s.id == studentId);
+                const jamDatang = isHadir ? (student && student.check_in ? student.check_in : '-') : '-';
+                const jamPulang = isHadir ? (student && student.check_out ? student.check_out : '-') : '-';
+
+                const spans = jamRow.querySelectorAll('.jam-value');
+                spans[0].textContent = jamDatang;
+                spans[0].className = `jam-value ${jamDatang === '-' ? 'empty' : ''}`;
+                spans[1].textContent = jamPulang;
+                spans[1].className = `jam-value ${jamPulang === '-' ? 'empty' : ''}`;
             }
         }
 
@@ -537,6 +724,11 @@
 
     // Submit attendance
     async function submitAttendance() {
+        if (isLocked) {
+            showToast('Absensi dikunci untuk tanggal ini', 'error');
+            return;
+        }
+
         const date = document.getElementById('dateFilter').value;
         const classId = document.getElementById('classFilter').value;
 

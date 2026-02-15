@@ -16,6 +16,7 @@ $menuItems = [
     ['url' => 'admin/classes',        'icon' => 'class',             'label' => 'Data Kelas'],
     ['url' => 'admin/users',          'icon' => 'manage_accounts',   'label' => 'Manajemen User'],
     ['url' => 'admin/reports',        'icon' => 'assessment',        'label' => 'Laporan'],
+    ['url' => 'admin/calendar',       'icon' => 'calendar_month',    'label' => 'Kalender'],
 ];
 ?>
 <?php foreach ($menuItems as $item): ?>
