@@ -443,67 +443,62 @@
         }
     }
 
-    // Hardcoded Indonesian national holidays + cuti bersama as fallback
-    const HOLIDAYS_ID = {
+    // Cache API response per year
+    let harikerjaCache = {};
+    const bulanNamesApi = ['januari','februari','maret','april','mei','juni','juli','agustus','september','oktober','november','desember'];
+
+    function parseTanggalRange(tanggal, year, monthIdx) {
+        const results = [];
+        const parts = String(tanggal).split('-');
+        if (parts.length === 2) {
+            const start = parseInt(parts[0]);
+            const end = parseInt(parts[1]);
+            for (let d = start; d <= end; d++) results.push(d);
+        } else {
+            results.push(parseInt(parts[0]));
+        }
+        return results.filter(d => !isNaN(d)).map(d => {
+            const mm = String(monthIdx + 1).padStart(2, '0');
+            const dd = String(d).padStart(2, '0');
+            return `${year}-${mm}-${dd}`;
+        });
+    }
+
+    // Fallback hardcoded holidays
+    const HOLIDAYS_FALLBACK = {
         '2025': [
-            {date:'2025-01-01',name:'Tahun Baru Masehi',isNational:true},
-            {date:'2025-01-27',name:'Isra Mikraj Nabi Muhammad SAW',isNational:true},
-            {date:'2025-01-29',name:'Tahun Baru Imlek 2576',isNational:true},
-            {date:'2025-03-14',name:'Hari Suci Nyepi Tahun Baru Saka 1947',isNational:true},
-            {date:'2025-03-29',name:'Hari Raya Idul Fitri 1446 H',isNational:true},
-            {date:'2025-03-30',name:'Hari Raya Idul Fitri 1446 H',isNational:true},
-            {date:'2025-04-18',name:'Wafat Isa Al Masih',isNational:true},
-            {date:'2025-05-01',name:'Hari Buruh Internasional',isNational:true},
-            {date:'2025-05-12',name:'Hari Raya Waisak 2569 BE',isNational:true},
-            {date:'2025-05-29',name:'Kenaikan Isa Al Masih',isNational:true},
-            {date:'2025-06-01',name:'Hari Lahir Pancasila',isNational:true},
-            {date:'2025-06-06',name:'Hari Raya Idul Adha 1446 H',isNational:true},
-            {date:'2025-06-27',name:'Tahun Baru Islam 1447 H',isNational:true},
-            {date:'2025-08-17',name:'Hari Kemerdekaan RI',isNational:true},
-            {date:'2025-09-05',name:'Maulid Nabi Muhammad SAW',isNational:true},
-            {date:'2025-12-25',name:'Hari Raya Natal',isNational:true}
+            {date:'2025-01-01',name:'Tahun Baru Masehi'},{date:'2025-01-27',name:'Isra Mikraj'},{date:'2025-01-29',name:'Imlek 2576'},
+            {date:'2025-03-14',name:'Nyepi'},{date:'2025-03-29',name:'Idul Fitri'},{date:'2025-03-30',name:'Idul Fitri'},
+            {date:'2025-04-18',name:'Wafat Isa Al Masih'},{date:'2025-05-01',name:'Hari Buruh'},{date:'2025-05-12',name:'Waisak'},
+            {date:'2025-05-29',name:'Kenaikan Isa'},{date:'2025-06-01',name:'Pancasila'},{date:'2025-06-06',name:'Idul Adha'},
+            {date:'2025-06-27',name:'Tahun Baru Islam'},{date:'2025-08-17',name:'Kemerdekaan RI'},{date:'2025-09-05',name:'Maulid Nabi'},
+            {date:'2025-12-25',name:'Natal'}
         ],
         '2026': [
-            {date:'2026-01-01',name:'Tahun Baru Masehi',isNational:true},
-            {date:'2026-01-16',name:'Isra Mikraj Nabi Muhammad SAW',isNational:true},
-            {date:'2026-02-17',name:'Tahun Baru Imlek 2577',isNational:true},
-            {date:'2026-03-03',name:'Hari Suci Nyepi Tahun Baru Saka 1948',isNational:true},
-            {date:'2026-03-20',name:'Hari Raya Idul Fitri 1447 H',isNational:true},
-            {date:'2026-03-21',name:'Hari Raya Idul Fitri 1447 H',isNational:true},
-            {date:'2026-04-03',name:'Wafat Isa Al Masih',isNational:true},
-            {date:'2026-05-01',name:'Hari Buruh Internasional',isNational:true},
-            {date:'2026-05-14',name:'Kenaikan Isa Al Masih',isNational:true},
-            {date:'2026-05-17',name:'Hari Raya Waisak 2570 BE',isNational:true},
-            {date:'2026-05-27',name:'Hari Raya Idul Adha 1447 H',isNational:true},
-            {date:'2026-06-01',name:'Hari Lahir Pancasila',isNational:true},
-            {date:'2026-06-17',name:'Tahun Baru Islam 1448 H',isNational:true},
-            {date:'2026-08-17',name:'Hari Kemerdekaan RI',isNational:true},
-            {date:'2026-08-26',name:'Maulid Nabi Muhammad SAW',isNational:true},
-            {date:'2026-12-25',name:'Hari Raya Natal',isNational:true}
+            {date:'2026-01-01',name:'Tahun Baru Masehi'},{date:'2026-01-16',name:'Isra Mikraj'},
+            {date:'2026-02-16',name:'Imlek 2577'},{date:'2026-02-17',name:'Imlek 2577'},
+            {date:'2026-03-18',name:'Nyepi'},{date:'2026-03-19',name:'Nyepi'},
+            {date:'2026-03-20',name:'Idul Fitri'},{date:'2026-03-21',name:'Idul Fitri'},{date:'2026-03-22',name:'Idul Fitri'},
+            {date:'2026-03-23',name:'Idul Fitri'},{date:'2026-03-24',name:'Idul Fitri'},
+            {date:'2026-04-03',name:'Wafat Yesus Kristus'},{date:'2026-04-05',name:'Paskah'},
+            {date:'2026-05-01',name:'Hari Buruh'},{date:'2026-05-14',name:'Kenaikan Yesus'},{date:'2026-05-15',name:'Kenaikan Yesus'},
+            {date:'2026-05-27',name:'Idul Adha'},{date:'2026-05-28',name:'Idul Adha'},{date:'2026-05-31',name:'Waisak'},
+            {date:'2026-06-01',name:'Pancasila'},{date:'2026-06-16',name:'Tahun Baru Islam'},
+            {date:'2026-08-17',name:'Kemerdekaan RI'},{date:'2026-08-25',name:'Maulid Nabi'},{date:'2026-12-25',name:'Natal'}
         ],
         '2027': [
-            {date:'2027-01-01',name:'Tahun Baru Masehi',isNational:true},
-            {date:'2027-01-05',name:'Isra Mikraj Nabi Muhammad SAW',isNational:true},
-            {date:'2027-02-06',name:'Tahun Baru Imlek 2578',isNational:true},
-            {date:'2027-03-10',name:'Hari Raya Idul Fitri 1448 H',isNational:true},
-            {date:'2027-03-11',name:'Hari Raya Idul Fitri 1448 H',isNational:true},
-            {date:'2027-03-22',name:'Hari Suci Nyepi Tahun Baru Saka 1949',isNational:true},
-            {date:'2027-03-26',name:'Wafat Isa Al Masih',isNational:true},
-            {date:'2027-05-01',name:'Hari Buruh Internasional',isNational:true},
-            {date:'2027-05-06',name:'Kenaikan Isa Al Masih',isNational:true},
-            {date:'2027-05-17',name:'Hari Raya Idul Adha 1448 H',isNational:true},
-            {date:'2027-06-01',name:'Hari Lahir Pancasila',isNational:true},
-            {date:'2027-06-07',name:'Tahun Baru Islam 1449 H',isNational:true},
-            {date:'2027-08-16',name:'Maulid Nabi Muhammad SAW',isNational:true},
-            {date:'2027-08-17',name:'Hari Kemerdekaan RI',isNational:true},
-            {date:'2027-12-25',name:'Hari Raya Natal',isNational:true}
+            {date:'2027-01-01',name:'Tahun Baru Masehi'},{date:'2027-02-06',name:'Imlek 2578'},
+            {date:'2027-03-10',name:'Idul Fitri'},{date:'2027-03-11',name:'Idul Fitri'},{date:'2027-03-22',name:'Nyepi'},
+            {date:'2027-03-26',name:'Wafat Isa Al Masih'},{date:'2027-05-01',name:'Hari Buruh'},{date:'2027-05-06',name:'Kenaikan Isa'},
+            {date:'2027-05-17',name:'Idul Adha'},{date:'2027-06-01',name:'Pancasila'},{date:'2027-06-07',name:'Tahun Baru Islam'},
+            {date:'2027-08-17',name:'Kemerdekaan RI'},{date:'2027-12-25',name:'Natal'}
         ]
     };
 
     function getHolidaysFallback(year, month) {
-        const yearData = HOLIDAYS_ID[String(year)] || [];
+        const yearData = HOLIDAYS_FALLBACK[String(year)] || [];
         const mm = String(month).padStart(2, '0');
-        return yearData.filter(h => h.date.substring(5, 7) === mm).map(h => ({date: h.date, name: h.name}));
+        return yearData.filter(h => h.date.substring(5, 7) === mm);
     }
 
     /**
@@ -517,29 +512,42 @@
         let national = [],
             school = [];
         try {
-            const [natResp, schResp] = await Promise.all([
-                fetch(`https://api-harilibur.vercel.app/api?year=${year}&month=${parseInt(month)}`).then(r => {
-                    if (!r.ok) throw new Error('API error');
-                    return r.json();
-                }).catch(() => null),
-                fetch(`<?= base_url('api/admin/school-holidays') ?>?year=${year}&month=${parseInt(month)}`, {
-                    credentials: 'include',
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest',
-                        'Accept': 'application/json'
+            // Fetch from harikerja API + school holidays in parallel
+            let apiNational = null;
+            if (!harikerjaCache[year]) {
+                try {
+                    const apiResp = await fetch('https://harikerja.vercel.app/api');
+                    if (apiResp.ok) {
+                        const json = await apiResp.json();
+                        if (json.code === 200 && json.data) {
+                            harikerjaCache[year] = json.data;
+                        }
                     }
-                }).then(r => r.json()).catch(() => ({
-                    data: []
-                }))
-            ]);
-            if (Array.isArray(natResp) && natResp.length > 0) {
-                national = natResp.filter(h => h.is_national_holiday).map(h => ({
-                    date: h.holiday_date,
-                    name: h.holiday_name
-                }));
-            } else {
-                national = getHolidaysFallback(year, parseInt(month));
+                } catch(e) {}
             }
+
+            if (harikerjaCache[year]) {
+                const monthIdx = parseInt(month) - 1;
+                const bulanKey = bulanNamesApi[monthIdx];
+                const found = harikerjaCache[year].find(m => m.bulan === bulanKey);
+                if (found && found.tanggal_merah && found.tanggal_merah.length > 0) {
+                    apiNational = [];
+                    found.tanggal_merah.forEach(tm => {
+                        const dates = parseTanggalRange(tm.tanggal, year, monthIdx);
+                        dates.forEach(d => apiNational.push({date: d, name: tm.memperingati}));
+                    });
+                }
+            }
+
+            const schResp = await fetch(`<?= base_url('api/admin/school-holidays') ?>?year=${year}&month=${parseInt(month)}`, {
+                credentials: 'include',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json'
+                }
+            }).then(r => r.json()).catch(() => ({data: []}));
+
+            national = apiNational || getHolidaysFallback(year, parseInt(month));
             school = schResp.data || [];
         } catch (e) {
             national = getHolidaysFallback(year, parseInt(month));
