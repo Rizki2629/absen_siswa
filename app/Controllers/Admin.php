@@ -54,6 +54,16 @@ class Admin extends BaseController
             'active_devices' => $this->deviceModel->where('status', 'online')->countAllResults(),
         ];
 
+        // Ambil 10 log absensi terbaru (real data)
+        $logs = $this->attendanceLogModel
+            ->select('attendance_logs.att_time, students.name as student_name, classes.name as class_name, devices.name as device_name, attendance_logs.status')
+            ->join('students', 'students.id = attendance_logs.student_id', 'left')
+            ->join('classes', 'classes.id = students.class_id', 'left')
+            ->join('devices', 'devices.id = attendance_logs.device_id', 'left')
+            ->orderBy('attendance_logs.att_time', 'DESC')
+            ->limit(10)
+            ->findAll();
+
         $data = [
             'title' => 'Dashboard Admin',
             'pageTitle' => 'Dashboard Admin',
@@ -64,7 +74,8 @@ class Admin extends BaseController
                 'role' => 'Administrator'
             ],
             'stats' => $stats,
-            'unreadNotifications' => 0
+            'unreadNotifications' => 0,
+            'logs' => $logs
         ];
 
         return view('dashboard/admin', $data);

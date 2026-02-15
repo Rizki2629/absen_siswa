@@ -55,12 +55,14 @@
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Tanggal Mulai</label>
                 <input type="date" id="startDate" value="<?= date('Y-m-01') ?>"
-                    class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500">
+                    class="w-full px-4 py-2 rounded-xl focus:ring-2 focus:ring-primary-500"
+                    style="border: 0.6px solid #d1d5db;">
             </div>
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Tanggal Akhir</label>
                 <input type="date" id="endDate" value="<?= date('Y-m-d') ?>"
-                    class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500">
+                    class="w-full px-4 py-2 rounded-xl focus:ring-2 focus:ring-primary-500"
+                    style="border: 0.6px solid #d1d5db;">
             </div>
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Filter Kelas</label>
