@@ -11,6 +11,7 @@ $menuItems = [
     ['url' => 'admin/device-mapping',  'icon' => 'link',             'label' => 'Mapping ID Mesin'],
     ['url' => 'admin/attendance-logs', 'icon' => 'description',      'label' => 'Log Absensi'],
     ['url' => 'admin/attendance',      'icon' => 'how_to_reg',       'label' => 'Daftar Hadir'],
+    ['url' => 'admin/rekap',           'icon' => 'table_chart',      'label' => 'Rekap Daftar Hadir'],
     ['url' => 'admin/shifts',         'icon' => 'schedule',          'label' => 'Pengaturan Shift'],
     ['url' => 'admin/students',       'icon' => 'groups',            'label' => 'Data Siswa'],
     ['url' => 'admin/classes',        'icon' => 'class',             'label' => 'Data Kelas'],

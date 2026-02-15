@@ -223,6 +223,22 @@ class Admin extends BaseController
         return view('admin/calendar', $data);
     }
 
+    public function rekap()
+    {
+        $data = [
+            'title' => 'Rekap Daftar Hadir',
+            'pageTitle' => 'Rekap Daftar Hadir',
+            'pageDescription' => 'Rekap kehadiran siswa per bulan',
+            'activePage' => 'admin/rekap',
+            'user' => [
+                'name' => session()->get('name'),
+                'role' => 'Administrator'
+            ],
+        ];
+
+        return view('admin/rekap', $data);
+    }
+
     public function attendanceLogs()
     {
         // Attendance logs page
@@ -1002,6 +1018,116 @@ class Admin extends BaseController
             return $this->response->setStatusCode(500)->setJSON([
                 'success' => false,
                 'message' => 'Gagal menyimpan kehadiran: ' . $e->getMessage()
+            ]);
+        }
+    }
+
+    /**
+     * API: Get rekap attendance for a class in a month
+     */
+    public function apiGetRekap()
+    {
+        try {
+            $classId = $this->request->getGet('class_id');
+            $month = $this->request->getGet('month');
+            $year = $this->request->getGet('year');
+
+            if (!$classId || !$month || !$year) {
+                return $this->response->setStatusCode(400)->setJSON([
+                    'success' => false,
+                    'message' => 'class_id, month, dan year diperlukan'
+                ]);
+            }
+
+            $db = \Config\Database::connect();
+
+            // Get class info
+            $class = $this->classModel->find($classId);
+            if (!$class) {
+                return $this->response->setStatusCode(404)->setJSON([
+                    'success' => false,
+                    'message' => 'Kelas tidak ditemukan'
+                ]);
+            }
+
+            // Get students in this class
+            $students = $db->table('students')
+                ->select('id, nis, name')
+                ->where('class_id', $classId)
+                ->where('active', 1)
+                ->orderBy('nis', 'ASC')
+                ->get()
+                ->getResultArray();
+
+            // Get all dates in the month
+            $daysInMonth = cal_days_in_month(CAL_GREGORIAN, $month, $year);
+            $dates = [];
+            for ($day = 1; $day <= $daysInMonth; $day++) {
+                $dates[] = [
+                    'date' => sprintf('%04d-%02d-%02d', $year, $month, $day)
+                ];
+            }
+
+            // Get all attendance records for this class in this month
+            $startDate = sprintf('%04d-%02d-01', $year, $month);
+            $endDate = sprintf('%04d-%02d-%02d', $year, $month, $daysInMonth);
+
+            $attendanceRecords = $db->table('attendance_summaries AS a')
+                ->select('a.student_id, a.date, a.status')
+                ->join('students AS s', 's.id = a.student_id')
+                ->where('s.class_id', $classId)
+                ->where('a.date >=', $startDate)
+                ->where('a.date <=', $endDate)
+                ->get()
+                ->getResultArray();
+
+            // Organize attendance by student and date
+            $attendance = [];
+            foreach ($attendanceRecords as $record) {
+                $studentId = $record['student_id'];
+                $date = $record['date'];
+                $status = $record['status'];
+
+                if (!isset($attendance[$studentId])) {
+                    $attendance[$studentId] = [];
+                }
+                $attendance[$studentId][$date] = $status;
+            }
+
+            // Get homeroom teacher (if any)
+            $homeroomTeacher = '-';
+            if (!empty($class['homeroom_teacher_id'])) {
+                $teacher = $db->table('users')
+                    ->select('name')
+                    ->where('id', $class['homeroom_teacher_id'])
+                    ->get()
+                    ->getRowArray();
+                if ($teacher) {
+                    $homeroomTeacher = $teacher['name'];
+                }
+            }
+
+            // Academic year calculation
+            $academicYear = $month >= 7 ? $year . '/' . ($year + 1) : ($year - 1) . '/' . $year;
+
+            return $this->response->setJSON([
+                'success' => true,
+                'data' => [
+                    'class_name' => $class['name'],
+                    'academic_year' => $academicYear,
+                    'homeroom_teacher' => $homeroomTeacher,
+                    'month' => (int)$month,
+                    'year' => (int)$year,
+                    'students' => $students,
+                    'dates' => $dates,
+                    'attendance' => $attendance
+                ]
+            ]);
+        } catch (\Throwable $e) {
+            log_message('error', 'apiGetRekap error: ' . $e->getMessage());
+            return $this->response->setStatusCode(500)->setJSON([
+                'success' => false,
+                'message' => 'Gagal mengambil data rekap: ' . $e->getMessage()
             ]);
         }
     }

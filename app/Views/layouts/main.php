@@ -114,9 +114,9 @@
                         </button>
 
                         <!-- Time -->
-                        <div class="hidden md:flex items-center space-x-2 text-gray-600">
-                            <span class="material-symbols-outlined">schedule</span>
-                            <span class="text-sm font-medium" id="currentTime"></span>
+                        <div class="hidden md:flex items-center space-x-2 text-gray-600 bg-gray-50 px-3 py-2 rounded-lg border border-gray-200">
+                            <span class="material-symbols-outlined text-primary-600">schedule</span>
+                            <span class="text-sm font-medium" id="currentTime">Loading...</span>
                         </div>
                     </div>
                 </div>
@@ -156,20 +156,19 @@
         // Update current time
         function updateTime() {
             const now = new Date();
-            const timeString = now.toLocaleTimeString('id-ID', {
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit'
-            });
-            const dateString = now.toLocaleDateString('id-ID', {
-                weekday: 'long',
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-            });
+            const dayNames = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+            const monthNames = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+            const pad = (n) => n < 10 ? '0' + n : n;
+
+            const hari = dayNames[now.getDay()];
+            const tanggal = pad(now.getDate());
+            const bulan = monthNames[now.getMonth()];
+            const tahun = now.getFullYear();
+            const jam = pad(now.getHours()) + ':' + pad(now.getMinutes()) + ':' + pad(now.getSeconds());
+
             const timeElement = document.getElementById('currentTime');
             if (timeElement) {
-                timeElement.textContent = timeString;
+                timeElement.textContent = `${hari}, ${tanggal} ${bulan} ${tahun} | ${jam}`;
             }
         }
         updateTime();

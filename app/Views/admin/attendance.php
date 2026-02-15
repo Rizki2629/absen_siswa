@@ -366,7 +366,7 @@
 </div>
 
 <!-- Student Cards Grid -->
-<div id="studentGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+<div id="studentGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4" style="min-height: 600px;">
     <!-- Cards will be loaded here -->
 </div>
 
@@ -445,7 +445,7 @@
 
     // Cache API response per year
     let harikerjaCache = {};
-    const bulanNamesApi = ['januari','februari','maret','april','mei','juni','juli','agustus','september','oktober','november','desember'];
+    const bulanNamesApi = ['januari', 'februari', 'maret', 'april', 'mei', 'juni', 'juli', 'agustus', 'september', 'oktober', 'november', 'desember'];
 
     function parseTanggalRange(tanggal, year, monthIdx) {
         const results = [];
@@ -466,32 +466,188 @@
 
     // Fallback hardcoded holidays
     const HOLIDAYS_FALLBACK = {
-        '2025': [
-            {date:'2025-01-01',name:'Tahun Baru Masehi'},{date:'2025-01-27',name:'Isra Mikraj'},{date:'2025-01-29',name:'Imlek 2576'},
-            {date:'2025-03-14',name:'Nyepi'},{date:'2025-03-29',name:'Idul Fitri'},{date:'2025-03-30',name:'Idul Fitri'},
-            {date:'2025-04-18',name:'Wafat Isa Al Masih'},{date:'2025-05-01',name:'Hari Buruh'},{date:'2025-05-12',name:'Waisak'},
-            {date:'2025-05-29',name:'Kenaikan Isa'},{date:'2025-06-01',name:'Pancasila'},{date:'2025-06-06',name:'Idul Adha'},
-            {date:'2025-06-27',name:'Tahun Baru Islam'},{date:'2025-08-17',name:'Kemerdekaan RI'},{date:'2025-09-05',name:'Maulid Nabi'},
-            {date:'2025-12-25',name:'Natal'}
+        '2025': [{
+                date: '2025-01-01',
+                name: 'Tahun Baru Masehi'
+            }, {
+                date: '2025-01-27',
+                name: 'Isra Mikraj'
+            }, {
+                date: '2025-01-29',
+                name: 'Imlek 2576'
+            },
+            {
+                date: '2025-03-14',
+                name: 'Nyepi'
+            }, {
+                date: '2025-03-29',
+                name: 'Idul Fitri'
+            }, {
+                date: '2025-03-30',
+                name: 'Idul Fitri'
+            },
+            {
+                date: '2025-04-18',
+                name: 'Wafat Isa Al Masih'
+            }, {
+                date: '2025-05-01',
+                name: 'Hari Buruh'
+            }, {
+                date: '2025-05-12',
+                name: 'Waisak'
+            },
+            {
+                date: '2025-05-29',
+                name: 'Kenaikan Isa'
+            }, {
+                date: '2025-06-01',
+                name: 'Pancasila'
+            }, {
+                date: '2025-06-06',
+                name: 'Idul Adha'
+            },
+            {
+                date: '2025-06-27',
+                name: 'Tahun Baru Islam'
+            }, {
+                date: '2025-08-17',
+                name: 'Kemerdekaan RI'
+            }, {
+                date: '2025-09-05',
+                name: 'Maulid Nabi'
+            },
+            {
+                date: '2025-12-25',
+                name: 'Natal'
+            }
         ],
-        '2026': [
-            {date:'2026-01-01',name:'Tahun Baru Masehi'},{date:'2026-01-16',name:'Isra Mikraj'},
-            {date:'2026-02-16',name:'Imlek 2577'},{date:'2026-02-17',name:'Imlek 2577'},
-            {date:'2026-03-18',name:'Nyepi'},{date:'2026-03-19',name:'Nyepi'},
-            {date:'2026-03-20',name:'Idul Fitri'},{date:'2026-03-21',name:'Idul Fitri'},{date:'2026-03-22',name:'Idul Fitri'},
-            {date:'2026-03-23',name:'Idul Fitri'},{date:'2026-03-24',name:'Idul Fitri'},
-            {date:'2026-04-03',name:'Wafat Yesus Kristus'},{date:'2026-04-05',name:'Paskah'},
-            {date:'2026-05-01',name:'Hari Buruh'},{date:'2026-05-14',name:'Kenaikan Yesus'},{date:'2026-05-15',name:'Kenaikan Yesus'},
-            {date:'2026-05-27',name:'Idul Adha'},{date:'2026-05-28',name:'Idul Adha'},{date:'2026-05-31',name:'Waisak'},
-            {date:'2026-06-01',name:'Pancasila'},{date:'2026-06-16',name:'Tahun Baru Islam'},
-            {date:'2026-08-17',name:'Kemerdekaan RI'},{date:'2026-08-25',name:'Maulid Nabi'},{date:'2026-12-25',name:'Natal'}
+        '2026': [{
+                date: '2026-01-01',
+                name: 'Tahun Baru Masehi'
+            }, {
+                date: '2026-01-16',
+                name: 'Isra Mikraj'
+            },
+            {
+                date: '2026-02-16',
+                name: 'Imlek 2577'
+            }, {
+                date: '2026-02-17',
+                name: 'Imlek 2577'
+            },
+            {
+                date: '2026-03-18',
+                name: 'Nyepi'
+            }, {
+                date: '2026-03-19',
+                name: 'Nyepi'
+            },
+            {
+                date: '2026-03-20',
+                name: 'Idul Fitri'
+            }, {
+                date: '2026-03-21',
+                name: 'Idul Fitri'
+            }, {
+                date: '2026-03-22',
+                name: 'Idul Fitri'
+            },
+            {
+                date: '2026-03-23',
+                name: 'Idul Fitri'
+            }, {
+                date: '2026-03-24',
+                name: 'Idul Fitri'
+            },
+            {
+                date: '2026-04-03',
+                name: 'Wafat Yesus Kristus'
+            }, {
+                date: '2026-04-05',
+                name: 'Paskah'
+            },
+            {
+                date: '2026-05-01',
+                name: 'Hari Buruh'
+            }, {
+                date: '2026-05-14',
+                name: 'Kenaikan Yesus'
+            }, {
+                date: '2026-05-15',
+                name: 'Kenaikan Yesus'
+            },
+            {
+                date: '2026-05-27',
+                name: 'Idul Adha'
+            }, {
+                date: '2026-05-28',
+                name: 'Idul Adha'
+            }, {
+                date: '2026-05-31',
+                name: 'Waisak'
+            },
+            {
+                date: '2026-06-01',
+                name: 'Pancasila'
+            }, {
+                date: '2026-06-16',
+                name: 'Tahun Baru Islam'
+            },
+            {
+                date: '2026-08-17',
+                name: 'Kemerdekaan RI'
+            }, {
+                date: '2026-08-25',
+                name: 'Maulid Nabi'
+            }, {
+                date: '2026-12-25',
+                name: 'Natal'
+            }
         ],
-        '2027': [
-            {date:'2027-01-01',name:'Tahun Baru Masehi'},{date:'2027-02-06',name:'Imlek 2578'},
-            {date:'2027-03-10',name:'Idul Fitri'},{date:'2027-03-11',name:'Idul Fitri'},{date:'2027-03-22',name:'Nyepi'},
-            {date:'2027-03-26',name:'Wafat Isa Al Masih'},{date:'2027-05-01',name:'Hari Buruh'},{date:'2027-05-06',name:'Kenaikan Isa'},
-            {date:'2027-05-17',name:'Idul Adha'},{date:'2027-06-01',name:'Pancasila'},{date:'2027-06-07',name:'Tahun Baru Islam'},
-            {date:'2027-08-17',name:'Kemerdekaan RI'},{date:'2027-12-25',name:'Natal'}
+        '2027': [{
+                date: '2027-01-01',
+                name: 'Tahun Baru Masehi'
+            }, {
+                date: '2027-02-06',
+                name: 'Imlek 2578'
+            },
+            {
+                date: '2027-03-10',
+                name: 'Idul Fitri'
+            }, {
+                date: '2027-03-11',
+                name: 'Idul Fitri'
+            }, {
+                date: '2027-03-22',
+                name: 'Nyepi'
+            },
+            {
+                date: '2027-03-26',
+                name: 'Wafat Isa Al Masih'
+            }, {
+                date: '2027-05-01',
+                name: 'Hari Buruh'
+            }, {
+                date: '2027-05-06',
+                name: 'Kenaikan Isa'
+            },
+            {
+                date: '2027-05-17',
+                name: 'Idul Adha'
+            }, {
+                date: '2027-06-01',
+                name: 'Pancasila'
+            }, {
+                date: '2027-06-07',
+                name: 'Tahun Baru Islam'
+            },
+            {
+                date: '2027-08-17',
+                name: 'Kemerdekaan RI'
+            }, {
+                date: '2027-12-25',
+                name: 'Natal'
+            }
         ]
     };
 
@@ -523,7 +679,7 @@
                             harikerjaCache[year] = json.data;
                         }
                     }
-                } catch(e) {}
+                } catch (e) {}
             }
 
             if (harikerjaCache[year]) {
@@ -534,7 +690,10 @@
                     apiNational = [];
                     found.tanggal_merah.forEach(tm => {
                         const dates = parseTanggalRange(tm.tanggal, year, monthIdx);
-                        dates.forEach(d => apiNational.push({date: d, name: tm.memperingati}));
+                        dates.forEach(d => apiNational.push({
+                            date: d,
+                            name: tm.memperingati
+                        }));
                     });
                 }
             }
@@ -545,7 +704,9 @@
                     'X-Requested-With': 'XMLHttpRequest',
                     'Accept': 'application/json'
                 }
-            }).then(r => r.json()).catch(() => ({data: []}));
+            }).then(r => r.json()).catch(() => ({
+                data: []
+            }));
 
             national = apiNational || getHolidaysFallback(year, parseInt(month));
             school = schResp.data || [];

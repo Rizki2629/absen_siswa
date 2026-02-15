@@ -8,7 +8,7 @@
 <style>
     .cal-cell {
         position: relative;
-        min-height: 52px;
+        min-height: 75px;
         border-right: 1px solid #e5e7eb;
         border-bottom: 1px solid #e5e7eb;
         padding: 3px 2px;
@@ -17,6 +17,7 @@
         display: flex;
         flex-direction: column;
         align-items: center;
+        justify-content: center;
     }
 
     .cal-cell:hover:not(.outside) {
@@ -59,15 +60,17 @@
     }
 
     .cal-date {
-        font-size: 11px;
-        font-weight: 600;
-        width: 22px;
-        height: 22px;
+        font-size: 18px;
+        font-weight: 400;
+        width: 32px;
+        height: 32px;
         display: flex;
         align-items: center;
         justify-content: center;
         border-radius: 50%;
-        margin-bottom: 1px;
+        margin-bottom: 0;
+        text-align: center;
+        flex-shrink: 0;
     }
 
     .cal-cell.today .cal-date {
@@ -375,7 +378,7 @@
                 </div>
             </div>
 
-            <!-- Toggle school holiday -->
+            <!-- OFF manual holiday -->
             <div class="flex items-center justify-between mb-4 p-3 bg-gray-50 rounded-xl">
                 <div>
                     <p class="font-semibold text-gray-900 text-sm" id="toggleLabel">Sekolah Aktif</p>
@@ -384,11 +387,26 @@
                 <div class="toggle-switch" id="holidayToggle" onclick="toggleHoliday()"></div>
             </div>
 
+            <!-- OFF manual holiday option -->
+            <div class="flex items-center mb-4">
+                <input type="checkbox" id="offCheckbox" class="mr-2" onchange="toggleOffDay()">
+                <label for="offCheckbox" class="text-sm font-medium text-gray-700">Tandai sebagai OFF (Hari Libur Manual)</label>
+            </div>
+
             <!-- Reason textarea -->
             <div id="reasonSection" class="hidden">
                 <label class="block text-sm font-medium text-gray-700 mb-2">Keterangan Libur</label>
                 <textarea id="holidayReason" rows="2" placeholder="Contoh: Pembagian Rapor, Libur Semester..."
                     class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-sm resize-none"></textarea>
+            </div>
+
+            <!-- Hari dan label Hari Libur -->
+            <div class="mt-4">
+                <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-base">calendar_today</span>
+                    <span id="modalDayName" class="text-sm font-semibold"></span>
+                    <span id="modalLiburLabel" class="ml-2 text-xs font-bold text-red-600"></span>
+                </div>
             </div>
 
             <!-- Lock alert -->
@@ -460,7 +478,7 @@
 
     // Cache API response per year
     let apiCache = {};
-    const bulanNames = ['januari','februari','maret','april','mei','juni','juli','agustus','september','oktober','november','desember'];
+    const bulanNames = ['januari', 'februari', 'maret', 'april', 'mei', 'juni', 'juli', 'agustus', 'september', 'oktober', 'november', 'desember'];
 
     /**
      * Parse tanggal field from harikerja API (handles "1", "21-22", etc.)
@@ -525,64 +543,273 @@
 
     // Fallback hardcoded holidays (jika API down)
     const HOLIDAYS_FALLBACK = {
-        '2025': [
-            {date:'2025-01-01',name:'Tahun Baru Masehi',isNational:true},
-            {date:'2025-01-27',name:'Isra Mikraj Nabi Muhammad SAW',isNational:true},
-            {date:'2025-01-29',name:'Tahun Baru Imlek 2576',isNational:true},
-            {date:'2025-03-14',name:'Hari Suci Nyepi',isNational:true},
-            {date:'2025-03-29',name:'Idul Fitri 1446 H',isNational:true},
-            {date:'2025-03-30',name:'Idul Fitri 1446 H',isNational:true},
-            {date:'2025-04-18',name:'Wafat Isa Al Masih',isNational:true},
-            {date:'2025-05-01',name:'Hari Buruh',isNational:true},
-            {date:'2025-05-12',name:'Waisak 2569 BE',isNational:true},
-            {date:'2025-05-29',name:'Kenaikan Isa Al Masih',isNational:true},
-            {date:'2025-06-01',name:'Hari Lahir Pancasila',isNational:true},
-            {date:'2025-06-06',name:'Idul Adha 1446 H',isNational:true},
-            {date:'2025-06-27',name:'Tahun Baru Islam 1447 H',isNational:true},
-            {date:'2025-08-17',name:'Hari Kemerdekaan RI',isNational:true},
-            {date:'2025-09-05',name:'Maulid Nabi Muhammad SAW',isNational:true},
-            {date:'2025-12-25',name:'Hari Raya Natal',isNational:true}
+        '2025': [{
+                date: '2025-01-01',
+                name: 'Tahun Baru Masehi',
+                isNational: true
+            },
+            {
+                date: '2025-01-27',
+                name: 'Isra Mikraj Nabi Muhammad SAW',
+                isNational: true
+            },
+            {
+                date: '2025-01-29',
+                name: 'Tahun Baru Imlek 2576',
+                isNational: true
+            },
+            {
+                date: '2025-03-14',
+                name: 'Hari Suci Nyepi',
+                isNational: true
+            },
+            {
+                date: '2025-03-29',
+                name: 'Idul Fitri 1446 H',
+                isNational: true
+            },
+            {
+                date: '2025-03-30',
+                name: 'Idul Fitri 1446 H',
+                isNational: true
+            },
+            {
+                date: '2025-04-18',
+                name: 'Wafat Isa Al Masih',
+                isNational: true
+            },
+            {
+                date: '2025-05-01',
+                name: 'Hari Buruh',
+                isNational: true
+            },
+            {
+                date: '2025-05-12',
+                name: 'Waisak 2569 BE',
+                isNational: true
+            },
+            {
+                date: '2025-05-29',
+                name: 'Kenaikan Isa Al Masih',
+                isNational: true
+            },
+            {
+                date: '2025-06-01',
+                name: 'Hari Lahir Pancasila',
+                isNational: true
+            },
+            {
+                date: '2025-06-06',
+                name: 'Idul Adha 1446 H',
+                isNational: true
+            },
+            {
+                date: '2025-06-27',
+                name: 'Tahun Baru Islam 1447 H',
+                isNational: true
+            },
+            {
+                date: '2025-08-17',
+                name: 'Hari Kemerdekaan RI',
+                isNational: true
+            },
+            {
+                date: '2025-09-05',
+                name: 'Maulid Nabi Muhammad SAW',
+                isNational: true
+            },
+            {
+                date: '2025-12-25',
+                name: 'Hari Raya Natal',
+                isNational: true
+            }
         ],
-        '2026': [
-            {date:'2026-01-01',name:'Tahun Baru Masehi',isNational:true},
-            {date:'2026-01-16',name:'Isra Mikraj Nabi Muhammad SAW',isNational:true},
-            {date:'2026-02-16',name:'Tahun Baru Imlek 2577',isNational:true},
-            {date:'2026-02-17',name:'Tahun Baru Imlek 2577',isNational:true},
-            {date:'2026-03-18',name:'Hari Suci Nyepi',isNational:true},
-            {date:'2026-03-19',name:'Hari Suci Nyepi',isNational:true},
-            {date:'2026-03-20',name:'Idul Fitri 1447 H',isNational:true},
-            {date:'2026-03-21',name:'Idul Fitri 1447 H',isNational:true},
-            {date:'2026-03-22',name:'Idul Fitri 1447 H',isNational:true},
-            {date:'2026-03-23',name:'Idul Fitri 1447 H',isNational:true},
-            {date:'2026-03-24',name:'Idul Fitri 1447 H',isNational:true},
-            {date:'2026-04-03',name:'Wafat Yesus Kristus',isNational:true},
-            {date:'2026-04-05',name:'Kebangkitan Yesus Kristus',isNational:true},
-            {date:'2026-05-01',name:'Hari Buruh',isNational:true},
-            {date:'2026-05-14',name:'Kenaikan Yesus Kristus',isNational:true},
-            {date:'2026-05-15',name:'Kenaikan Yesus Kristus',isNational:true},
-            {date:'2026-05-27',name:'Idul Adha 1447 H',isNational:true},
-            {date:'2026-05-28',name:'Idul Adha 1447 H',isNational:true},
-            {date:'2026-05-31',name:'Waisak 2570 BE',isNational:true},
-            {date:'2026-06-01',name:'Hari Lahir Pancasila',isNational:true},
-            {date:'2026-06-16',name:'Tahun Baru Islam 1448 H',isNational:true},
-            {date:'2026-08-17',name:'Hari Kemerdekaan RI',isNational:true},
-            {date:'2026-08-25',name:'Maulid Nabi Muhammad SAW',isNational:true},
-            {date:'2026-12-25',name:'Hari Raya Natal',isNational:true}
+        '2026': [{
+                date: '2026-01-01',
+                name: 'Tahun Baru Masehi',
+                isNational: true
+            },
+            {
+                date: '2026-01-16',
+                name: 'Isra Mikraj Nabi Muhammad SAW',
+                isNational: true
+            },
+            {
+                date: '2026-02-16',
+                name: 'Tahun Baru Imlek 2577',
+                isNational: true
+            },
+            {
+                date: '2026-02-17',
+                name: 'Tahun Baru Imlek 2577',
+                isNational: true
+            },
+            {
+                date: '2026-03-18',
+                name: 'Hari Suci Nyepi',
+                isNational: true
+            },
+            {
+                date: '2026-03-19',
+                name: 'Hari Suci Nyepi',
+                isNational: true
+            },
+            {
+                date: '2026-03-20',
+                name: 'Idul Fitri 1447 H',
+                isNational: true
+            },
+            {
+                date: '2026-03-21',
+                name: 'Idul Fitri 1447 H',
+                isNational: true
+            },
+            {
+                date: '2026-03-22',
+                name: 'Idul Fitri 1447 H',
+                isNational: true
+            },
+            {
+                date: '2026-03-23',
+                name: 'Idul Fitri 1447 H',
+                isNational: true
+            },
+            {
+                date: '2026-03-24',
+                name: 'Idul Fitri 1447 H',
+                isNational: true
+            },
+            {
+                date: '2026-04-03',
+                name: 'Wafat Yesus Kristus',
+                isNational: true
+            },
+            {
+                date: '2026-04-05',
+                name: 'Kebangkitan Yesus Kristus',
+                isNational: true
+            },
+            {
+                date: '2026-05-01',
+                name: 'Hari Buruh',
+                isNational: true
+            },
+            {
+                date: '2026-05-14',
+                name: 'Kenaikan Yesus Kristus',
+                isNational: true
+            },
+            {
+                date: '2026-05-15',
+                name: 'Kenaikan Yesus Kristus',
+                isNational: true
+            },
+            {
+                date: '2026-05-27',
+                name: 'Idul Adha 1447 H',
+                isNational: true
+            },
+            {
+                date: '2026-05-28',
+                name: 'Idul Adha 1447 H',
+                isNational: true
+            },
+            {
+                date: '2026-05-31',
+                name: 'Waisak 2570 BE',
+                isNational: true
+            },
+            {
+                date: '2026-06-01',
+                name: 'Hari Lahir Pancasila',
+                isNational: true
+            },
+            {
+                date: '2026-06-16',
+                name: 'Tahun Baru Islam 1448 H',
+                isNational: true
+            },
+            {
+                date: '2026-08-17',
+                name: 'Hari Kemerdekaan RI',
+                isNational: true
+            },
+            {
+                date: '2026-08-25',
+                name: 'Maulid Nabi Muhammad SAW',
+                isNational: true
+            },
+            {
+                date: '2026-12-25',
+                name: 'Hari Raya Natal',
+                isNational: true
+            }
         ],
-        '2027': [
-            {date:'2027-01-01',name:'Tahun Baru Masehi',isNational:true},
-            {date:'2027-02-06',name:'Tahun Baru Imlek 2578',isNational:true},
-            {date:'2027-03-10',name:'Idul Fitri 1448 H',isNational:true},
-            {date:'2027-03-11',name:'Idul Fitri 1448 H',isNational:true},
-            {date:'2027-03-22',name:'Hari Suci Nyepi',isNational:true},
-            {date:'2027-03-26',name:'Wafat Isa Al Masih',isNational:true},
-            {date:'2027-05-01',name:'Hari Buruh',isNational:true},
-            {date:'2027-05-06',name:'Kenaikan Isa Al Masih',isNational:true},
-            {date:'2027-05-17',name:'Idul Adha 1448 H',isNational:true},
-            {date:'2027-06-01',name:'Hari Lahir Pancasila',isNational:true},
-            {date:'2027-06-07',name:'Tahun Baru Islam 1449 H',isNational:true},
-            {date:'2027-08-17',name:'Hari Kemerdekaan RI',isNational:true},
-            {date:'2027-12-25',name:'Hari Raya Natal',isNational:true}
+        '2027': [{
+                date: '2027-01-01',
+                name: 'Tahun Baru Masehi',
+                isNational: true
+            },
+            {
+                date: '2027-02-06',
+                name: 'Tahun Baru Imlek 2578',
+                isNational: true
+            },
+            {
+                date: '2027-03-10',
+                name: 'Idul Fitri 1448 H',
+                isNational: true
+            },
+            {
+                date: '2027-03-11',
+                name: 'Idul Fitri 1448 H',
+                isNational: true
+            },
+            {
+                date: '2027-03-22',
+                name: 'Hari Suci Nyepi',
+                isNational: true
+            },
+            {
+                date: '2027-03-26',
+                name: 'Wafat Isa Al Masih',
+                isNational: true
+            },
+            {
+                date: '2027-05-01',
+                name: 'Hari Buruh',
+                isNational: true
+            },
+            {
+                date: '2027-05-06',
+                name: 'Kenaikan Isa Al Masih',
+                isNational: true
+            },
+            {
+                date: '2027-05-17',
+                name: 'Idul Adha 1448 H',
+                isNational: true
+            },
+            {
+                date: '2027-06-01',
+                name: 'Hari Lahir Pancasila',
+                isNational: true
+            },
+            {
+                date: '2027-06-07',
+                name: 'Tahun Baru Islam 1449 H',
+                isNational: true
+            },
+            {
+                date: '2027-08-17',
+                name: 'Hari Kemerdekaan RI',
+                isNational: true
+            },
+            {
+                date: '2027-12-25',
+                name: 'Hari Raya Natal',
+                isNational: true
+            }
         ]
     };
 
@@ -688,7 +915,7 @@
 
                     const tooltip = document.createElement('div');
                     tooltip.className = 'cal-tooltip';
-                    tooltip.innerHTML = `<span style="color:#fca5a5;">&#9679;</span> ${escHtml(natHoliday.name)}`;
+                    tooltip.innerHTML = `<span style=\"color:#fca5a5;\">&#9679;</span> ${escHtml(natHoliday.name)}`;
                     cell.appendChild(tooltip);
                 } else if (schHoliday) {
                     cell.classList.add('holiday-school');
@@ -699,8 +926,14 @@
 
                     const tooltip = document.createElement('div');
                     tooltip.className = 'cal-tooltip';
-                    tooltip.innerHTML = `<span style="color:#fcd34d;">&#9679;</span> ${escHtml(schHoliday.name)}`;
+                    tooltip.innerHTML = `<span style=\"color:#fcd34d;\">&#9679;</span> ${escHtml(schHoliday.name)}`;
                     cell.appendChild(tooltip);
+                } else if (manualOffDays && manualOffDays[dateStr]) {
+                    cell.classList.add('holiday-school');
+                    const badge = document.createElement('span');
+                    badge.className = 'cal-badge school';
+                    badge.textContent = 'OFF';
+                    cell.appendChild(badge);
                 } else if (isWeekend) {
                     const badge = document.createElement('span');
                     badge.className = 'cal-badge off-label';
@@ -760,9 +993,10 @@
             const dayName = dayNames[d.getDay()];
             const isNat = h.type === 'national';
             const isCuti = h.type === 'cuti';
+            const isManualOff = h.label === 'OFF (Manual)';
 
-            const bgColor = isNat ? 'bg-red-100 text-red-700' : (isCuti ? 'bg-orange-100 text-orange-700' : 'bg-amber-100 text-amber-700');
-            const tagBg = isNat ? 'bg-red-100 text-red-600' : (isCuti ? 'bg-orange-100 text-orange-600' : 'bg-amber-100 text-amber-600');
+            const bgColor = isNat ? 'bg-red-100 text-red-700' : (isCuti ? 'bg-orange-100 text-orange-700' : (isManualOff ? 'bg-amber-100 text-amber-700' : 'bg-amber-100 text-amber-700'));
+            const tagBg = isNat ? 'bg-red-100 text-red-600' : (isCuti ? 'bg-orange-100 text-orange-600' : (isManualOff ? 'bg-amber-100 text-amber-600' : 'bg-amber-100 text-amber-600'));
 
             html += `
                 <div class="holiday-list-item">
@@ -809,6 +1043,10 @@
         const year = dateObj.getFullYear();
         document.getElementById('modalDate').textContent = `${dayName}, ${String(day).padStart(2, '0')} ${month} ${year}`;
 
+        // Hari dan label Hari Libur
+        document.getElementById('modalDayName').textContent = dayName;
+        let liburLabel = '';
+
         const dayOfWeek = dateObj.getDay();
         const isWeekend = (dayOfWeek === 0 || dayOfWeek === 6);
         const natHoliday = nationalHolidays.find(h => h.date === dateStr);
@@ -819,6 +1057,7 @@
         if (natHoliday) {
             document.getElementById('nationalHolidayInfo').classList.remove('hidden');
             document.getElementById('nationalHolidayName').textContent = natHoliday.name;
+            liburLabel = 'Libur Nasional';
         } else {
             document.getElementById('nationalHolidayInfo').classList.add('hidden');
         }
@@ -827,18 +1066,30 @@
         const reasonSection = document.getElementById('reasonSection');
         const reasonInput = document.getElementById('holidayReason');
         const toggleLabel = document.getElementById('toggleLabel');
+        const offCheckbox = document.getElementById('offCheckbox');
 
         if (schHoliday) {
             toggle.classList.add('active');
             toggleLabel.textContent = 'Libur Sekolah';
             reasonSection.classList.remove('hidden');
             reasonInput.value = schHoliday.name || '';
+            liburLabel = 'Libur Sekolah';
+            offCheckbox.checked = false;
         } else {
             toggle.classList.remove('active');
             toggleLabel.textContent = 'Sekolah Aktif';
             reasonSection.classList.add('hidden');
             reasonInput.value = '';
+            offCheckbox.checked = false;
         }
+
+        // OFF manual holiday
+        if (manualOffDays && manualOffDays[dateStr]) {
+            offCheckbox.checked = true;
+            liburLabel = 'OFF (Manual)';
+        }
+
+        document.getElementById('modalLiburLabel').textContent = liburLabel;
 
         const lockStatus = isDateDisabled(dateStr);
         const lockAlert = document.getElementById('lockAlert');
@@ -850,6 +1101,20 @@
         }
 
         document.getElementById('holidayModal').classList.add('active');
+    }
+
+    // Simpan OFF manual (dummy, implementasi backend sesuai kebutuhan)
+    let manualOffDays = {};
+
+    function toggleOffDay() {
+        const offCheckbox = document.getElementById('offCheckbox');
+        if (offCheckbox.checked) {
+            manualOffDays[selectedDate] = true;
+        } else {
+            delete manualOffDays[selectedDate];
+        }
+        // Update label di modal
+        document.getElementById('modalLiburLabel').textContent = offCheckbox.checked ? 'OFF (Manual)' : '';
     }
 
     function closeModal() {
