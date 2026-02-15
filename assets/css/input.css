@@ -1,3 +1,141 @@
+/* CSS RESET START */
+html,
+body,
+div,
+span,
+applet,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+big,
+cite,
+code,
+del,
+dfn,
+em,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+b,
+u,
+i,
+center,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+article,
+aside,
+canvas,
+details,
+embed,
+figure,
+figcaption,
+footer,
+header,
+hgroup,
+menu,
+nav,
+output,
+ruby,
+section,
+summary,
+time,
+mark,
+audio,
+video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section {
+  display: block;
+}
+body {
+  line-height: 1;
+}
+ol,
+ul {
+  list-style: none;
+}
+blockquote,
+q {
+  quotes: none;
+}
+blockquote:before,
+blockquote:after,
+q:before,
+q:after {
+  content: "";
+  content: none;
+}
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+input,
+button,
+textarea,
+select {
+  font: inherit;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: none;
+  box-sizing: border-box;
+}
+/* CSS RESET END */
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -248,7 +386,7 @@
 .background-gradient {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to bottom right, #F8FAFC, #E0E7FF, #EEF2FF);
+  background: linear-gradient(to bottom right, #f8fafc, #e0e7ff, #eef2ff);
   z-index: -1;
 }
 
@@ -269,7 +407,7 @@
   left: 0;
   width: 384px;
   height: 384px;
-  background: #C7D2FE;
+  background: #c7d2fe;
   opacity: 0.3;
   filter: blur(64px);
   mix-blend-mode: multiply;
@@ -280,7 +418,7 @@
   right: 0;
   width: 384px;
   height: 384px;
-  background: #DDD6FE;
+  background: #ddd6fe;
   opacity: 0.3;
   filter: blur(64px);
   mix-blend-mode: multiply;
@@ -292,7 +430,7 @@
   transform: translateX(-50%);
   width: 384px;
   height: 384px;
-  background: #E0E7FF;
+  background: #e0e7ff;
   opacity: 0.3;
   filter: blur(64px);
   mix-blend-mode: multiply;
@@ -446,21 +584,23 @@
   text-decoration: underline;
 }
 
-.login-form-group input[type=\"text\"],
-.login-form-group input[type=\"password\"] {
+.login-form-group input[type="text"],
+.login-form-group input[type="password"] {
   width: 100%;
   max-width: 382px;
-  height: 34px;
+  height: 40px;
   padding-left: 12px;
   padding-right: 12px;
   background-color: #fefefe;
-  border: 1px solid #e5e7eb;
+  border: 0.8px solid #b6c7e8;
   border-radius: 8px;
   color: #1e293b;
   font-size: 0.875rem;
   transition: all 0.2s ease;
   font-family: "Inter", sans-serif;
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1), 0 1px 3px 0 rgba(0, 0, 0, 0.08);
+  box-shadow:
+    0 0 0 3px rgba(0, 0, 1, 0.1),
+    0 1px 3px 0 rgba(0, 0, 0, 0.08);
 }
 
 .login-form-group input::placeholder {
@@ -476,7 +616,9 @@
   outline: none;
   border-color: #6366f1;
   background-color: #ffffff;
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2), 0 1px 3px 0 rgba(0, 0, 0, 0.08);
+  box-shadow:
+    0 0 0 3px rgba(99, 102, 241, 0.2),
+    0 1px 3px 0 rgba(0, 0, 0, 0.08);
 }
 
 /* Password wrapper */
@@ -535,8 +677,8 @@
 }
 
 .remember-section input[type=\"checkbox\"] {
-  width: 13px;
-  height: 13px;
+  width: 15px;
+  height: 15px;
   color: #4f46e5;
   background-color: #f8fafc;
   border: 1px solid #767676;
@@ -570,7 +712,7 @@
 /* Login button */
 .btn-login {
   width: 100%;
-  background: #5855EA;
+  background: #5855ea;
   color: white;
   font-weight: 600;
   padding: 0.875rem;
@@ -587,7 +729,7 @@
 }
 
 .btn-login:hover {
-  background: #4F46E5;
+  background: #4f46e5;
   box-shadow: 0 6px 8px -1px rgba(79, 70, 229, 0.4);
   transform: scale(1.02);
 }
@@ -699,7 +841,7 @@
 }
 
 .role-admin {
-  background: linear-gradient(to bottom right, #3B82F6, #2563EB);
+  background: linear-gradient(to bottom right, #3b82f6, #2563eb);
   width: 48px;
   height: 48px;
   border-radius: 12px;
@@ -709,7 +851,7 @@
 }
 
 .role-guru {
-  background: linear-gradient(to bottom right, #10B981, #059669);
+  background: linear-gradient(to bottom right, #10b981, #059669);
   width: 48px;
   height: 48px;
   border-radius: 12px;
@@ -719,7 +861,7 @@
 }
 
 .role-siswa {
-  background: linear-gradient(to bottom right, #A855F7, #9333EA);
+  background: linear-gradient(to bottom right, #a855f7, #9333ea);
   width: 48px;
   height: 48px;
   border-radius: 12px;
@@ -744,7 +886,7 @@
 .login-footer {
   margin-top: 2rem;
   font-size: 0.75rem;
-  color: #64748B;
+  color: #64748b;
   text-align: center;
 }
 
@@ -755,42 +897,42 @@
   }
 
   .login-card {
-  max-width: 448px;
-  width: 100%;
-  background-color: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(8px);
-  border-radius: 24px;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
-  padding: 2rem;
-  border: 1px solid rgba(255, 255, 255, 0.5);
-}
+    max-width: 448px;
+    width: 100%;
+    background-color: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(8px);
+    border-radius: 24px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+  }
 
   .role-cards {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 0.75rem;
-  margin-top: 2rem;
-  width: 100%;
-  max-width: 448px;
-}
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-top: 2rem;
+    width: 100%;
+    max-width: 448px;
+  }
 
   .role-card {
-  width: 141px;
-  height: 108px;
-  background-color: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(8px);
-  border-radius: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
+    width: 141px;
+    height: 108px;
+    background-color: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(8px);
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
 
   .role-icon {
     width: 2.5rem;

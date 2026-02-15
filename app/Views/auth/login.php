@@ -40,8 +40,8 @@
 
             <!-- Login card -->
             <div class="login-card">
-                <div class="welcome-section">
-                    <h2>Selamat Datang</h2>
+                <div class="welcome-section" style="text-align: left;">
+                    <h2>Silahkan Masuk</h2>
                 </div>
 
                 <?php if (session()->getFlashdata('error')): ?>
