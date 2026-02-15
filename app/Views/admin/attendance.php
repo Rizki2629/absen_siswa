@@ -451,20 +451,32 @@
         const key = `${year}-${month}`;
         if (holidayCache[key]) return holidayCache[key];
 
-        let national = [], school = [];
+        let national = [],
+            school = [];
         try {
             const [natResp, schResp] = await Promise.all([
                 fetch(`https://api-harilibur.vercel.app/api?year=${year}&month=${parseInt(month)}`).then(r => r.json()).catch(() => []),
                 fetch(`<?= base_url('api/admin/school-holidays') ?>?year=${year}&month=${parseInt(month)}`, {
                     credentials: 'include',
-                    headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' }
-                }).then(r => r.json()).catch(() => ({ data: [] }))
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'application/json'
+                    }
+                }).then(r => r.json()).catch(() => ({
+                    data: []
+                }))
             ]);
-            national = (natResp || []).filter(h => h.is_national_holiday).map(h => ({ date: h.holiday_date, name: h.holiday_name }));
+            national = (natResp || []).filter(h => h.is_national_holiday).map(h => ({
+                date: h.holiday_date,
+                name: h.holiday_name
+            }));
             school = schResp.data || [];
         } catch (e) {}
 
-        holidayCache[key] = { national, school };
+        holidayCache[key] = {
+            national,
+            school
+        };
         return holidayCache[key];
     }
 
@@ -482,9 +494,15 @@
             let reason = 'Libur Akhir Pekan';
             if (natHoliday) reason = natHoliday.name;
             else if (schHoliday) reason = schHoliday.name;
-            return { locked: true, reason };
+            return {
+                locked: true,
+                reason
+            };
         }
-        return { locked: false, reason: null };
+        return {
+            locked: false,
+            reason: null
+        };
     }
 
     /**

@@ -6,10 +6,6 @@
 
 <?= $this->section('styles') ?>
 <style>
-    .cal-wrapper {
-        max-width: 56rem;
-    }
-
     .cal-cell {
         position: relative;
         aspect-ratio: 1 / 1;
@@ -23,8 +19,9 @@
         align-items: center;
     }
 
-    .cal-cell:hover {
+    .cal-cell:hover:not(.outside) {
         background: #f3f4f6;
+        box-shadow: inset 0 0 0 1px #d1d5db;
     }
 
     .cal-cell:nth-child(7n) {
@@ -49,7 +46,7 @@
     }
 
     .cal-cell.today {
-        background: #eff6ff;
+        background: #eff6ff !important;
         box-shadow: inset 0 0 0 2px #3b82f6;
     }
 
@@ -58,7 +55,7 @@
     }
 
     .cal-cell.holiday-national {
-        background: #fef2f2;
+        background: #fee2e2;
     }
 
     .cal-date {
@@ -85,8 +82,8 @@
     .cal-badge {
         padding: 1px 4px;
         border-radius: 3px;
-        font-size: 8px;
-        font-weight: 600;
+        font-size: 7px;
+        font-weight: 700;
         line-height: 1.3;
         white-space: nowrap;
         overflow: hidden;
@@ -96,13 +93,77 @@
     }
 
     .cal-badge.national {
-        background: #fecaca;
-        color: #991b1b;
+        background: #dc2626;
+        color: white;
     }
 
     .cal-badge.school {
-        background: #fde68a;
-        color: #92400e;
+        background: #f59e0b;
+        color: white;
+    }
+
+    .cal-badge.off-label {
+        background: #9ca3af;
+        color: white;
+        font-size: 7px;
+    }
+
+    /* Tooltip */
+    .cal-tooltip {
+        position: absolute;
+        bottom: calc(100% + 8px);
+        left: 50%;
+        transform: translateX(-50%);
+        background: #1f2937;
+        color: white;
+        padding: 8px 12px;
+        border-radius: 10px;
+        font-size: 11px;
+        white-space: nowrap;
+        z-index: 40;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.2s ease;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+    }
+
+    .cal-tooltip::after {
+        content: '';
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        border: 5px solid transparent;
+        border-top-color: #1f2937;
+    }
+
+    .cal-cell:hover .cal-tooltip {
+        opacity: 1;
+    }
+
+    /* Holiday list sidebar */
+    .holiday-list-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        padding: 10px 0;
+        border-bottom: 1px solid #f3f4f6;
+    }
+
+    .holiday-list-item:last-child {
+        border-bottom: none;
+    }
+
+    .holiday-date-badge {
+        min-width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 14px;
+        flex-shrink: 0;
     }
 
     /* Modal */
@@ -173,6 +234,15 @@
         transform: translateX(22px);
     }
 
+    @media (max-width: 1024px) {
+        .cal-layout {
+            flex-direction: column;
+        }
+        .cal-sidebar {
+            max-height: 300px;
+        }
+    }
+
     @media (max-width: 640px) {
         .cal-date {
             font-size: 10px;
@@ -197,50 +267,74 @@
     </div>
 </div>
 
-<!-- Calendar Card -->
-<div class="cal-wrapper mx-auto">
-    <div class="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
-        <!-- Month/Year Navigation -->
-        <div class="flex items-center justify-between px-6 py-3 bg-gradient-to-r from-primary-600 to-primary-700">
-            <button onclick="prevMonth()" class="p-1.5 rounded-lg hover:bg-white/20 transition-colors text-white">
-                <span class="material-symbols-outlined text-xl">chevron_left</span>
-            </button>
-            <h3 class="text-lg font-bold text-white" id="calendarTitle">Februari 2026</h3>
-            <button onclick="nextMonth()" class="p-1.5 rounded-lg hover:bg-white/20 transition-colors text-white">
-                <span class="material-symbols-outlined text-xl">chevron_right</span>
-            </button>
-        </div>
+<!-- Layout: Calendar Left + Holiday List Right -->
+<div class="cal-layout flex gap-6">
+    <!-- Calendar Card (Left) -->
+    <div class="flex-1 min-w-0">
+        <div class="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
+            <!-- Month/Year Navigation -->
+            <div class="flex items-center justify-between px-6 py-3 bg-gradient-to-r from-primary-600 to-primary-700">
+                <button onclick="prevMonth()" class="p-1.5 rounded-lg hover:bg-white/20 transition-colors text-white">
+                    <span class="material-symbols-outlined text-xl">chevron_left</span>
+                </button>
+                <h3 class="text-lg font-bold text-white" id="calendarTitle">Februari 2026</h3>
+                <button onclick="nextMonth()" class="p-1.5 rounded-lg hover:bg-white/20 transition-colors text-white">
+                    <span class="material-symbols-outlined text-xl">chevron_right</span>
+                </button>
+            </div>
 
-        <!-- Legend -->
-        <div class="flex flex-wrap gap-3 px-4 py-2 bg-gray-50 border-b border-gray-200 text-xs text-gray-600">
-            <span class="flex items-center gap-1">
-                <span class="inline-block w-3 h-3 rounded border-2 border-blue-500 bg-blue-50"></span> Hari Ini
-            </span>
-            <span class="flex items-center gap-1">
-                <span class="inline-block w-3 h-3 rounded bg-red-100"></span> Sabtu/Minggu
-            </span>
-            <span class="flex items-center gap-1">
-                <span class="cal-badge national" style="font-size:9px;">Libur</span> Nasional
-            </span>
-            <span class="flex items-center gap-1">
-                <span class="cal-badge school" style="font-size:9px;">Libur</span> Sekolah
-            </span>
-        </div>
+            <!-- Day Headers (ISO-8601: Mon-Sun) -->
+            <div class="grid grid-cols-7 bg-gray-50 border-b border-gray-200">
+                <div class="py-2 text-center text-[10px] font-bold uppercase tracking-wider text-gray-500">Sen</div>
+                <div class="py-2 text-center text-[10px] font-bold uppercase tracking-wider text-gray-500">Sel</div>
+                <div class="py-2 text-center text-[10px] font-bold uppercase tracking-wider text-gray-500">Rab</div>
+                <div class="py-2 text-center text-[10px] font-bold uppercase tracking-wider text-gray-500">Kam</div>
+                <div class="py-2 text-center text-[10px] font-bold uppercase tracking-wider text-gray-500">Jum</div>
+                <div class="py-2 text-center text-[10px] font-bold uppercase tracking-wider text-red-500">Sab</div>
+                <div class="py-2 text-center text-[10px] font-bold uppercase tracking-wider text-red-500">Min</div>
+            </div>
 
-        <!-- Day Headers -->
-        <div class="grid grid-cols-7 bg-gray-50 border-b border-gray-200">
-            <div class="py-2 text-center text-[10px] font-bold uppercase tracking-wider text-red-500">Min</div>
-            <div class="py-2 text-center text-[10px] font-bold uppercase tracking-wider text-gray-500">Sen</div>
-            <div class="py-2 text-center text-[10px] font-bold uppercase tracking-wider text-gray-500">Sel</div>
-            <div class="py-2 text-center text-[10px] font-bold uppercase tracking-wider text-gray-500">Rab</div>
-            <div class="py-2 text-center text-[10px] font-bold uppercase tracking-wider text-gray-500">Kam</div>
-            <div class="py-2 text-center text-[10px] font-bold uppercase tracking-wider text-gray-500">Jum</div>
-            <div class="py-2 text-center text-[10px] font-bold uppercase tracking-wider text-red-500">Sab</div>
-        </div>
+            <!-- Calendar Grid -->
+            <div class="grid grid-cols-7" id="calendarGrid">
+                <!-- Cells rendered by JS -->
+            </div>
 
-        <!-- Calendar Grid -->
-        <div class="grid grid-cols-7" id="calendarGrid">
-            <!-- Cells rendered by JS -->
+            <!-- Legend -->
+            <div class="flex flex-wrap gap-3 px-4 py-2.5 bg-gray-50 border-t border-gray-200 text-[11px] text-gray-600">
+                <span class="flex items-center gap-1.5">
+                    <span class="inline-block w-3 h-3 rounded border-2 border-blue-500 bg-blue-50"></span> Hari Ini
+                </span>
+                <span class="flex items-center gap-1.5">
+                    <span class="inline-block w-3 h-3 rounded bg-red-100 border border-red-200"></span> Sabtu/Minggu
+                </span>
+                <span class="flex items-center gap-1.5">
+                    <span class="inline-block px-1.5 py-0.5 text-[8px] font-bold bg-red-600 text-white rounded">LIBUR</span> Nasional
+                </span>
+                <span class="flex items-center gap-1.5">
+                    <span class="inline-block px-1.5 py-0.5 text-[8px] font-bold bg-amber-500 text-white rounded">LIBUR</span> Sekolah
+                </span>
+                <span class="flex items-center gap-1.5">
+                    <span class="inline-block px-1.5 py-0.5 text-[8px] font-bold bg-gray-400 text-white rounded">OFF</span> Akhir Pekan
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Holiday List (Right Sidebar) -->
+    <div class="cal-sidebar w-80 flex-shrink-0">
+        <div class="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
+            <div class="px-5 py-3 bg-gradient-to-r from-red-600 to-red-700">
+                <h4 class="font-bold text-white text-sm flex items-center gap-2">
+                    <span class="material-symbols-outlined text-lg">event_busy</span>
+                    Hari Libur <span id="holidayListTitle" class="font-normal text-red-200 text-xs"></span>
+                </h4>
+            </div>
+            <div class="px-4 py-3 max-h-[480px] overflow-y-auto" id="holidayListContainer">
+                <div class="text-center text-gray-400 py-6 text-sm">
+                    <span class="material-symbols-outlined text-3xl mb-2 block">calendar_month</span>
+                    Memuat data libur...
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -323,6 +417,7 @@
     let selectedDate = null;
     let holidays = [];
     let nationalHolidays = [];
+    let allNationalHolidays = [];
 
     const monthNames = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
         'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
@@ -339,13 +434,17 @@
             fetchNationalHolidays()
         ]);
         renderCalendar();
+        renderHolidayList();
     }
 
     async function fetchSchoolHolidays() {
         try {
             const resp = await fetch(`<?= base_url('api/admin/school-holidays') ?>?year=${currentYear}&month=${currentMonth + 1}`, {
                 credentials: 'include',
-                headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' }
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json'
+                }
             });
             const data = await resp.json();
             holidays = data.data || [];
@@ -358,17 +457,18 @@
         try {
             const resp = await fetch(`https://api-harilibur.vercel.app/api?year=${currentYear}&month=${currentMonth + 1}`);
             const data = await resp.json();
-            nationalHolidays = (data || [])
-                .filter(h => h.is_national_holiday)
-                .map(h => ({ date: h.holiday_date, name: h.holiday_name }));
+            allNationalHolidays = (data || []).map(h => ({
+                date: h.holiday_date,
+                name: h.holiday_name,
+                isNational: h.is_national_holiday
+            }));
+            nationalHolidays = allNationalHolidays;
         } catch (e) {
             nationalHolidays = [];
+            allNationalHolidays = [];
         }
     }
 
-    /**
-     * Check if a date is disabled/locked for attendance
-     */
     function isDateDisabled(dateStr) {
         const d = new Date(dateStr);
         const day = d.getDay();
@@ -380,9 +480,14 @@
             let reason = 'Libur Akhir Pekan';
             if (natHoliday) reason = natHoliday.name;
             else if (schHoliday) reason = schHoliday.name;
-            return { locked: true, reason: reason };
+            return { locked: true, reason };
         }
         return { locked: false, reason: null };
+    }
+
+    // ISO-8601: Monday=0 ... Sunday=6
+    function isoDay(jsDay) {
+        return (jsDay + 6) % 7;
     }
 
     function renderCalendar() {
@@ -392,7 +497,7 @@
 
         const firstDay = new Date(currentYear, currentMonth, 1);
         const lastDay = new Date(currentYear, currentMonth + 1, 0);
-        const startDay = firstDay.getDay();
+        const startDay = isoDay(firstDay.getDay());
         const daysInMonth = lastDay.getDate();
         const prevLastDay = new Date(currentYear, currentMonth, 0);
         const prevDays = prevLastDay.getDate();
@@ -436,7 +541,6 @@
             if (isWeekend) cell.classList.add('weekend');
             if (dateStr === todayStr) cell.classList.add('today');
 
-            // Date number
             const dateEl = document.createElement('div');
             dateEl.className = 'cal-date' + (isWeekend && !isOutside ? ' weekend-text' : '');
             dateEl.textContent = date.getDate();
@@ -450,17 +554,28 @@
                     cell.classList.add('holiday-national');
                     const badge = document.createElement('span');
                     badge.className = 'cal-badge national';
-                    badge.textContent = natHoliday.name;
-                    badge.title = natHoliday.name;
+                    badge.textContent = 'LIBUR';
                     cell.appendChild(badge);
-                }
 
-                if (schHoliday) {
+                    const tooltip = document.createElement('div');
+                    tooltip.className = 'cal-tooltip';
+                    tooltip.innerHTML = `<span style="color:#fca5a5;">&#9679;</span> ${escHtml(natHoliday.name)}`;
+                    cell.appendChild(tooltip);
+                } else if (schHoliday) {
                     cell.classList.add('holiday-school');
                     const badge = document.createElement('span');
                     badge.className = 'cal-badge school';
-                    badge.textContent = schHoliday.name;
-                    badge.title = schHoliday.name;
+                    badge.textContent = 'LIBUR';
+                    cell.appendChild(badge);
+
+                    const tooltip = document.createElement('div');
+                    tooltip.className = 'cal-tooltip';
+                    tooltip.innerHTML = `<span style="color:#fcd34d;">&#9679;</span> ${escHtml(schHoliday.name)}`;
+                    cell.appendChild(tooltip);
+                } else if (isWeekend) {
+                    const badge = document.createElement('span');
+                    badge.className = 'cal-badge off-label';
+                    badge.textContent = 'OFF';
                     cell.appendChild(badge);
                 }
 
@@ -469,6 +584,73 @@
 
             grid.appendChild(cell);
         }
+    }
+
+    function renderHolidayList() {
+        const container = document.getElementById('holidayListContainer');
+        document.getElementById('holidayListTitle').textContent = `- ${monthNames[currentMonth]} ${currentYear}`;
+
+        const allHolidays = [];
+
+        nationalHolidays.forEach(h => {
+            allHolidays.push({
+                date: h.date,
+                name: h.name,
+                type: h.isNational ? 'national' : 'cuti',
+                label: h.isNational ? 'Libur Nasional' : 'Cuti Bersama'
+            });
+        });
+
+        holidays.forEach(h => {
+            if (!allHolidays.find(x => x.date === h.date)) {
+                allHolidays.push({
+                    date: h.date,
+                    name: h.name,
+                    type: 'school',
+                    label: 'Libur Sekolah'
+                });
+            }
+        });
+
+        allHolidays.sort((a, b) => a.date.localeCompare(b.date));
+
+        if (allHolidays.length === 0) {
+            container.innerHTML = `
+                <div class="text-center text-gray-400 py-8 text-sm">
+                    <span class="material-symbols-outlined text-3xl mb-2 block text-green-300">check_circle</span>
+                    <p class="text-gray-500">Tidak ada hari libur</p>
+                    <p class="text-gray-400 text-xs mt-1">Bulan ini tidak ada libur nasional</p>
+                </div>`;
+            return;
+        }
+
+        let html = '';
+        allHolidays.forEach(h => {
+            const d = new Date(h.date);
+            const day = d.getDate();
+            const dayName = dayNames[d.getDay()];
+            const isNat = h.type === 'national';
+            const isCuti = h.type === 'cuti';
+
+            const bgColor = isNat ? 'bg-red-100 text-red-700' : (isCuti ? 'bg-orange-100 text-orange-700' : 'bg-amber-100 text-amber-700');
+            const tagBg = isNat ? 'bg-red-100 text-red-600' : (isCuti ? 'bg-orange-100 text-orange-600' : 'bg-amber-100 text-amber-600');
+
+            html += `
+                <div class="holiday-list-item">
+                    <div class="holiday-date-badge ${bgColor}">
+                        ${day}
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="font-semibold text-gray-900 text-sm leading-tight">${escHtml(h.name)}</p>
+                        <div class="flex items-center gap-2 mt-1">
+                            <span class="text-xs ${tagBg} px-2 py-0.5 rounded-full font-medium">${h.label}</span>
+                            <span class="text-xs text-gray-400">${dayName}</span>
+                        </div>
+                    </div>
+                </div>`;
+        });
+
+        container.innerHTML = html;
     }
 
     function prevMonth() {
@@ -483,7 +665,6 @@
         loadCalendar();
     }
 
-    // Modal
     function openModal(dateStr, dateObj) {
         selectedDate = dateStr;
 
@@ -498,10 +679,8 @@
         const natHoliday = nationalHolidays.find(h => h.date === dateStr);
         const schHoliday = holidays.find(h => h.date === dateStr);
 
-        // Weekend info
         document.getElementById('weekendInfo').classList.toggle('hidden', !isWeekend);
 
-        // National holiday info
         if (natHoliday) {
             document.getElementById('nationalHolidayInfo').classList.remove('hidden');
             document.getElementById('nationalHolidayName').textContent = natHoliday.name;
@@ -509,7 +688,6 @@
             document.getElementById('nationalHolidayInfo').classList.add('hidden');
         }
 
-        // Toggle state
         const toggle = document.getElementById('holidayToggle');
         const reasonSection = document.getElementById('reasonSection');
         const reasonInput = document.getElementById('holidayReason');
@@ -527,7 +705,6 @@
             reasonInput.value = '';
         }
 
-        // Lock alert
         const lockStatus = isDateDisabled(dateStr);
         const lockAlert = document.getElementById('lockAlert');
         if (lockStatus.locked) {
@@ -586,6 +763,7 @@
                 closeModal();
                 await fetchSchoolHolidays();
                 renderCalendar();
+                renderHolidayList();
             } else {
                 alert(data.message || 'Gagal menyimpan');
             }
@@ -603,6 +781,12 @@
 
     function fmtDate(d) {
         return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    }
+
+    function escHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
     }
 </script>
 <?= $this->endSection() ?>
