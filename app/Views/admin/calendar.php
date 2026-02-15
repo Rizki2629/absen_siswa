@@ -8,10 +8,10 @@
 <style>
     .cal-cell {
         position: relative;
-        aspect-ratio: 1 / 1;
+        min-height: 52px;
         border-right: 1px solid #e5e7eb;
         border-bottom: 1px solid #e5e7eb;
-        padding: 4px;
+        padding: 3px 2px;
         transition: all 0.15s ease;
         cursor: pointer;
         display: flex;
@@ -59,15 +59,15 @@
     }
 
     .cal-date {
-        font-size: 12px;
+        font-size: 11px;
         font-weight: 600;
-        width: 26px;
-        height: 26px;
+        width: 22px;
+        height: 22px;
         display: flex;
         align-items: center;
         justify-content: center;
         border-radius: 50%;
-        margin-bottom: 2px;
+        margin-bottom: 1px;
     }
 
     .cal-cell.today .cal-date {
@@ -124,7 +124,7 @@
         pointer-events: none;
         opacity: 0;
         transition: opacity 0.2s ease;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
     }
 
     .cal-tooltip::after {
@@ -238,16 +238,21 @@
         .cal-layout {
             flex-direction: column;
         }
+
         .cal-sidebar {
             max-height: 300px;
         }
     }
 
     @media (max-width: 640px) {
+        .cal-cell {
+            min-height: 42px;
+        }
+
         .cal-date {
-            font-size: 10px;
-            width: 22px;
-            height: 22px;
+            font-size: 9px;
+            width: 18px;
+            height: 18px;
         }
 
         .cal-badge {
@@ -453,19 +458,100 @@
         }
     }
 
+    // Hardcoded Indonesian national holidays + cuti bersama as fallback
+    const HOLIDAYS_ID = {
+        '2025': [
+            {date:'2025-01-01',name:'Tahun Baru Masehi',isNational:true},
+            {date:'2025-01-27',name:'Isra Mikraj Nabi Muhammad SAW',isNational:true},
+            {date:'2025-01-28',name:'Cuti Bersama Tahun Baru Imlek',isNational:false},
+            {date:'2025-01-29',name:'Tahun Baru Imlek 2576',isNational:true},
+            {date:'2025-03-14',name:'Hari Suci Nyepi Tahun Baru Saka 1947',isNational:true},
+            {date:'2025-03-28',name:'Cuti Bersama Hari Raya Idul Fitri',isNational:false},
+            {date:'2025-03-29',name:'Hari Raya Idul Fitri 1446 H',isNational:true},
+            {date:'2025-03-30',name:'Hari Raya Idul Fitri 1446 H',isNational:true},
+            {date:'2025-03-31',name:'Cuti Bersama Hari Raya Idul Fitri',isNational:false},
+            {date:'2025-04-01',name:'Cuti Bersama Hari Raya Idul Fitri',isNational:false},
+            {date:'2025-04-02',name:'Cuti Bersama Hari Raya Idul Fitri',isNational:false},
+            {date:'2025-04-03',name:'Cuti Bersama Hari Raya Idul Fitri',isNational:false},
+            {date:'2025-04-04',name:'Cuti Bersama Hari Raya Idul Fitri',isNational:false},
+            {date:'2025-04-07',name:'Cuti Bersama Hari Raya Idul Fitri',isNational:false},
+            {date:'2025-04-18',name:'Wafat Isa Al Masih',isNational:true},
+            {date:'2025-05-01',name:'Hari Buruh Internasional',isNational:true},
+            {date:'2025-05-12',name:'Hari Raya Waisak 2569 BE',isNational:true},
+            {date:'2025-05-29',name:'Kenaikan Isa Al Masih',isNational:true},
+            {date:'2025-06-01',name:'Hari Lahir Pancasila',isNational:true},
+            {date:'2025-06-06',name:'Hari Raya Idul Adha 1446 H',isNational:true},
+            {date:'2025-06-27',name:'Tahun Baru Islam 1447 H',isNational:true},
+            {date:'2025-08-17',name:'Hari Kemerdekaan RI',isNational:true},
+            {date:'2025-09-05',name:'Maulid Nabi Muhammad SAW',isNational:true},
+            {date:'2025-12-25',name:'Hari Raya Natal',isNational:true},
+            {date:'2025-12-26',name:'Cuti Bersama Hari Raya Natal',isNational:false}
+        ],
+        '2026': [
+            {date:'2026-01-01',name:'Tahun Baru Masehi',isNational:true},
+            {date:'2026-01-16',name:'Isra Mikraj Nabi Muhammad SAW',isNational:true},
+            {date:'2026-02-17',name:'Tahun Baru Imlek 2577',isNational:true},
+            {date:'2026-02-18',name:'Cuti Bersama Tahun Baru Imlek',isNational:false},
+            {date:'2026-03-03',name:'Hari Suci Nyepi Tahun Baru Saka 1948',isNational:true},
+            {date:'2026-03-20',name:'Hari Raya Idul Fitri 1447 H',isNational:true},
+            {date:'2026-03-21',name:'Hari Raya Idul Fitri 1447 H',isNational:true},
+            {date:'2026-03-22',name:'Cuti Bersama Hari Raya Idul Fitri',isNational:false},
+            {date:'2026-03-23',name:'Cuti Bersama Hari Raya Idul Fitri',isNational:false},
+            {date:'2026-04-03',name:'Wafat Isa Al Masih',isNational:true},
+            {date:'2026-05-01',name:'Hari Buruh Internasional',isNational:true},
+            {date:'2026-05-14',name:'Kenaikan Isa Al Masih',isNational:true},
+            {date:'2026-05-17',name:'Hari Raya Waisak 2570 BE',isNational:true},
+            {date:'2026-05-27',name:'Hari Raya Idul Adha 1447 H',isNational:true},
+            {date:'2026-06-01',name:'Hari Lahir Pancasila',isNational:true},
+            {date:'2026-06-17',name:'Tahun Baru Islam 1448 H',isNational:true},
+            {date:'2026-08-17',name:'Hari Kemerdekaan RI',isNational:true},
+            {date:'2026-08-26',name:'Maulid Nabi Muhammad SAW',isNational:true},
+            {date:'2026-12-25',name:'Hari Raya Natal',isNational:true},
+            {date:'2026-12-26',name:'Cuti Bersama Hari Raya Natal',isNational:false}
+        ],
+        '2027': [
+            {date:'2027-01-01',name:'Tahun Baru Masehi',isNational:true},
+            {date:'2027-01-05',name:'Isra Mikraj Nabi Muhammad SAW',isNational:true},
+            {date:'2027-02-06',name:'Tahun Baru Imlek 2578',isNational:true},
+            {date:'2027-03-10',name:'Hari Raya Idul Fitri 1448 H',isNational:true},
+            {date:'2027-03-11',name:'Hari Raya Idul Fitri 1448 H',isNational:true},
+            {date:'2027-03-22',name:'Hari Suci Nyepi Tahun Baru Saka 1949',isNational:true},
+            {date:'2027-03-26',name:'Wafat Isa Al Masih',isNational:true},
+            {date:'2027-05-01',name:'Hari Buruh Internasional',isNational:true},
+            {date:'2027-05-06',name:'Kenaikan Isa Al Masih',isNational:true},
+            {date:'2027-05-06',name:'Hari Raya Waisak 2571 BE',isNational:true},
+            {date:'2027-05-17',name:'Hari Raya Idul Adha 1448 H',isNational:true},
+            {date:'2027-06-01',name:'Hari Lahir Pancasila',isNational:true},
+            {date:'2027-06-07',name:'Tahun Baru Islam 1449 H',isNational:true},
+            {date:'2027-08-16',name:'Maulid Nabi Muhammad SAW',isNational:true},
+            {date:'2027-08-17',name:'Hari Kemerdekaan RI',isNational:true},
+            {date:'2027-12-25',name:'Hari Raya Natal',isNational:true}
+        ]
+    };
+
+    function getHolidaysFallback(year, month) {
+        const yearData = HOLIDAYS_ID[String(year)] || [];
+        const mm = String(month).padStart(2, '0');
+        return yearData.filter(h => h.date.substring(5, 7) === mm);
+    }
+
     async function fetchNationalHolidays() {
         try {
             const resp = await fetch(`https://api-harilibur.vercel.app/api?year=${currentYear}&month=${currentMonth + 1}`);
+            if (!resp.ok) throw new Error('API error');
             const data = await resp.json();
-            allNationalHolidays = (data || []).map(h => ({
+            if (!Array.isArray(data) || data.length === 0) throw new Error('Empty');
+            allNationalHolidays = data.map(h => ({
                 date: h.holiday_date,
                 name: h.holiday_name,
                 isNational: h.is_national_holiday
             }));
             nationalHolidays = allNationalHolidays;
         } catch (e) {
-            nationalHolidays = [];
-            allNationalHolidays = [];
+            // Fallback to hardcoded data
+            const fallback = getHolidaysFallback(currentYear, currentMonth + 1);
+            allNationalHolidays = fallback;
+            nationalHolidays = fallback;
         }
     }
 
@@ -480,9 +566,15 @@
             let reason = 'Libur Akhir Pekan';
             if (natHoliday) reason = natHoliday.name;
             else if (schHoliday) reason = schHoliday.name;
-            return { locked: true, reason };
+            return {
+                locked: true,
+                reason
+            };
         }
-        return { locked: false, reason: null };
+        return {
+            locked: false,
+            reason: null
+        };
     }
 
     // ISO-8601: Monday=0 ... Sunday=6
@@ -655,13 +747,19 @@
 
     function prevMonth() {
         currentMonth--;
-        if (currentMonth < 0) { currentMonth = 11; currentYear--; }
+        if (currentMonth < 0) {
+            currentMonth = 11;
+            currentYear--;
+        }
         loadCalendar();
     }
 
     function nextMonth() {
         currentMonth++;
-        if (currentMonth > 11) { currentMonth = 0; currentYear++; }
+        if (currentMonth > 11) {
+            currentMonth = 0;
+            currentYear++;
+        }
         loadCalendar();
     }
 
