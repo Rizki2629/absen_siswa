@@ -225,10 +225,10 @@
                 </span>
             </td>
             <td class="py-3 px-4 text-center">
-                <button onclick="editStudent(${student.id})" class="text-primary-600 hover:text-primary-800 mr-2">
+                <button onclick="editStudent(${student.id})" class="text-primary-600 hover:text-primary-800 mr-2 p-1 rounded focus:outline-none" style="border:none;background:none;box-shadow:none;">
                     <span class="material-symbols-outlined">edit</span>
                 </button>
-                <button onclick="deleteStudent(${student.id})" class="text-danger-600 hover:text-danger-800">
+                <button onclick="deleteStudent(${student.id})" class="text-danger-600 hover:text-danger-800 p-1 rounded focus:outline-none" style="border:none;background:none;box-shadow:none;">
                     <span class="material-symbols-outlined">delete</span>
                 </button>
             </td>

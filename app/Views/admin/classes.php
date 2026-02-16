@@ -47,21 +47,25 @@
             </div>
 
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Tingkat</label>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Kelas</label>
                 <select id="classLevel" name="level"
                     class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500">
-                    <option value="">Pilih Tingkat</option>
-                    <option value="X">X (Sepuluh)</option>
-                    <option value="XI">XI (Sebelas)</option>
-                    <option value="XII">XII (Dua Belas)</option>
+                    <option value="">Pilih Kelas</option>
+                    <option value="1">Kelas 1</option>
+                    <option value="2">Kelas 2</option>
+                    <option value="3">Kelas 3</option>
+                    <option value="4">Kelas 4</option>
+                    <option value="5">Kelas 5</option>
+                    <option value="6">Kelas 6</option>
                 </select>
             </div>
 
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Wali Kelas</label>
-                <input type="text" id="classTeacher" name="homeroom_teacher"
-                    class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500"
-                    placeholder="Nama wali kelas">
+                <select id="classTeacher" name="teacher_id"
+                    class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500">
+                    <option value="">-- Pilih Wali Kelas --</option>
+                </select>
             </div>
 
             <div>
@@ -83,9 +87,44 @@
 </div>
 
 <script>
+    let allTeachersForClass = [];
+
     document.addEventListener('DOMContentLoaded', function() {
         loadClasses();
+        loadTeachersForDropdown();
     });
+
+    async function loadTeachersForDropdown() {
+        try {
+            const response = await fetch('<?= base_url('api/admin/teachers') ?>', {
+                credentials: 'same-origin'
+            });
+            const data = await response.json();
+            if (data.status === 'success') {
+                allTeachersForClass = data.data;
+                populateTeacherDropdown();
+            }
+        } catch (error) {
+            console.error('Error loading teachers:', error);
+        }
+    }
+
+    function populateTeacherDropdown(selectedId = null) {
+        const select = document.getElementById('classTeacher');
+        select.innerHTML = '<option value="">-- Pilih Wali Kelas --</option>';
+        allTeachersForClass.forEach(teacher => {
+            const option = document.createElement('option');
+            option.value = teacher.id;
+            option.textContent = teacher.full_name || teacher.username;
+            if (teacher.nip) {
+                option.textContent += ` (NIP: ${teacher.nip})`;
+            }
+            if (selectedId && teacher.id == selectedId) {
+                option.selected = true;
+            }
+            select.appendChild(option);
+        });
+    }
 
     function loadClasses() {
         fetch('<?= base_url('api/admin/classes') ?>', {
@@ -122,23 +161,23 @@
         }
 
         container.innerHTML = classes.map(cls => `
-        <div class="card hover:shadow-lg transition-shadow">
-            <div class="card-body">
+        <div class="bg-white rounded-2xl shadow hover:shadow-lg transition-shadow p-4">
+            <div>
                 <div class="flex justify-between items-start mb-4">
                     <div class="bg-primary-100 rounded-full p-3">
                         <span class="material-symbols-outlined text-primary-600 text-2xl">class</span>
                     </div>
                     <div class="flex space-x-2">
-                        <button onclick="editClass(${cls.id})" class="text-primary-600 hover:text-primary-800">
+                        <button onclick="editClass(${cls.id})" class="text-primary-600 hover:text-primary-800 p-1 rounded focus:outline-none" style="border:none;background:none;box-shadow:none;">
                             <span class="material-symbols-outlined">edit</span>
                         </button>
-                        <button onclick="deleteClass(${cls.id})" class="text-danger-600 hover:text-danger-800">
+                        <button onclick="deleteClass(${cls.id})" class="text-danger-600 hover:text-danger-800 p-1 rounded focus:outline-none" style="border:none;background:none;box-shadow:none;">
                             <span class="material-symbols-outlined">delete</span>
                         </button>
                     </div>
                 </div>
                 <h3 class="text-lg font-bold text-gray-900">${cls.name}</h3>
-                <p class="text-sm text-gray-500 mt-1">${cls.homeroom_teacher || 'Wali kelas belum ditentukan'}</p>
+                <p class="text-sm text-gray-500 mt-1">${cls.teacher_name || cls.homeroom_teacher || 'Wali kelas belum ditentukan'}</p>
                 <div class="flex items-center mt-4 text-sm text-gray-600">
                     <span class="material-symbols-outlined text-sm mr-1">groups</span>
                     <span>${cls.student_count || 0} Siswa</span>
@@ -152,6 +191,7 @@
         document.getElementById('classModalTitle').textContent = 'Tambah Kelas Baru';
         document.getElementById('classForm').reset();
         document.getElementById('classId').value = '';
+        populateTeacherDropdown();
         document.getElementById('classModal').style.display = 'flex';
     }
 
@@ -159,20 +199,105 @@
         document.getElementById('classModal').style.display = 'none';
     }
 
+
     function editClass(id) {
-        alert('Edit class ' + id);
+        fetch(`<?= base_url('api/admin/classes') ?>`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    const cls = data.data.find(c => c.id == id);
+                    if (!cls) {
+                        alert('Data kelas tidak ditemukan');
+                        return;
+                    }
+                    document.getElementById('classModalTitle').textContent = 'Edit Kelas';
+                    document.getElementById('classId').value = cls.id;
+                    document.getElementById('className').value = cls.name || '';
+                    document.getElementById('classLevel').value = cls.grade || '';
+                    populateTeacherDropdown(cls.teacher_id);
+                    document.getElementById('academicYear').value = cls.year || '';
+                    document.getElementById('classModal').style.display = 'flex';
+                } else {
+                    alert('Gagal mengambil data kelas');
+                }
+            })
+            .catch(() => alert('Gagal mengambil data kelas'));
     }
 
-    function deleteClass(id) {
-        if (confirm('Apakah Anda yakin ingin menghapus kelas ini?')) {
-            alert('Delete class ' + id);
+    async function deleteClass(id) {
+        if (!confirm('Apakah Anda yakin ingin menghapus kelas ini?')) {
+            return;
+        }
+
+        try {
+            const response = await fetch(`<?= base_url('api/admin/classes') ?>/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                credentials: 'same-origin'
+            });
+
+            const data = await response.json();
+
+            if (data.status === 'success') {
+                alert('Kelas berhasil dihapus');
+                loadClasses();
+            } else {
+                alert(data.message || 'Gagal menghapus kelas');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Terjadi kesalahan saat menghapus kelas');
         }
     }
 
-    document.getElementById('classForm').addEventListener('submit', function(e) {
+    document.getElementById('classForm').addEventListener('submit', async function(e) {
         e.preventDefault();
-        alert('Save class');
-        closeClassModal();
+        const id = document.getElementById('classId').value;
+        const name = document.getElementById('className').value;
+        const level = document.getElementById('classLevel').value;
+        const teacher_id = document.getElementById('classTeacher').value;
+        const academic_year = document.getElementById('academicYear').value;
+
+        const payload = {
+            name,
+            level,
+            teacher_id: teacher_id || null,
+            academic_year
+        };
+
+        let url = '<?= base_url('api/admin/classes') ?>';
+        let method = 'POST';
+        if (id) {
+            url += '/' + id;
+            method = 'PUT';
+        }
+
+        try {
+            const resp = await fetch(url, {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                credentials: 'same-origin',
+                body: JSON.stringify(payload)
+            });
+            const data = await resp.json();
+            if ((data.status === 'success') || (data.success === true)) {
+                closeClassModal();
+                loadClasses();
+                alert('Kelas berhasil disimpan');
+            } else {
+                alert(data.message || 'Gagal menyimpan kelas');
+            }
+        } catch (err) {
+            alert('Terjadi kesalahan saat menyimpan kelas');
+        }
     });
 </script>
 

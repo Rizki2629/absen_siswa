@@ -8,6 +8,7 @@
 $menuItems = [
     ['url' => 'student/dashboard',     'icon' => 'dashboard',      'label' => 'Dashboard'],
     ['url' => 'student/attendance',    'icon' => 'calendar_month', 'label' => 'Riwayat Kehadiran'],
+    ['url' => 'student/habits',        'icon' => 'emoji_people',   'label' => '7 Kebiasaan'],
     ['url' => 'student/notifications', 'icon' => 'notifications',  'label' => 'Notifikasi'],
     ['url' => 'student/profile',       'icon' => 'person',         'label' => 'Profil Saya'],
 ];

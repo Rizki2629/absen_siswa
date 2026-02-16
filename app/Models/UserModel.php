@@ -19,6 +19,7 @@ class UserModel extends Model
         'role',
         'full_name',
         'phone',
+        'nip',
         'student_id',
         'is_active',
         'last_login_at',
@@ -47,9 +48,20 @@ class UserModel extends Model
      */
     public function verifyPassword($username, $password)
     {
+        // Try normal username/email login first
         $user = $this->where('username', $username)
             ->orWhere('email', $username)
             ->first();
+
+        // If not found, try NISN for students
+        if (!$user) {
+            $db = \Config\Database::connect();
+            $builder = $db->table('users');
+            $builder->select('users.*');
+            $builder->join('students', 'students.id = users.student_id', 'left');
+            $builder->where('students.nis', $username);
+            $user = $builder->get()->getRowArray();
+        }
 
         if ($user && password_verify($password, $user['password_hash'])) {
             return $user;

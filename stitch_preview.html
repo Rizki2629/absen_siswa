@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Playful Habits Dashboard - Preview</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Quicksand', sans-serif;
+        }
+        
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: #ffd700;
+            pointer-events: none;
+            animation: confetti-fall 1s ease-out forwards;
+        }
+        
+        @keyframes confetti-fall {
+            to {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        .habit-card {
+            position: relative;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .habit-card:hover {
+            transform: translateY(-5px) scale(1.02);
+        }
+        
+        .mascot-pattern {
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .badge-shine {
+            animation: shine 2s infinite;
+        }
+        
+        @keyframes shine {
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 1; transform: scale(1.05); }
+        }
+        
+        .achievement-pop {
+            animation: pop 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+        
+        @keyframes pop {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 min-h-screen p-6">
+    
+    <div class="max-w-7xl mx-auto">
+        
+        <!-- Header with Trophy Animation -->
+        <header class="mb-8 flex items-center justify-between">
+            <div>
+                <h1 class="text-4xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                    🌟 Petualangan Kebiasaan Baikmu!
+                </h1>
+                <p class="text-gray-600 mt-2 text-lg">Kumpulkan bintang dan raih hadiah keren!</p>
+            </div>
+            <div class="bg-gradient-to-r from-yellow-400 to-orange-400 rounded-2xl p-4 shadow-lg">
+                <div class="text-white text-center">
+                    <div class="text-3xl">🏆</div>
+                    <div class="text-2xl font-bold">Level 5</div>
+                    <div class="text-xs">Pahlawan Pemula</div>
+                </div>
+            </div>
+        </header>
+        
+        <div class="grid grid-cols-12 gap-6">
+            
+            <!-- Main Content: Habit Cards (9 columns) -->
+            <div class="col-span-12 lg:col-span-9">
+                
+                <!-- Progress Bar with Stars -->
+                <div class="bg-white rounded-2xl p-6 shadow-lg mb-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-xl font-bold text-gray-800">🎯 Progres Hari Ini</h2>
+                        <span class="text-3xl font-black text-purple-600">5/7</span>
+                    </div>
+                    <div class="h-6 bg-gray-200 rounded-full overflow-hidden relative">
+                        <div class="h-full bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 rounded-full transition-all duration-1000" style="width: 71%">
+                            <div class="h-full flex items-center justify-end pr-2">
+                                <span class="text-white text-xs font-bold">71% complete!</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Stars Row -->
+                    <div class="flex items-center justify-between mt-4 gap-2">
+                        <div class="flex-1 flex justify-center">⭐</div>
+                        <div class="flex-1 flex justify-center">⭐</div>
+                        <div class="flex-1 flex justify-center">⭐</div>
+                        <div class="flex-1 flex justify-center">⭐</div>
+                        <div class="flex-1 flex justify-center">⭐</div>
+                        <div class="flex-1 flex justify-center opacity-30">⭐</div>
+                        <div class="flex-1 flex justify-center opacity-30">⭐</div>
+                    </div>
+                </div>
+                
+                <!-- Habit Cards Grid -->
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                    
+                    <!-- Card 1: Bangun Pagi - Completed -->
+                    <div class="habit-card bg-gradient-to-br from-yellow-100 to-orange-100 rounded-3xl p-5 shadow-lg border-4 border-yellow-300 relative overflow-hidden">
+                        <div class="absolute top-2 right-2 bg-green-500 text-white rounded-full w-8 h-8 flex items-center justify-center shadow-lg z-10">
+                            ✓
+                        </div>
+                        <div class="absolute inset-0 mascot-pattern opacity-10" style="background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSIxMDAiIGN5PSIxMDAiIHI9IjgwIiBmaWxsPSIjZmZkNzAwIiBvcGFjaXR5PSIwLjMiLz48L3N2Zz4=');"></div>
+                        <div class="relative z-10">
+                            <div class="text-5xl mb-3 text-center">☀️</div>
+                            <h3 class="text-sm font-bold text-gray-800 text-center mb-1">Bangun Pagi</h3>
+                            <p class="text-xs text-gray-600 text-center mb-3">04:00 - 06:00</p>
+                            <button class="w-full bg-green-500 text-white py-2 rounded-xl font-bold text-sm shadow-lg hover:bg-green-600 transition-all">
+                                Sudah Check! 🎉
+                            </button>
+                            <div class="mt-2 text-center text-xs text-gray-500">+20 XP</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Card 2: Ibadah -->
+                    <div class="habit-card bg-gradient-to-br from-purple-100 to-pink-100 rounded-3xl p-5 shadow-lg border-4 border-purple-300 relative overflow-hidden hover:border-purple-500">
+                        <div class="absolute inset-0 mascot-pattern opacity-10"></div>
+                        <div class="relative z-10">
+                            <div class="text-5xl mb-3 text-center">🕌</div>
+                            <h3 class="text-sm font-bold text-gray-800 text-center mb-1">Ibadah</h3>
+                            <p class="text-xs text-gray-600 text-center mb-3">5 Waktu</p>
+                            <button class="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white py-2 rounded-xl font-bold text-sm shadow-lg hover:shadow-xl transition-all">
+                                Check! 🎯
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Card 3: Olahraga -->
+                    <div class="habit-card bg-gradient-to-br from-green-100 to-teal-100 rounded-3xl p-5 shadow-lg border-4 border-green-300 relative overflow-hidden hover:border-green-500">
+                        <div class="relative z-10">
+                            <div class="text-5xl mb-3 text-center">🏃</div>
+                            <h3 class="text-sm font-bold text-gray-800 text-center mb-1">Olahraga</h3>
+                            <p class="text-xs text-gray-600 text-center mb-3">15-30 Menit</p>
+                            <button class="w-full bg-gradient-to-r from-green-500 to-teal-500 text-white py-2 rounded-xl font-bold text-sm shadow-lg hover:shadow-xl transition-all">
+                                Check! 💪
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Card 4: Makan Sehat -->
+                    <div class="habit-card bg-gradient-to-br from-red-100 to-orange-100 rounded-3xl p-5 shadow-lg border-4 border-red-300 relative overflow-hidden hover:border-red-500">
+                        <div class="relative z-10">
+                            <div class="text-5xl mb-3 text-center">🥗</div>
+                            <h3 class="text-sm font-bold text-gray-800 text-center mb-1">Makan Sehat</h3>
+                            <p class="text-xs text-gray-600 text-center mb-3">Gizi Seimbang</p>
+                            <button class="w-full bg-gradient-to-r from-red-500 to-orange-500 text-white py-2 rounded-xl font-bold text-sm shadow-lg hover:shadow-xl transition-all">
+                                Check! 🍎
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Card 5: Gemar Belajar -->
+                    <div class="habit-card bg-gradient-to-br from-blue-100 to-indigo-100 rounded-3xl p-5 shadow-lg border-4 border-blue-300 relative overflow-hidden hover:border-blue-500">
+                        <div class="relative z-10">
+                            <div class="text-5xl mb-3 text-center">📚</div>
+                            <h3 class="text-sm font-bold text-gray-800 text-center mb-1">Gemar Belajar</h3>
+                            <p class="text-xs text-gray-600 text-center mb-3">Review & Tugas</p>
+                            <button class="w-full bg-gradient-to-r from-blue-500 to-indigo-500 text-white py-2 rounded-xl font-bold text-sm shadow-lg hover:shadow-xl transition-all">
+                                Check! 📖
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Card 6: Bermasyarakat -->
+                    <div class="habit-card bg-gradient-to-br from-pink-100 to-rose-100 rounded-3xl p-5 shadow-lg border-4 border-pink-300 relative overflow-hidden hover:border-pink-500">
+                        <div class="relative z-10">
+                            <div class="text-5xl mb-3 text-center">🤝</div>
+                            <h3 class="text-sm font-bold text-gray-800 text-center mb-1">Bermasyarakat</h3>
+                            <p class="text-xs text-gray-600 text-center mb-3">Bantu Teman</p>
+                            <button class="w-full bg-gradient-to-r from-pink-500 to-rose-500 text-white py-2 rounded-xl font-bold text-sm shadow-lg hover:shadow-xl transition-all">
+                                Check! 🎈
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Card 7: Tidur Cepat -->
+                    <div class="habit-card bg-gradient-to-br from-indigo-100 to-purple-100 rounded-3xl p-5 shadow-lg border-4 border-indigo-300 relative overflow-hidden hover:border-indigo-500">
+                        <div class="relative z-10">
+                            <div class="text-5xl mb-3 text-center">😴</div>
+                            <h3 class="text-sm font-bold text-gray-800 text-center mb-1">Tidur Cepat</h3>
+                            <p class="text-xs text-gray-600 text-center mb-3">Max 21:30</p>
+                            <button class="w-full bg-gradient-to-r from-indigo-500 to-purple-500 text-white py-2 rounded-xl font-bold text-sm shadow-lg hover:shadow-xl transition-all">
+                                Check! 🌙
+                            </button>
+                        </div>
+                    </div>
+                    
+                </div>
+                
+            </div>
+            
+            <!-- Sidebar: Achievements & Rewards (3 columns) -->
+            <div class="col-span-12 lg:col-span-3">
+                
+                <!-- Achievements -->
+                <div class="bg-white rounded-2xl p-5 shadow-lg mb-6">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                        <span>🏅</span> Pencapaian
+                    </h3>
+                    
+                    <!-- Badge 1 -->
+                    <div class="achievement-pop bg-gradient-to-r from-yellow-400 to-orange-400 rounded-xl p-4 mb-3 shadow-md">
+                        <div class="text-center">
+                            <div class="text-4xl mb-2">🌟</div>
+                            <div class="text-white font-bold text-sm">Pahlawan 7 Hari</div>
+                            <div class="text-white/80 text-xs">Beruntun 7 hari!</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Badge 2 -->
+                    <div class="bg-gray-100 rounded-xl p-4 mb-3">
+                        <div class="text-center opacity-40">
+                            <div class="text-4xl mb-2">🏆</div>
+                            <div class="text-gray-700 font-bold text-sm">Juara Bulan</div>
+                            <div class="text-gray-600 text-xs">30 hari berturut</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Badge 3 -->
+                    <div class="bg-gray-100 rounded-xl p-4">
+                        <div class="text-center opacity-40">
+                            <div class="text-4xl mb-2">👑</div>
+                            <div class="text-gray-700 font-bold text-sm">Raja Kebiasaan</div>
+                            <div class="text-gray-600 text-xs">100 hari perfect</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Rewards -->
+                <div class="bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl p-5 shadow-lg text-white">
+                    <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
+                        <span>🎁</span> Hadiah Menanti!
+                    </h3>
+                    <div class="bg-white/20 backdrop-blur rounded-xl p-4 mb-3">
+                        <div class="text-3xl text-center mb-2">🎮</div>
+                        <div class="font-bold text-center text-sm">Extra Gaming Time</div>
+                        <div class="text-center text-xs opacity-80">10 hari beruntun</div>
+                    </div>
+                    <div class="bg-white/20 backdrop-blur rounded-xl p-4">
+                        <div class="text-3xl text-center mb-2">🍕</div>
+                        <div class="font-bold text-center text-sm">Pizza Party!</div>
+                        <div class="text-center text-xs opacity-80">30 hari perfect</div>
+                    </div>
+                </div>
+                
+            </div>
+            
+        </div>
+        
+        <!-- Motivational Quote -->
+        <footer class="mt-8 bg-white rounded-2xl p-6 shadow-lg">
+            <div class="flex items-center gap-4">
+                <div class="text-6xl">💬</div>
+                <div>
+                    <p class="text-lg italic text-gray-700">"Setiap kebiasaan baik adalah batu bata untuk membangun masa depanmu yang luar biasa!"</p>
+                    <p class="text-sm font-bold text-purple-600 mt-2">— Ki Hajar Dewantara</p>
+                </div>
+            </div>
+        </footer>
+        
+    </div>
+    
+    <script>
+        // Confetti effect on button click
+        document.querySelectorAll('button').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                // Create confetti
+                for(let i = 0; i < 20; i++) {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = e.clientX + (Math.random() - 0.5) * 100 + 'px';
+                    confetti.style.top = e.clientY + 'px';
+                    confetti.style.background = ['#ffd700', '#ff69b4', '#4169e1', '#32cd32'][Math.floor(Math.random() * 4)];
+                    confetti.style.animationDelay = Math.random() * 0.3 + 's';
+                    document.body.appendChild(confetti);
+                    setTimeout(() => confetti.remove(), 1000);
+                }
+                
+                // Sound effect simulation (visual feedback)
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => this.style.transform = '', 100);
+            });
+        });
+    </script>
+    
+</body>
+</html>

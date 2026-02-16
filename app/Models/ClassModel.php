@@ -17,6 +17,7 @@ class ClassModel extends Model
         'grade',
         'year',
         'homeroom_teacher',
+        'teacher_id',
         'shift_id',
     ];
 

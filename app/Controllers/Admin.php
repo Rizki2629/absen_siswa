@@ -273,6 +273,306 @@ class Admin extends BaseController
         return view('admin/attendance', $data);
     }
 
+    public function teachers()
+    {
+        // Teachers management page
+        $data = [
+            'title' => 'Data Guru',
+            'pageTitle' => 'Data Guru',
+            'pageDescription' => 'Kelola data guru dan wali kelas',
+            'activePage' => 'admin/teachers',
+            'user' => [
+                'name' => session()->get('name'),
+                'role' => 'Administrator'
+            ],
+        ];
+
+        return view('admin/teachers', $data);
+    }
+
+// ==================== API Methods ====================
+
+    /**
+     * API: Get all users
+     */
+    public function apiGetUsers()
+    {
+        $userModel = model(\App\Models\UserModel::class);
+        $users = $userModel->findAll();
+        return $this->response->setJSON([
+            'status' => 'success',
+            'data' => $users
+        ]);
+    }
+
+    /**
+     * API: Get single user
+     */
+    public function apiGetUser($id)
+    {
+        $userModel = model(\App\Models\UserModel::class);
+        $user = $userModel->find($id);
+        if (!$user) {
+            return $this->response->setStatusCode(404)->setJSON([
+                'status' => 'error',
+                'message' => 'User tidak ditemukan'
+            ]);
+        }
+        return $this->response->setJSON([
+            'status' => 'success',
+            'data' => $user
+        ]);
+    }
+
+    /**
+     * API: Create new user
+     */
+    public function apiCreateUser()
+    {
+        try {
+            $json = $this->request->getJSON(true);
+            $userModel = model(\App\Models\UserModel::class);
+            $data = [
+                'username' => $json['username'] ?? '',
+                'email' => $json['email'] ?? null,
+                'password' => $json['password'] ?? '',
+                'role' => $json['role'] ?? 'teacher',
+                'full_name' => $json['name'] ?? '',
+                'phone' => $json['phone'] ?? null,
+                'is_active' => isset($json['is_active']) ? (int)$json['is_active'] : 1,
+            ];
+            $id = $userModel->insert($data);
+            return $this->response->setJSON([
+                'status' => 'success',
+                'message' => 'User berhasil ditambahkan',
+                'data' => $userModel->find($id)
+            ]);
+        } catch (\Throwable $e) {
+            return $this->response->setStatusCode(500)->setJSON([
+                'status' => 'error',
+                'message' => 'Gagal menambah user: ' . $e->getMessage()
+            ]);
+        }
+    }
+
+    /**
+     * API: Update user
+     */
+    public function apiUpdateUser($id)
+    {
+        try {
+            $json = $this->request->getJSON(true);
+            $userModel = model(\App\Models\UserModel::class);
+            $data = [];
+            if (isset($json['username'])) $data['username'] = $json['username'];
+            if (isset($json['email'])) $data['email'] = $json['email'];
+            if (isset($json['password']) && $json['password']) $data['password'] = $json['password'];
+            if (isset($json['role'])) $data['role'] = $json['role'];
+            if (isset($json['name'])) $data['full_name'] = $json['name'];
+            if (isset($json['phone'])) $data['phone'] = $json['phone'];
+            if (isset($json['is_active'])) $data['is_active'] = (int)$json['is_active'];
+            if (!empty($data)) {
+                $userModel->update($id, $data);
+            }
+            return $this->response->setJSON([
+                'status' => 'success',
+                'message' => 'User berhasil diperbarui',
+                'data' => $userModel->find($id)
+            ]);
+        } catch (\Throwable $e) {
+            return $this->response->setStatusCode(500)->setJSON([
+                'status' => 'error',
+                'message' => 'Gagal memperbarui user: ' . $e->getMessage()
+            ]);
+        }
+    }
+
+    /**
+     * API: Delete user
+     */
+    public function apiDeleteUser($id)
+    {
+        try {
+            $userModel = model(\App\Models\UserModel::class);
+            $user = $userModel->find($id);
+            if (!$user) {
+                return $this->response->setStatusCode(404)->setJSON([
+                    'status' => 'error',
+                    'message' => 'User tidak ditemukan'
+                ]);
+            }
+            $userModel->delete($id);
+            return $this->response->setJSON([
+                'status' => 'success',
+                'message' => 'User berhasil dihapus'
+            ]);
+        } catch (\Throwable $e) {
+            return $this->response->setStatusCode(500)->setJSON([
+                'status' => 'error',
+                'message' => 'Gagal menghapus user: ' . $e->getMessage()
+            ]);
+        }
+    }
+
+    /**
+     * API: Get all teachers
+     */
+    public function apiGetTeachers()
+    {
+        $userModel = model(\App\Models\UserModel::class);
+        $teachers = $userModel->where('role', 'teacher')->findAll();
+        return $this->response->setJSON([
+            'status' => 'success',
+            'data' => $teachers
+        ]);
+    }
+
+    /**
+     * API: Get single teacher
+     */
+    public function apiGetTeacher($id)
+    {
+        $userModel = model(\App\Models\UserModel::class);
+        $teacher = $userModel->where('role', 'teacher')->find($id);
+        if (!$teacher) {
+            return $this->response->setStatusCode(404)->setJSON([
+                'status' => 'error',
+                'message' => 'Data guru tidak ditemukan'
+            ]);
+        }
+        return $this->response->setJSON([
+            'status' => 'success',
+            'data' => $teacher
+        ]);
+    }
+
+    /**
+     * API: Create new teacher
+     */
+    public function apiCreateTeacher()
+    {
+        try {
+            $json = $this->request->getJSON(true);
+            $userModel = model(\App\Models\UserModel::class);
+
+            // Check if username already exists (including soft deleted)
+            $existingUser = $userModel->withDeleted()->where('username', $json['username'] ?? '')->first();
+
+            if ($existingUser) {
+                // If soft deleted, restore and update
+                if ($existingUser['deleted_at'] !== null) {
+                    $data = [
+                        'email' => $json['email'] ?? null,
+                        'role' => 'teacher',
+                        'full_name' => $json['name'] ?? '',
+                        'nip' => $json['nip'] ?? null,
+                        'phone' => $json['phone'] ?? null,
+                        'is_active' => isset($json['is_active']) ? (int)$json['is_active'] : 1,
+                        'deleted_at' => null,
+                    ];
+                    if (isset($json['password']) && !empty($json['password'])) {
+                        $data['password'] = $json['password'];
+                    }
+                    $userModel->update($existingUser['id'], $data);
+                    return $this->response->setJSON([
+                        'status' => 'success',
+                        'message' => 'Data guru berhasil dipulihkan dan diperbarui',
+                        'data' => $userModel->find($existingUser['id'])
+                    ]);
+                } else {
+                    // Username already in use
+                    return $this->response->setStatusCode(400)->setJSON([
+                        'status' => 'error',
+                        'message' => 'Username sudah digunakan. Silakan gunakan username lain.'
+                    ]);
+                }
+            }
+
+            $data = [
+                'username' => $json['username'] ?? '',
+                'email' => $json['email'] ?? null,
+                'password' => $json['password'] ?? '',
+                'role' => 'teacher',
+                'full_name' => $json['name'] ?? '',
+                'nip' => $json['nip'] ?? null,
+                'phone' => $json['phone'] ?? null,
+                'is_active' => isset($json['is_active']) ? (int)$json['is_active'] : 1,
+            ];
+            $id = $userModel->insert($data);
+            return $this->response->setJSON([
+                'status' => 'success',
+                'message' => 'Data guru berhasil ditambahkan',
+                'data' => $userModel->find($id)
+            ]);
+        } catch (\Throwable $e) {
+            return $this->response->setStatusCode(500)->setJSON([
+                'status' => 'error',
+                'message' => 'Gagal menambah data guru: ' . $e->getMessage()
+            ]);
+        }
+    }
+
+    /**
+     * API: Update teacher
+     */
+    public function apiUpdateTeacher($id)
+    {
+        try {
+            $json = $this->request->getJSON(true);
+            $userModel = model(\App\Models\UserModel::class);
+            $data = [];
+            if (isset($json['username'])) $data['username'] = $json['username'];
+            if (isset($json['email'])) $data['email'] = $json['email'];
+            if (isset($json['name'])) $data['full_name'] = $json['name'];
+            if (isset($json['nip'])) $data['nip'] = $json['nip'];
+            if (isset($json['phone'])) $data['phone'] = $json['phone'];
+            if (isset($json['is_active'])) $data['is_active'] = (int)$json['is_active'];
+            if (isset($json['password']) && !empty($json['password'])) {
+                $data['password'] = $json['password'];
+            }
+            if (!empty($data)) {
+                $userModel->update($id, $data);
+            }
+            return $this->response->setJSON([
+                'status' => 'success',
+                'message' => 'Data guru berhasil diperbarui',
+                'data' => $userModel->find($id)
+            ]);
+        } catch (\Throwable $e) {
+            return $this->response->setStatusCode(500)->setJSON([
+                'status' => 'error',
+                'message' => 'Gagal memperbarui data guru: ' . $e->getMessage()
+            ]);
+        }
+    }
+
+    /**
+     * API: Delete teacher
+     */
+    public function apiDeleteTeacher($id)
+    {
+        try {
+            $userModel = model(\App\Models\UserModel::class);
+            $teacher = $userModel->where('role', 'teacher')->find($id);
+            if (!$teacher) {
+                return $this->response->setStatusCode(404)->setJSON([
+                    'status' => 'error',
+                    'message' => 'Data guru tidak ditemukan'
+                ]);
+            }
+            $userModel->delete($id);
+            return $this->response->setJSON([
+                'status' => 'success',
+                'message' => 'Data guru berhasil dihapus'
+            ]);
+        } catch (\Throwable $e) {
+            return $this->response->setStatusCode(500)->setJSON([
+                'status' => 'error',
+                'message' => 'Gagal menghapus data guru: ' . $e->getMessage()
+            ]);
+        }
+    }
+
     // ==================== API Methods ====================
 
     /**
@@ -636,11 +936,19 @@ class Admin extends BaseController
     public function apiGetStudents()
     {
         try {
-            $students = $this->studentModel
+            $query = $this->studentModel
                 ->select('students.*, classes.name as class_name')
                 ->join('classes', 'classes.id = students.class_id', 'left')
-                ->where('students.active', 1)
-                ->findAll();
+                ->where('students.active', 1);
+
+            // Filter by class_id if provided
+            $classId = $this->request->getGet('class_id');
+            if ($classId) {
+                $query->where('students.class_id', $classId);
+            }
+
+            $query->orderBy('students.name', 'ASC');
+            $students = $query->findAll();
 
             return $this->response->setJSON([
                 'status' => 'success',
@@ -836,7 +1144,8 @@ class Admin extends BaseController
     {
         try {
             $classes = $this->classModel
-                ->select('classes.*, (SELECT COUNT(*) FROM students WHERE students.class_id = classes.id AND students.deleted_at IS NULL) as student_count')
+                ->select('classes.*, users.full_name as teacher_name, (SELECT COUNT(*) FROM students WHERE students.class_id = classes.id AND students.deleted_at IS NULL) as student_count')
+                ->join('users', 'users.id = classes.teacher_id', 'left')
                 ->findAll();
 
             return $this->response->setJSON([
@@ -1132,7 +1441,7 @@ class Admin extends BaseController
         }
     }
 
-    // ==================== Shift API Methods ====================
+            // ==================== Shift API Methods ====================
 
     /**
      * API: Get all shifts (with assigned classes)
@@ -1209,13 +1518,13 @@ class Admin extends BaseController
             $json = $this->request->getJSON(true);
 
             $data = [
-                'name'            => $json['name'] ?? '',
-                'check_in_start'  => $json['check_in_start'] ?? '',
-                'check_in_end'    => $json['check_in_end'] ?? $json['check_in_start'] ?? '',
+                'name' => $json['name'] ?? '',
+                'check_in_start' => $json['check_in_start'] ?? '',
+                'check_in_end' => $json['check_in_end'] ?? $json['check_in_start'] ?? '',
                 'check_out_start' => $json['check_out_start'] ?? '',
-                'check_out_end'   => $json['check_out_end'] ?? $json['check_out_start'] ?? '',
-                'late_tolerance'  => (int)($json['late_tolerance'] ?? 15),
-                'is_active'       => isset($json['is_active']) ? (int)$json['is_active'] : 1,
+                'check_out_end' => $json['check_out_end'] ?? $json['check_out_start'] ?? '',
+                'late_tolerance' => (int)($json['late_tolerance'] ?? 15),
+                'is_active' => isset($json['is_active']) ? (int)$json['is_active'] : 1,
             ];
 
             if (empty($data['name']) || empty($data['check_in_start']) || empty($data['check_out_start'])) {
@@ -1262,13 +1571,13 @@ class Admin extends BaseController
             $json = $this->request->getJSON(true);
 
             $data = [];
-            if (isset($json['name']))            $data['name'] = $json['name'];
-            if (isset($json['check_in_start']))   $data['check_in_start'] = $json['check_in_start'];
-            if (isset($json['check_in_end']))     $data['check_in_end'] = $json['check_in_end'];
-            if (isset($json['check_out_start']))  $data['check_out_start'] = $json['check_out_start'];
-            if (isset($json['check_out_end']))    $data['check_out_end'] = $json['check_out_end'];
-            if (isset($json['late_tolerance']))   $data['late_tolerance'] = (int)$json['late_tolerance'];
-            if (isset($json['is_active']))        $data['is_active'] = (int)$json['is_active'];
+            if (isset($json['name'])) $data['name'] = $json['name'];
+            if (isset($json['check_in_start'])) $data['check_in_start'] = $json['check_in_start'];
+            if (isset($json['check_in_end'])) $data['check_in_end'] = $json['check_in_end'];
+            if (isset($json['check_out_start'])) $data['check_out_start'] = $json['check_out_start'];
+            if (isset($json['check_out_end'])) $data['check_out_end'] = $json['check_out_end'];
+            if (isset($json['late_tolerance'])) $data['late_tolerance'] = (int)$json['late_tolerance'];
+            if (isset($json['is_active'])) $data['is_active'] = (int)$json['is_active'];
 
             if (!empty($data)) {
                 $this->shiftModel->update($id, $data);
@@ -1391,5 +1700,601 @@ class Admin extends BaseController
         }
 
         return $this->response->setJSON(['success' => true, 'message' => 'Berhasil disimpan']);
+    }
+
+    /**
+     * API: Create new class
+     */
+    public function apiCreateClass()
+    {
+        try {
+            $json = $this->request->getJSON(true);
+            $teacherId = !empty($json['teacher_id']) ? (int)$json['teacher_id'] : null;
+
+            // Check if teacher is already assigned to another class
+            if ($teacherId) {
+                $existingClass = $this->classModel->where('teacher_id', $teacherId)->first();
+                if ($existingClass) {
+                    return $this->response->setStatusCode(400)->setJSON([
+                        'status' => 'error',
+                        'message' => 'Wali kelas sudah digunakan di Kelas ' . $existingClass['name']
+                    ]);
+                }
+            }
+
+            // Get teacher name for homeroom_teacher field
+            $homeroomTeacher = $json['homeroom_teacher'] ?? '';
+            if ($teacherId) {
+                $userModel = model(\App\Models\UserModel::class);
+                $teacher = $userModel->find($teacherId);
+                if ($teacher) {
+                    $homeroomTeacher = $teacher['full_name'];
+                }
+            }
+
+            $data = [
+                'name' => $json['name'] ?? '',
+                'grade' => $json['level'] ?? '',
+                'homeroom_teacher' => $homeroomTeacher,
+                'teacher_id' => $teacherId,
+                'year' => $json['academic_year'] ?? '',
+            ];
+            $id = $this->classModel->insert($data);
+            return $this->response->setJSON([
+                'status' => 'success',
+                'message' => 'Kelas berhasil ditambahkan',
+                'data' => $this->classModel->find($id)
+            ]);
+        } catch (\Throwable $e) {
+            return $this->response->setStatusCode(500)->setJSON([
+                'status' => 'error',
+                'message' => 'Gagal menambah kelas: ' . $e->getMessage()
+            ]);
+        }
+    }
+
+    /**
+     * API: Update class
+     */
+    public function apiUpdateClass($id)
+    {
+        try {
+            $json = $this->request->getJSON(true);
+            $data = [];
+            if (isset($json['name'])) $data['name'] = $json['name'];
+            if (isset($json['level'])) $data['grade'] = $json['level'];
+            if (isset($json['academic_year'])) $data['year'] = $json['academic_year'];
+
+            // Handle teacher selection
+            if (isset($json['teacher_id'])) {
+                $teacherId = !empty($json['teacher_id']) ? (int)$json['teacher_id'] : null;
+
+                // Check if teacher is already assigned to another class
+                if ($teacherId) {
+                    $existingClass = $this->classModel->where('teacher_id', $teacherId)->where('id !=', $id)->first();
+                    if ($existingClass) {
+                        return $this->response->setStatusCode(400)->setJSON([
+                            'status' => 'error',
+                            'message' => 'Wali kelas sudah digunakan di Kelas ' . $existingClass['name']
+                        ]);
+                    }
+                }
+
+                $data['teacher_id'] = $teacherId;
+
+                if ($teacherId) {
+                    $userModel = model(\App\Models\UserModel::class);
+                    $teacher = $userModel->find($teacherId);
+                    if ($teacher) {
+                        $data['homeroom_teacher'] = $teacher['full_name'];
+                    }
+                } else {
+                    $data['homeroom_teacher'] = '';
+                }
+            }
+
+            if (!empty($data)) {
+                $this->classModel->update($id, $data);
+            }
+            return $this->response->setJSON([
+                'status' => 'success',
+                'message' => 'Kelas berhasil diperbarui',
+                'data' => $this->classModel->find($id)
+            ]);
+        } catch (\Throwable $e) {
+            return $this->response->setStatusCode(500)->setJSON([
+                'status' => 'error',
+                'message' => 'Gagal memperbarui kelas: ' . $e->getMessage()
+            ]);
+        }
+    }
+
+    /**
+     * API: Delete class
+     */
+    public function apiDeleteClass($id)
+    {
+        try {
+            $class = $this->classModel->find($id);
+            if (!$class) {
+                return $this->response->setStatusCode(404)->setJSON([
+                    'status' => 'error',
+                    'message' => 'Kelas tidak ditemukan'
+                ]);
+            }
+
+            // Check if class has students
+            $studentCount = $this->studentModel->where('class_id', $id)->countAllResults();
+            if ($studentCount > 0) {
+                return $this->response->setStatusCode(400)->setJSON([
+                    'status' => 'error',
+                    'message' => "Kelas tidak dapat dihapus karena masih memiliki {$studentCount} siswa. Pindahkan siswa terlebih dahulu."
+                ]);
+            }
+
+            $this->classModel->delete($id);
+            return $this->response->setJSON([
+                'status' => 'success',
+                'message' => 'Kelas berhasil dihapus'
+            ]);
+        } catch (\Throwable $e) {
+            return $this->response->setStatusCode(500)->setJSON([
+                'status' => 'error',
+                'message' => 'Gagal menghapus kelas: ' . $e->getMessage()
+            ]);
+        }
+    }
+
+    // ==================== 7 Kebiasaan Anak Indonesia ====================
+
+    /**
+     * Page: 7 Kebiasaan Anak Indonesia
+     */
+    public function habitsDaily()
+    {
+        if (session()->get('role') !== 'admin') {
+            return redirect()->to('/')->with('error', 'Unauthorized access');
+        }
+        return view('admin/habits_daily', ['activePage' => 'admin/habits-daily']);
+    }
+
+    public function habitsMonthly()
+    {
+        if (session()->get('role') !== 'admin') {
+            return redirect()->to('/')->with('error', 'Unauthorized access');
+        }
+        return view('admin/habits_monthly', ['activePage' => 'admin/habits-monthly']);
+    }
+
+    /**
+     * API: Get habit records for a class in a date range
+     */
+    public function apiGetHabits()
+    {
+        try {
+            $classId = $this->request->getGet('class_id');
+            $month = $this->request->getGet('month') ?? date('m');
+            $year = $this->request->getGet('year') ?? date('Y');
+
+            if (!$classId) {
+                return $this->response->setStatusCode(400)->setJSON([
+                    'status' => 'error',
+                    'message' => 'class_id diperlukan'
+                ]);
+            }
+
+            // Get students in class
+            $students = $this->studentModel
+                ->where('class_id', $classId)
+                ->where('active', 1)
+                ->orderBy('name', 'ASC')
+                ->findAll();
+
+            if (empty($students)) {
+                return $this->response->setJSON([
+                    'status' => 'success',
+                    'data' => [
+                        'students' => [],
+                        'habits' => [],
+                        'dates' => [],
+                    ]
+                ]);
+            }
+
+            $studentIds = array_column($students, 'id');
+
+            // Get date range for the month
+            $daysInMonth = cal_days_in_month(CAL_GREGORIAN, (int)$month, (int)$year);
+            $startDate = sprintf('%04d-%02d-01', $year, $month);
+            $endDate = sprintf('%04d-%02d-%02d', $year, $month, $daysInMonth);
+
+            // Build dates array
+            $dates = [];
+            for ($d = 1; $d <= $daysInMonth; $d++) {
+                $dateStr = sprintf('%04d-%02d-%02d', $year, $month, $d);
+                $dayOfWeek = date('N', strtotime($dateStr)); // 1=Mon, 7=Sun
+                $dates[] = [
+                    'date' => $dateStr,
+                    'day_name' => $this->getIndonesianDayName($dayOfWeek),
+                    'is_weekend' => $dayOfWeek >= 6,
+                ];
+            }
+
+            // Get habit records
+            $habitModel = model(\App\Models\StudentHabitModel::class);
+            $habits = $habitModel
+                ->whereIn('student_id', $studentIds)
+                ->where('date >=', $startDate)
+                ->where('date <=', $endDate)
+                ->findAll();
+
+            // Organize by student_id and date
+            $habitMap = [];
+            foreach ($habits as $h) {
+                $habitMap[$h['student_id']][$h['date']] = $h;
+            }
+
+            // Get class info
+            $class = $this->classModel->find($classId);
+
+            return $this->response->setJSON([
+                'status' => 'success',
+                'data' => [
+                    'class' => $class,
+                    'students' => $students,
+                    'habits' => $habitMap,
+                    'dates' => $dates,
+                ]
+            ]);
+        } catch (\Throwable $e) {
+            return $this->response->setStatusCode(500)->setJSON([
+                'status' => 'error',
+                'message' => 'Gagal mengambil data kebiasaan: ' . $e->getMessage()
+            ]);
+        }
+    }
+
+    /**
+     * API: Save habit record for a student on a date
+     */
+    public function apiSaveHabit()
+    {
+        try {
+            $json = $this->request->getJSON(true);
+            $studentId = $json['student_id'] ?? null;
+            $date = $json['date'] ?? null;
+
+            if (!$studentId || !$date) {
+                return $this->response->setStatusCode(400)->setJSON([
+                    'status' => 'error',
+                    'message' => 'student_id dan date diperlukan'
+                ]);
+            }
+
+            $habitModel = model(\App\Models\StudentHabitModel::class);
+            $habitColumns = array_keys(\App\Models\StudentHabitModel::getHabitColumns());
+
+            $data = [
+                'student_id' => $studentId,
+                'date' => $date,
+            ];
+
+            foreach ($habitColumns as $col) {
+                $data[$col] = isset($json[$col]) ? (int)$json[$col] : 0;
+            }
+
+            // Check if record exists
+            $existing = $habitModel
+                ->where('student_id', $studentId)
+                ->where('date', $date)
+                ->first();
+
+            if ($existing) {
+                $habitModel->update($existing['id'], $data);
+            } else {
+                $habitModel->insert($data);
+            }
+
+            return $this->response->setJSON([
+                'status' => 'success',
+                'message' => 'Data kebiasaan berhasil disimpan'
+            ]);
+        } catch (\Throwable $e) {
+            return $this->response->setStatusCode(500)->setJSON([
+                'status' => 'error',
+                'message' => 'Gagal menyimpan data kebiasaan: ' . $e->getMessage()
+            ]);
+        }
+    }
+
+    /**
+     * API: Bulk save habits for a class on a date
+     */
+    public function apiSaveHabitsBulk()
+    {
+        try {
+            $json = $this->request->getJSON(true);
+            $records = $json['records'] ?? [];
+            $date = $json['date'] ?? null;
+
+            if (!$date || empty($records)) {
+                return $this->response->setStatusCode(400)->setJSON([
+                    'status' => 'error',
+                    'message' => 'date dan records diperlukan'
+                ]);
+            }
+
+            $habitModel = model(\App\Models\StudentHabitModel::class);
+            $habitColumns = array_keys(\App\Models\StudentHabitModel::getHabitColumns());
+            $saved = 0;
+
+            foreach ($records as $record) {
+                $studentId = $record['student_id'] ?? null;
+                if (!$studentId) continue;
+
+                $data = [
+                    'student_id' => $studentId,
+                    'date' => $date,
+                ];
+
+                foreach ($habitColumns as $col) {
+                    $data[$col] = isset($record[$col]) ? (int)$record[$col] : 0;
+                }
+
+                $existing = $habitModel
+                    ->where('student_id', $studentId)
+                    ->where('date', $date)
+                    ->first();
+
+                if ($existing) {
+                    $habitModel->update($existing['id'], $data);
+                } else {
+                    $habitModel->insert($data);
+                }
+                $saved++;
+            }
+
+            return $this->response->setJSON([
+                'status' => 'success',
+                'message' => "Data kebiasaan {$saved} siswa berhasil disimpan"
+            ]);
+        } catch (\Throwable $e) {
+            return $this->response->setStatusCode(500)->setJSON([
+                'status' => 'error',
+                'message' => 'Gagal menyimpan data kebiasaan: ' . $e->getMessage()
+            ]);
+        }
+    }
+
+    /**
+     * API: Get habit recap/summary for a class in a month
+     */
+    public function apiGetHabitRecap()
+    {
+        try {
+            $classId = $this->request->getGet('class_id');
+            $month = $this->request->getGet('month') ?? date('m');
+            $year = $this->request->getGet('year') ?? date('Y');
+
+            if (!$classId) {
+                return $this->response->setStatusCode(400)->setJSON([
+                    'status' => 'error',
+                    'message' => 'class_id diperlukan'
+                ]);
+            }
+
+            // Get students in class
+            $students = $this->studentModel
+                ->where('class_id', $classId)
+                ->where('active', 1)
+                ->orderBy('name', 'ASC')
+                ->findAll();
+
+            if (empty($students)) {
+                return $this->response->setJSON([
+                    'status' => 'success',
+                    'data' => ['students' => [], 'recap' => []]
+                ]);
+            }
+
+            $studentIds = array_column($students, 'id');
+            $daysInMonth = cal_days_in_month(CAL_GREGORIAN, (int)$month, (int)$year);
+            $startDate = sprintf('%04d-%02d-01', $year, $month);
+            $endDate = sprintf('%04d-%02d-%02d', $year, $month, $daysInMonth);
+
+            // Build dates
+            $dates = [];
+            for ($d = 1; $d <= $daysInMonth; $d++) {
+                $dateStr = sprintf('%04d-%02d-%02d', $year, $month, $d);
+                $dayOfWeek = date('N', strtotime($dateStr));
+                $dates[] = [
+                    'date' => $dateStr,
+                    'day_name' => $this->getIndonesianDayName($dayOfWeek),
+                    'day' => $d,
+                    'is_weekend' => $dayOfWeek >= 6,
+                ];
+            }
+
+            // Get habits
+            $habitModel = model(\App\Models\StudentHabitModel::class);
+            $habits = $habitModel
+                ->whereIn('student_id', $studentIds)
+                ->where('date >=', $startDate)
+                ->where('date <=', $endDate)
+                ->findAll();
+
+            // Per-date summary across all students
+            $habitColumns = array_keys(\App\Models\StudentHabitModel::getHabitColumns());
+            $dateSummary = [];
+
+            foreach ($dates as $dateInfo) {
+                $dateStr = $dateInfo['date'];
+                $summary = [
+                    'date' => $dateStr,
+                    'day_name' => $dateInfo['day_name'],
+                    'day' => $dateInfo['day'],
+                    'is_weekend' => $dateInfo['is_weekend'],
+                ];
+
+                $totalChecked = 0;
+                $totalPossible = count($students) * 7;
+                $hasData = false;
+
+                foreach ($habitColumns as $col) {
+                    $count = 0;
+                    foreach ($habits as $h) {
+                        if ($h['date'] === $dateStr && $h[$col]) {
+                            $count++;
+                            $hasData = true;
+                        }
+                    }
+                    $summary[$col] = $count;
+                    $totalChecked += $count;
+                }
+
+                $summary['total_students'] = count($students);
+                $summary['percentage'] = $totalPossible > 0 ? round(($totalChecked / $totalPossible) * 100, 1) : 0;
+                $summary['has_data'] = $hasData;
+
+                $dateSummary[] = $summary;
+            }
+
+            // Get class info
+            $class = $this->classModel->find($classId);
+
+            return $this->response->setJSON([
+                'status' => 'success',
+                'data' => [
+                    'class' => $class,
+                    'students' => $students,
+                    'dates' => $dateSummary,
+                    'habit_labels' => \App\Models\StudentHabitModel::getHabitColumns(),
+                ]
+            ]);
+        } catch (\Throwable $e) {
+            return $this->response->setStatusCode(500)->setJSON([
+                'status' => 'error',
+                'message' => 'Gagal mengambil rekap kebiasaan: ' . $e->getMessage()
+            ]);
+        }
+    }
+
+    /**
+     * API: Get habit data for a specific student across a month
+     */
+    public function apiGetStudentMonthlyHabits()
+    {
+        try {
+            $studentId = $this->request->getGet('student_id');
+            $month = $this->request->getGet('month') ?? date('m');
+            $year = $this->request->getGet('year') ?? date('Y');
+
+            if (!$studentId) {
+                return $this->response->setStatusCode(400)->setJSON([
+                    'status' => 'error',
+                    'message' => 'student_id diperlukan'
+                ]);
+            }
+
+            $student = $this->studentModel->find($studentId);
+            if (!$student) {
+                return $this->response->setStatusCode(404)->setJSON([
+                    'status' => 'error',
+                    'message' => 'Siswa tidak ditemukan'
+                ]);
+            }
+
+            // Get class info
+            $class = $this->classModel->find($student['class_id']);
+
+            $daysInMonth = cal_days_in_month(CAL_GREGORIAN, (int)$month, (int)$year);
+            $startDate = sprintf('%04d-%02d-01', $year, $month);
+            $endDate = sprintf('%04d-%02d-%02d', $year, $month, $daysInMonth);
+
+            // Get habits for this student in the month
+            $habitModel = model(\App\Models\StudentHabitModel::class);
+            $habits = $habitModel
+                ->where('student_id', $studentId)
+                ->where('date >=', $startDate)
+                ->where('date <=', $endDate)
+                ->findAll();
+
+            // Index by date
+            $habitsByDate = [];
+            foreach ($habits as $h) {
+                $habitsByDate[$h['date']] = $h;
+            }
+
+            // Build dates with student's habit data
+            $habitColumns = array_keys(\App\Models\StudentHabitModel::getHabitColumns());
+            $dates = [];
+            $totalChecked = 0;
+            $totalPossible = 0;
+
+            for ($d = 1; $d <= $daysInMonth; $d++) {
+                $dateStr = sprintf('%04d-%02d-%02d', $year, $month, $d);
+                $dayOfWeek = date('N', strtotime($dateStr));
+                $isWeekend = $dayOfWeek >= 6;
+
+                $row = [
+                    'date' => $dateStr,
+                    'day' => $d,
+                    'day_name' => $this->getIndonesianDayName($dayOfWeek),
+                    'is_weekend' => $isWeekend,
+                    'has_data' => isset($habitsByDate[$dateStr]),
+                ];
+
+                $dayChecked = 0;
+                foreach ($habitColumns as $col) {
+                    $val = isset($habitsByDate[$dateStr]) ? (int)$habitsByDate[$dateStr][$col] : 0;
+                    $row[$col] = $val;
+                    $dayChecked += $val;
+                }
+
+                $row['percentage'] = 7 > 0 ? round(($dayChecked / 7) * 100, 1) : 0;
+
+                if (!$isWeekend) {
+                    $totalChecked += $dayChecked;
+                    $totalPossible += 7;
+                }
+
+                $dates[] = $row;
+            }
+
+            $overallPercentage = $totalPossible > 0 ? round(($totalChecked / $totalPossible) * 100, 1) : 0;
+
+            return $this->response->setJSON([
+                'status' => 'success',
+                'data' => [
+                    'student' => $student,
+                    'class' => $class,
+                    'dates' => $dates,
+                    'overall_percentage' => $overallPercentage,
+                    'habit_labels' => \App\Models\StudentHabitModel::getHabitColumns(),
+                ]
+            ]);
+        } catch (\Throwable $e) {
+            return $this->response->setStatusCode(500)->setJSON([
+                'status' => 'error',
+                'message' => 'Gagal mengambil data kebiasaan siswa: ' . $e->getMessage()
+            ]);
+        }
+    }
+
+    /**
+     * Helper: Get Indonesian day name
+     */
+    private function getIndonesianDayName(int $dayOfWeek): string
+    {
+        $days = [
+            1 => 'Senin',
+            2 => 'Selasa',
+            3 => 'Rabu',
+            4 => 'Kamis',
+            5 => 'Jumat',
+            6 => 'Sabtu',
+            7 => 'Minggu',
+        ];
+        return $days[$dayOfWeek] ?? '';
     }
 }

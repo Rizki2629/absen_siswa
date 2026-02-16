@@ -25,14 +25,62 @@ $routes->group('admin', ['filter' => 'auth'], static function (RouteCollection $
 	$routes->get('rekap', 'Admin::rekap');
 	$routes->get('shifts', 'Admin::shifts');
 	$routes->get('students', 'Admin::students');
+	$routes->get('teachers', 'Admin::teachers');
 	$routes->get('classes', 'Admin::classes');
+	$routes->get('habits', static function () {
+		return redirect()->to(base_url('admin/habits-daily'));
+	});
+	$routes->get('habits-daily', 'Admin::habitsDaily');
+	$routes->get('habits-monthly', 'Admin::habitsMonthly');
 	$routes->get('users', 'Admin::users');
 	$routes->get('reports', 'Admin::reports');
 	$routes->get('calendar', 'Admin::calendar');
 });
 
+// Teacher/Guru Routes
+$routes->group('teacher', ['filter' => 'auth'], static function (RouteCollection $routes): void {
+	$routes->get('dashboard', 'Teacher::dashboard');
+	$routes->get('attendance', 'Teacher::attendance');
+	$routes->get('rekap', 'Teacher::rekap');
+	$routes->get('habits-daily', 'Teacher::habitsDaily');
+	$routes->get('habits-monthly', 'Teacher::habitsMonthly');
+});
+
+// Teacher API Routes
+$routes->group('api/teacher', ['filter' => 'auth'], static function (RouteCollection $routes): void {
+	// Attendance API
+	$routes->get('attendance', 'Teacher::apiGetAttendance');
+	$routes->post('attendance', 'Teacher::apiSaveAttendance');
+
+	// Rekap API
+	$routes->get('rekap', 'Teacher::apiGetRekap');
+
+	// Habits API
+	$routes->get('habits', 'Teacher::apiGetHabits');
+	$routes->get('habits/recap', 'Teacher::apiGetHabitRecap');
+	$routes->get('habits/student', 'Teacher::apiGetStudentMonthlyHabits');
+
+	// Classes API (only their own class)
+	$routes->get('classes', 'Teacher::apiGetClasses');
+	$routes->get('students', 'Teacher::apiGetStudents');
+});
+
 // Admin API Routes (for AJAX calls)
 $routes->group('api/admin', ['filter' => 'auth'], static function (RouteCollection $routes): void {
+	// Users API
+	$routes->get('users', 'Admin::apiGetUsers');
+	$routes->get('users/(:num)', 'Admin::apiGetUser/$1');
+	$routes->post('users', 'Admin::apiCreateUser');
+	$routes->put('users/(:num)', 'Admin::apiUpdateUser/$1');
+	$routes->delete('users/(:num)', 'Admin::apiDeleteUser/$1');
+
+	// Teachers API
+	$routes->get('teachers', 'Admin::apiGetTeachers');
+	$routes->get('teachers/(:num)', 'Admin::apiGetTeacher/$1');
+	$routes->post('teachers', 'Admin::apiCreateTeacher');
+	$routes->put('teachers/(:num)', 'Admin::apiUpdateTeacher/$1');
+	$routes->delete('teachers/(:num)', 'Admin::apiDeleteTeacher/$1');
+
 	// Devices API
 	$routes->get('devices', 'Admin::apiGetDevices');
 	$routes->get('devices/(:num)', 'Admin::apiGetDevice/$1');
@@ -71,6 +119,16 @@ $routes->group('api/admin', ['filter' => 'auth'], static function (RouteCollecti
 	$routes->delete('students/(:num)', 'Admin::apiDeleteStudent/$1');
 
 	$routes->get('classes', 'Admin::apiGetClasses');
+	$routes->post('classes', 'Admin::apiCreateClass');
+	$routes->put('classes/(:num)', 'Admin::apiUpdateClass/$1');
+	$routes->delete('classes/(:num)', 'Admin::apiDeleteClass/$1');
+
+	// Habits API (7 Kebiasaan Anak Indonesia)
+	$routes->get('habits', 'Admin::apiGetHabits');
+	$routes->get('habits/recap', 'Admin::apiGetHabitRecap');
+	$routes->get('habits/student', 'Admin::apiGetStudentMonthlyHabits');
+	$routes->post('habits', 'Admin::apiSaveHabit');
+	$routes->post('habits/bulk', 'Admin::apiSaveHabitsBulk');
 
 	// School Holidays API
 	$routes->get('school-holidays', 'Admin::apiGetSchoolHolidays');
@@ -81,8 +139,16 @@ $routes->group('api/admin', ['filter' => 'auth'], static function (RouteCollecti
 $routes->group('student', ['filter' => 'auth'], static function (RouteCollection $routes): void {
 	$routes->get('dashboard', 'Student::dashboard');
 	$routes->get('attendance', 'Student::attendance');
+	$routes->get('habits', 'Student::habits');
 	$routes->get('notifications', 'Student::notifications');
 	$routes->get('profile', 'Student::profile');
+
+	// Student API
+	$routes->group('api', static function (RouteCollection $routes): void {
+		$routes->get('habits/today', 'Student::apiGetTodayHabits');
+		$routes->post('habits/toggle', 'Student::apiToggleHabit');
+		$routes->get('habits/stats', 'Student::apiGetHabitsStats');
+	});
 });
 
 // --------------------------------------------------------------------

@@ -14,8 +14,37 @@
     </div>
     <button onclick="openAddUserModal()" class="btn-primary flex items-center space-x-2">
         <span class="material-symbols-outlined">add</span>
-        <span>Tambah User</span>
+        <span id="addUserButtonText">Tambah User</span>
     </button>
+</div>
+
+<!-- Tabs -->
+<div class="mb-6">
+    <div>
+        <nav class="flex space-x-1">
+            <button onclick="switchTab('admin')" id="tab-admin" class="tab-button active text-purple-600 py-3 px-4 text-sm font-medium border-0">
+                <div class="flex items-center space-x-2">
+                    <span class="material-symbols-outlined text-base">shield_person</span>
+                    <span>Admin</span>
+                    <span id="count-admin" class="bg-purple-100 text-purple-600 ml-2 py-0.5 px-2 rounded-full text-xs font-semibold">0</span>
+                </div>
+            </button>
+            <button onclick="switchTab('teacher')" id="tab-teacher" class="tab-button text-gray-500 hover:text-purple-600 py-3 px-4 text-sm font-medium border-0">
+                <div class="flex items-center space-x-2">
+                    <span class="material-symbols-outlined text-base">person</span>
+                    <span>Guru</span>
+                    <span id="count-teacher" class="bg-gray-100 text-gray-600 ml-2 py-0.5 px-2 rounded-full text-xs font-semibold">0</span>
+                </div>
+            </button>
+            <button onclick="switchTab('parent')" id="tab-parent" class="tab-button text-gray-500 hover:text-purple-600 py-3 px-4 text-sm font-medium border-0">
+                <div class="flex items-center space-x-2">
+                    <span class="material-symbols-outlined text-base">school</span>
+                    <span>Siswa</span>
+                    <span id="count-parent" class="bg-gray-100 text-gray-600 ml-2 py-0.5 px-2 rounded-full text-xs font-semibold">0</span>
+                </div>
+            </button>
+        </nav>
+    </div>
 </div>
 
 <!-- Users Table -->
@@ -36,13 +65,13 @@
                 <tbody id="usersTable">
                     <?php if (!empty($users)): ?>
                         <?php foreach ($users as $user): ?>
-                            <tr class="border-b border-gray-100 hover:bg-gray-50">
+                            <tr class="border-b border-gray-100 hover:bg-gray-50" data-role="<?= esc($user['role']) ?>">
                                 <td class="py-3 px-4">
                                     <div class="flex items-center">
                                         <div class="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center mr-3">
-                                            <span class="text-primary-600 font-bold"><?= strtoupper(substr($user['name'], 0, 1)) ?></span>
+                                            <span class="text-primary-600 font-bold"><?= strtoupper(substr($user['full_name'] ?? $user['username'], 0, 1)) ?></span>
                                         </div>
-                                        <span class="font-medium text-gray-900"><?= esc($user['name']) ?></span>
+                                        <span class="font-medium text-gray-900"><?= esc($user['full_name'] ?? $user['username']) ?></span>
                                     </div>
                                 </td>
                                 <td class="py-3 px-4 text-gray-600"><?= esc($user['username']) ?></td>
@@ -155,43 +184,201 @@
 </div>
 
 <script>
+    let currentTab = 'admin';
+    const allUsers = <?= json_encode($users ?? []) ?>;
+
+    function switchTab(role) {
+        currentTab = role;
+
+        // Update tab styling
+        document.querySelectorAll('.tab-button').forEach(btn => {
+            btn.classList.remove('active', 'text-purple-600');
+            btn.classList.add('text-gray-500');
+            // Reset count badge styling
+            const countSpan = btn.querySelector('span[id^="count-"]');
+            if (countSpan) {
+                countSpan.classList.remove('bg-purple-100', 'text-purple-600');
+                countSpan.classList.add('bg-gray-100', 'text-gray-600');
+            }
+        });
+
+        const activeTab = document.getElementById(`tab-${role}`);
+        activeTab.classList.remove('text-gray-500');
+        activeTab.classList.add('active', 'text-purple-600');
+        // Update active count badge styling
+        const activeCount = activeTab.querySelector('span[id^="count-"]');
+        if (activeCount) {
+            activeCount.classList.remove('bg-gray-100', 'text-gray-600');
+            activeCount.classList.add('bg-purple-100', 'text-purple-600');
+        }
+
+        // Filter table rows
+        const rows = document.querySelectorAll('#usersTable tr[data-role]');
+        rows.forEach(row => {
+            if (row.dataset.role === role) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+
+        // Update button text
+        const buttonTexts = {
+            'admin': 'Tambah Admin',
+            'teacher': 'Tambah Guru',
+            'parent': 'Tambah Siswa'
+        };
+        document.getElementById('addUserButtonText').textContent = buttonTexts[role];
+    }
+
+    function updateCounts() {
+        const counts = {
+            admin: 0,
+            teacher: 0,
+            parent: 0
+        };
+
+        allUsers.forEach(user => {
+            if (counts.hasOwnProperty(user.role)) {
+                counts[user.role]++;
+            }
+        });
+
+        document.getElementById('count-admin').textContent = counts.admin;
+        document.getElementById('count-teacher').textContent = counts.teacher;
+        document.getElementById('count-parent').textContent = counts.parent;
+    }
+
     function openAddUserModal() {
-        document.getElementById('userModalTitle').textContent = 'Tambah User Baru';
+        const titles = {
+            'admin': 'Tambah Admin Baru',
+            'teacher': 'Tambah Guru Baru',
+            'parent': 'Tambah Siswa Baru'
+        };
+        document.getElementById('userModalTitle').textContent = titles[currentTab] || 'Tambah User Baru';
         document.getElementById('userForm').reset();
         document.getElementById('userId').value = '';
         document.getElementById('passwordField').style.display = 'block';
         document.getElementById('userPassword').required = true;
+        document.getElementById('userRole').value = currentTab;
         document.getElementById('userModal').style.display = 'flex';
     }
+
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        updateCounts();
+        switchTab('admin');
+    });
 
     function closeUserModal() {
         document.getElementById('userModal').style.display = 'none';
     }
 
-    function editUser(id) {
-        document.getElementById('userModalTitle').textContent = 'Edit User';
-        document.getElementById('passwordField').style.display = 'none';
-        document.getElementById('userPassword').required = false;
-        // TODO: Load user data
-        alert('Edit user ' + id);
+    async function editUser(id) {
+        try {
+            const response = await fetch(`<?= base_url('api/admin/users') ?>/${id}`);
+            const result = await response.json();
+
+            if (result.status === 'success') {
+                document.getElementById('userModalTitle').textContent = 'Edit User';
+                document.getElementById('userId').value = result.data.id;
+                document.getElementById('userName').value = result.data.full_name || result.data.name || '';
+                document.getElementById('userUsername').value = result.data.username;
+                document.getElementById('userEmail').value = result.data.email || '';
+                document.getElementById('userRole').value = result.data.role;
+                document.getElementById('userActive').checked = result.data.is_active == 1;
+                document.getElementById('passwordField').style.display = 'none';
+                document.getElementById('userPassword').required = false;
+                document.getElementById('userModal').style.display = 'flex';
+            } else {
+                alert('Gagal memuat data user: ' + result.message);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Gagal memuat data user');
+        }
     }
 
     function resetPassword(id) {
-        if (confirm('Reset password user ini?')) {
-            alert('Reset password user ' + id);
+        if (confirm('Reset password user ini ke password default?')) {
+            // TODO: Implement reset password endpoint
+            alert('Fitur reset password akan segera tersedia');
         }
     }
 
-    function deleteUser(id) {
-        if (confirm('Apakah Anda yakin ingin menghapus user ini?')) {
-            alert('Delete user ' + id);
+    async function deleteUser(id) {
+        if (!confirm('Apakah Anda yakin ingin menghapus user ini?')) {
+            return;
+        }
+
+        try {
+            const response = await fetch(`<?= base_url('api/admin/users') ?>/${id}`, {
+                method: 'DELETE'
+            });
+            const result = await response.json();
+
+            if (result.status === 'success') {
+                alert('User berhasil dihapus');
+                location.reload();
+            } else {
+                alert('Gagal menghapus user: ' + result.message);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Gagal menghapus user');
         }
     }
 
-    document.getElementById('userForm').addEventListener('submit', function(e) {
+    document.getElementById('userForm').addEventListener('submit', async function(e) {
         e.preventDefault();
-        alert('Save user');
-        closeUserModal();
+
+        const userId = document.getElementById('userId').value;
+        const formData = {
+            name: document.getElementById('userName').value,
+            username: document.getElementById('userUsername').value,
+            email: document.getElementById('userEmail').value,
+            role: document.getElementById('userRole').value,
+            is_active: document.getElementById('userActive').checked ? 1 : 0
+        };
+
+        // Only include password when adding new user or when password field is visible
+        if (!userId || document.getElementById('passwordField').style.display !== 'none') {
+            const password = document.getElementById('userPassword').value;
+            if (password) {
+                formData.password = password;
+            }
+        }
+
+        try {
+            let url = '<?= base_url('api/admin/users') ?>';
+            let method = 'POST';
+
+            if (userId) {
+                url += '/' + userId;
+                method = 'PUT';
+            }
+
+            const response = await fetch(url, {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            });
+
+            const result = await response.json();
+
+            if (result.status === 'success') {
+                alert(userId ? 'User berhasil diupdate' : 'User berhasil ditambahkan');
+                closeUserModal();
+                location.reload();
+            } else {
+                alert('Gagal menyimpan user: ' + result.message);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Gagal menyimpan user');
+        }
     });
 </script>
 

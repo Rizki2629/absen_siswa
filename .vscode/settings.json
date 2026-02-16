@@ -16,5 +16,14 @@
   },
   "[css]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "mcp.servers": {
+    "stitch": {
+      "type": "http",
+      "url": "https://stitch.googleapis.com/mcp",
+      "headers": {
+        "X-Goog-Api-Key": "AQ.Ab8RN6KfIoIPu0jnQUFoloTT0cDqbuFY-LMLK1tfTDayKhuF6g"
+      }
+    }
   }
 }

@@ -68,9 +68,12 @@ class Auth extends BaseController
         switch ($role) {
             case 'admin':
                 return redirect()->to('/admin/dashboard');
+            case 'teacher':
+                return redirect()->to('/teacher/dashboard');
             case 'guru_piket':
                 return redirect()->to('/guru-piket/dashboard');
             case 'student':
+            case 'siswa':
             case 'parent':
                 return redirect()->to('/student/dashboard');
             default:
