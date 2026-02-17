@@ -14,7 +14,11 @@ $menuItems = [
 ];
 ?>
 <?php foreach ($menuItems as $item): ?>
-    <a href="<?= base_url($item['url']) ?>" class="<?= ($activePage ?? '') === $item['url'] ? 'sidebar-item-active' : 'sidebar-item' ?>">
+    <?php
+    $isActive = ($activePage ?? '') === $item['url'];
+    $itemClass = $isActive ? 'sidebar-item-active' : 'sidebar-item';
+    ?>
+    <a href="<?= base_url($item['url']) ?>" class="<?= $itemClass ?>">
         <span class="material-symbols-outlined mr-3"><?= $item['icon'] ?></span>
         <span><?= $item['label'] ?></span>
     </a>

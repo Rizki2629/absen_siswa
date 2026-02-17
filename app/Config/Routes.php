@@ -58,6 +58,7 @@ $routes->group('api/teacher', ['filter' => 'auth'], static function (RouteCollec
 	// Habits API
 	$routes->get('habits', 'Teacher::apiGetHabits');
 	$routes->get('habits/recap', 'Teacher::apiGetHabitRecap');
+	$routes->get('habits/class-recap', 'Teacher::apiGetHabitClassRecap');
 	$routes->get('habits/student', 'Teacher::apiGetStudentMonthlyHabits');
 
 	// Classes API (only their own class)
@@ -148,6 +149,7 @@ $routes->group('student', ['filter' => 'auth'], static function (RouteCollection
 		$routes->get('habits/today', 'Student::apiGetTodayHabits');
 		$routes->post('habits/toggle', 'Student::apiToggleHabit');
 		$routes->get('habits/stats', 'Student::apiGetHabitsStats');
+		$routes->get('habits/parent-summary', 'Student::apiGetParentWeeklySummary');
 	});
 });
 

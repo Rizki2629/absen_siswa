@@ -410,6 +410,7 @@ class Teacher extends BaseController
     {
         try {
             $classId = $this->request->getGet('class_id');
+            $date = $this->request->getGet('date');
             $month = $this->request->getGet('month') ?? date('m');
             $year = $this->request->getGet('year') ?? date('Y');
 
@@ -436,7 +437,53 @@ class Teacher extends BaseController
             if (empty($students)) {
                 return $this->response->setJSON([
                     'status' => 'success',
-                    'data' => ['students' => [], 'habits' => [], 'dates' => []]
+                    'data' => $date
+                        ? ['students' => [], 'date' => $date, 'habit_labels' => StudentHabitModel::getHabitColumns()]
+                        : ['students' => [], 'habits' => [], 'dates' => []]
+                ]);
+            }
+
+            if ($date) {
+                $studentIds = array_column($students, 'id');
+                $dailyHabits = $this->habitModel
+                    ->whereIn('student_id', $studentIds)
+                    ->where('date', $date)
+                    ->findAll();
+
+                $dailyMap = [];
+                foreach ($dailyHabits as $row) {
+                    $dailyMap[$row['student_id']] = $row;
+                }
+
+                $rows = [];
+                foreach ($students as $student) {
+                    $habit = $dailyMap[$student['id']] ?? null;
+                    $completed = 0;
+                    $row = [
+                        'student_id' => $student['id'],
+                        'student_name' => $student['name'],
+                    ];
+
+                    foreach (array_keys(StudentHabitModel::getHabitColumns()) as $field) {
+                        $value = $habit ? (int) ($habit[$field] ?? 0) : 0;
+                        $row[$field] = $value;
+                        $completed += $value;
+                    }
+
+                    $row['completed'] = $completed;
+                    $row['total'] = 7;
+                    $row['status'] = $completed >= 6 ? 'konsisten' : ($completed <= 3 ? 'sering bolong' : 'cukup');
+                    $rows[] = $row;
+                }
+
+                return $this->response->setJSON([
+                    'status' => 'success',
+                    'data' => [
+                        'class' => $class,
+                        'date' => $date,
+                        'students' => $rows,
+                        'habit_labels' => StudentHabitModel::getHabitColumns(),
+                    ]
                 ]);
             }
 
@@ -474,6 +521,124 @@ class Teacher extends BaseController
                     'students' => $students,
                     'habits' => $habitMap,
                     'dates' => $dates,
+                ]
+            ]);
+        } catch (\Exception $e) {
+            return $this->response->setStatusCode(500)->setJSON([
+                'status' => 'error',
+                'message' => 'Gagal: ' . $e->getMessage()
+            ]);
+        }
+    }
+
+    /**
+     * API: Rekap kelas kebiasaan + intervensi dini
+     */
+    public function apiGetHabitClassRecap()
+    {
+        try {
+            $classId = $this->request->getGet('class_id');
+            $endDate = $this->request->getGet('date') ?? date('Y-m-d');
+
+            $userId = session()->get('id');
+            $class = $this->classModel
+                ->where('id', $classId)
+                ->where('teacher_id', $userId)
+                ->first();
+
+            if (!$class) {
+                return $this->response->setStatusCode(403)->setJSON([
+                    'status' => 'error',
+                    'message' => 'Akses ditolak'
+                ]);
+            }
+
+            $students = $this->studentModel
+                ->where('class_id', $classId)
+                ->where('active', 1)
+                ->orderBy('name', 'ASC')
+                ->findAll();
+
+            if (empty($students)) {
+                return $this->response->setJSON([
+                    'status' => 'success',
+                    'data' => [
+                        'class' => $class,
+                        'recap' => [],
+                    ]
+                ]);
+            }
+
+            $startDate = date('Y-m-d', strtotime($endDate . ' -13 days'));
+            $studentIds = array_column($students, 'id');
+            $habits = $this->habitModel
+                ->whereIn('student_id', $studentIds)
+                ->where('date >=', $startDate)
+                ->where('date <=', $endDate)
+                ->orderBy('date', 'ASC')
+                ->findAll();
+
+            $habitFields = array_keys(StudentHabitModel::getHabitColumns());
+            $byStudent = [];
+            foreach ($habits as $habit) {
+                $done = 0;
+                foreach ($habitFields as $field) {
+                    $done += !empty($habit[$field]) ? 1 : 0;
+                }
+                $byStudent[$habit['student_id']][$habit['date']] = $done;
+            }
+
+            $recap = [];
+            foreach ($students as $student) {
+                $series = $byStudent[$student['id']] ?? [];
+                $last7 = $this->extractLastDaysSeries($series, $endDate, 7);
+
+                $avg = !empty($last7) ? round(array_sum($last7) / count($last7), 2) : 0;
+                $perfectDays = 0;
+                $lowDays = 0;
+                foreach ($last7 as $count) {
+                    if ($count === 7) {
+                        $perfectDays++;
+                    }
+                    if ($count <= 3) {
+                        $lowDays++;
+                    }
+                }
+
+                $status = 'perlu bimbingan';
+                if ($avg >= 5.5 && $perfectDays >= 2) {
+                    $status = 'konsisten';
+                } elseif ($lowDays >= 3 || $avg < 4) {
+                    $status = 'sering bolong';
+                }
+
+                $intervention = $this->isThreeDayDeclining($series, $endDate);
+
+                $recap[] = [
+                    'student_id' => $student['id'],
+                    'student_name' => $student['name'],
+                    'avg_completed_7_days' => $avg,
+                    'perfect_days_7_days' => $perfectDays,
+                    'low_days_7_days' => $lowDays,
+                    'status' => $status,
+                    'need_intervention' => $intervention,
+                    'intervention_reason' => $intervention ? '3 hari berturut-turut menurun' : null,
+                ];
+            }
+
+            usort($recap, static function ($a, $b) {
+                if ($a['need_intervention'] === $b['need_intervention']) {
+                    return $a['avg_completed_7_days'] <=> $b['avg_completed_7_days'];
+                }
+                return $a['need_intervention'] ? -1 : 1;
+            });
+
+            return $this->response->setJSON([
+                'status' => 'success',
+                'data' => [
+                    'class' => $class,
+                    'recap' => $recap,
+                    'date' => $endDate,
                 ]
             ]);
         } catch (\Exception $e) {
@@ -713,5 +878,28 @@ class Teacher extends BaseController
             7 => 'Minggu',
         ];
         return $days[$dayOfWeek] ?? '';
+    }
+
+    private function extractLastDaysSeries(array $seriesByDate, string $endDate, int $days): array
+    {
+        $result = [];
+        for ($i = $days - 1; $i >= 0; $i--) {
+            $date = date('Y-m-d', strtotime($endDate . ' -' . $i . ' days'));
+            $result[] = (int) ($seriesByDate[$date] ?? 0);
+        }
+        return $result;
+    }
+
+    private function isThreeDayDeclining(array $seriesByDate, string $endDate): bool
+    {
+        $d0 = date('Y-m-d', strtotime($endDate));
+        $d1 = date('Y-m-d', strtotime($endDate . ' -1 day'));
+        $d2 = date('Y-m-d', strtotime($endDate . ' -2 days'));
+
+        if (!isset($seriesByDate[$d0], $seriesByDate[$d1], $seriesByDate[$d2])) {
+            return false;
+        }
+
+        return $seriesByDate[$d2] > $seriesByDate[$d1] && $seriesByDate[$d1] > $seriesByDate[$d0];
     }
 }

@@ -77,13 +77,15 @@
                     <tr class="bg-primary-50">
                         <th class="px-4 py-3 text-left text-xs font-medium text-primary-700 uppercase tracking-wider border-b-2 border-primary-200 sticky left-0 bg-primary-50">No</th>
                         <th class="px-4 py-3 text-left text-xs font-medium text-primary-700 uppercase tracking-wider border-b-2 border-primary-200 sticky left-12 bg-primary-50">Nama</th>
-                        <th class="px-4 py-3 text-center text-xs font-medium text-primary-700 uppercase tracking-wider border-b-2 border-primary-200">Proaktif</th>
-                        <th class="px-4 py-3 text-center text-xs font-medium text-primary-700 uppercase tracking-wider border-b-2 border-primary-200">Merujuk Tujuan</th>
-                        <th class="px-4 py-3 text-center text-xs font-medium text-primary-700 uppercase tracking-wider border-b-2 border-primary-200">Dahulukan Yang Utama</th>
-                        <th class="px-4 py-3 text-center text-xs font-medium text-primary-700 uppercase tracking-wider border-b-2 border-primary-200">Berpikir Menang-Menang</th>
-                        <th class="px-4 py-3 text-center text-xs font-medium text-primary-700 uppercase tracking-wider border-b-2 border-primary-200">Mengerti Lalu Dimengerti</th>
-                        <th class="px-4 py-3 text-center text-xs font-medium text-primary-700 uppercase tracking-wider border-b-2 border-primary-200">Wujudkan Sinergi</th>
-                        <th class="px-4 py-3 text-center text-xs font-medium text-primary-700 uppercase tracking-wider border-b-2 border-primary-200">Mengasah Gergaji</th>
+                        <th class="px-4 py-3 text-center text-xs font-medium text-primary-700 uppercase tracking-wider border-b-2 border-primary-200">Bangun Pagi</th>
+                        <th class="px-4 py-3 text-center text-xs font-medium text-primary-700 uppercase tracking-wider border-b-2 border-primary-200">Beribadah</th>
+                        <th class="px-4 py-3 text-center text-xs font-medium text-primary-700 uppercase tracking-wider border-b-2 border-primary-200">Olahraga</th>
+                        <th class="px-4 py-3 text-center text-xs font-medium text-primary-700 uppercase tracking-wider border-b-2 border-primary-200">Makan Sehat</th>
+                        <th class="px-4 py-3 text-center text-xs font-medium text-primary-700 uppercase tracking-wider border-b-2 border-primary-200">Gemar Belajar</th>
+                        <th class="px-4 py-3 text-center text-xs font-medium text-primary-700 uppercase tracking-wider border-b-2 border-primary-200">Bermasyarakat</th>
+                        <th class="px-4 py-3 text-center text-xs font-medium text-primary-700 uppercase tracking-wider border-b-2 border-primary-200">Tidur Cepat</th>
+                        <th class="px-4 py-3 text-center text-xs font-medium text-primary-700 uppercase tracking-wider border-b-2 border-primary-200">Total</th>
+                        <th class="px-4 py-3 text-center text-xs font-medium text-primary-700 uppercase tracking-wider border-b-2 border-primary-200">Status</th>
                     </tr>
                 </thead>
                 <tbody id="dataTableBody">
@@ -91,6 +93,29 @@
                 </tbody>
             </table>
         </div>
+    </div>
+</div>
+
+<div id="recapContainer" class="hidden mt-6 bg-white rounded-2xl shadow overflow-hidden">
+    <div class="px-6 py-4 bg-indigo-600 text-white">
+        <h3 class="text-lg font-bold flex items-center">
+            <span class="material-symbols-outlined mr-2">insights</span>
+            Rekap Kelas & Intervensi Dini
+        </h3>
+    </div>
+    <div class="p-6 overflow-x-auto">
+        <table class="w-full">
+            <thead>
+                <tr class="bg-indigo-50">
+                    <th class="px-4 py-3 text-left text-xs font-medium text-indigo-700 uppercase tracking-wider border-b border-indigo-200">Nama</th>
+                    <th class="px-4 py-3 text-center text-xs font-medium text-indigo-700 uppercase tracking-wider border-b border-indigo-200">Rata-rata 7 Hari</th>
+                    <th class="px-4 py-3 text-center text-xs font-medium text-indigo-700 uppercase tracking-wider border-b border-indigo-200">Hari Sempurna</th>
+                    <th class="px-4 py-3 text-center text-xs font-medium text-indigo-700 uppercase tracking-wider border-b border-indigo-200">Kategori</th>
+                    <th class="px-4 py-3 text-center text-xs font-medium text-indigo-700 uppercase tracking-wider border-b border-indigo-200">Intervensi Dini</th>
+                </tr>
+            </thead>
+            <tbody id="recapTableBody"></tbody>
+        </table>
     </div>
 </div>
 
@@ -174,26 +199,29 @@
             const response = await fetch(`<?= base_url('api/teacher/habits') ?>?class_id=${classId}&date=${date}`);
             const result = await response.json();
 
-            if (!result.success) {
+            if (result.status !== 'success') {
                 alert(result.message);
                 return;
             }
 
             renderTable(result.data);
+            await loadClassRecap(classId, date);
 
             document.getElementById('emptyState').classList.add('hidden');
             document.getElementById('dataContainer').classList.remove('hidden');
+            document.getElementById('recapContainer').classList.remove('hidden');
         } catch (error) {
             console.error('Error loading habits:', error);
             alert('Gagal memuat data kebiasaan');
         }
     }
 
-    function renderTable(students) {
+    function renderTable(payload) {
         const tbody = document.getElementById('dataTableBody');
+        const students = payload.students || [];
 
         if (students.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="9" class="px-4 py-8 text-center text-gray-500">Tidak ada data siswa</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="11" class="px-4 py-8 text-center text-gray-500">Tidak ada data siswa</td></tr>';
             return;
         }
 
@@ -203,33 +231,86 @@
             html += `
             <tr class="hover:bg-primary-50 transition-colors">
                 <td class="px-4 py-3 border-b border-gray-200 text-sm sticky left-0 bg-white">${index + 1}</td>
-                <td class="px-4 py-3 border-b border-gray-200 text-sm font-medium sticky left-12 bg-white">${student.name}</td>
+                <td class="px-4 py-3 border-b border-gray-200 text-sm font-medium sticky left-12 bg-white">${student.student_name}</td>
                 <td class="px-4 py-3 border-b border-gray-200 text-center">
-                    ${getIcon(student.proaktif)}
+                    ${getIcon(student.bangun_pagi)}
                 </td>
                 <td class="px-4 py-3 border-b border-gray-200 text-center">
-                    ${getIcon(student.merujuk_tujuan)}
+                    ${getIcon(student.beribadah)}
                 </td>
                 <td class="px-4 py-3 border-b border-gray-200 text-center">
-                    ${getIcon(student.dahulukan_yang_utama)}
+                    ${getIcon(student.berolahraga)}
                 </td>
                 <td class="px-4 py-3 border-b border-gray-200 text-center">
-                    ${getIcon(student.berpikir_menang_menang)}
+                    ${getIcon(student.makan_sehat)}
                 </td>
                 <td class="px-4 py-3 border-b border-gray-200 text-center">
-                    ${getIcon(student.mengerti_lalu_dimengerti)}
+                    ${getIcon(student.gemar_belajar)}
                 </td>
                 <td class="px-4 py-3 border-b border-gray-200 text-center">
-                    ${getIcon(student.wujudkan_sinergi)}
+                    ${getIcon(student.bermasyarakat)}
                 </td>
                 <td class="px-4 py-3 border-b border-gray-200 text-center">
-                    ${getIcon(student.mengasah_gergaji)}
+                    ${getIcon(student.tidur_cepat)}
+                </td>
+                <td class="px-4 py-3 border-b border-gray-200 text-center text-sm font-bold text-primary-700">
+                    ${student.completed}/7
+                </td>
+                <td class="px-4 py-3 border-b border-gray-200 text-center">
+                    ${getStatusBadge(student.status)}
                 </td>
             </tr>
         `;
         });
 
         tbody.innerHTML = html;
+    }
+
+    async function loadClassRecap(classId, date) {
+        try {
+            const response = await fetch(`<?= base_url('api/teacher/habits/class-recap') ?>?class_id=${classId}&date=${date}`);
+            const result = await response.json();
+
+            if (result.status !== 'success') {
+                return;
+            }
+
+            renderClassRecap(result.data.recap || []);
+        } catch (error) {
+            console.error('Error loading recap:', error);
+        }
+    }
+
+    function renderClassRecap(rows) {
+        const tbody = document.getElementById('recapTableBody');
+        if (!rows.length) {
+            tbody.innerHTML = '<tr><td colspan="5" class="px-4 py-8 text-center text-gray-500">Belum ada data rekap</td></tr>';
+            return;
+        }
+
+        tbody.innerHTML = rows.map((row) => `
+            <tr class="hover:bg-indigo-50 transition-colors">
+                <td class="px-4 py-3 border-b border-gray-200 text-sm font-semibold">${row.student_name}</td>
+                <td class="px-4 py-3 border-b border-gray-200 text-center text-sm">${row.avg_completed_7_days}/7</td>
+                <td class="px-4 py-3 border-b border-gray-200 text-center text-sm">${row.perfect_days_7_days}</td>
+                <td class="px-4 py-3 border-b border-gray-200 text-center">${getStatusBadge(row.status)}</td>
+                <td class="px-4 py-3 border-b border-gray-200 text-center">
+                    ${row.need_intervention
+                        ? '<span class="inline-flex items-center px-2 py-1 rounded-lg bg-red-100 text-red-700 text-xs font-bold">Perlu Intervensi</span>'
+                        : '<span class="inline-flex items-center px-2 py-1 rounded-lg bg-green-100 text-green-700 text-xs font-bold">Aman</span>'}
+                </td>
+            </tr>
+        `).join('');
+    }
+
+    function getStatusBadge(status) {
+        if (status === 'konsisten') {
+            return '<span class="inline-flex items-center px-2 py-1 rounded-lg bg-green-100 text-green-700 text-xs font-bold">Konsisten</span>';
+        }
+        if (status === 'sering bolong') {
+            return '<span class="inline-flex items-center px-2 py-1 rounded-lg bg-red-100 text-red-700 text-xs font-bold">Sering Bolong</span>';
+        }
+        return '<span class="inline-flex items-center px-2 py-1 rounded-lg bg-yellow-100 text-yellow-700 text-xs font-bold">Perlu Bimbingan</span>';
     }
 
     function getIcon(checked) {

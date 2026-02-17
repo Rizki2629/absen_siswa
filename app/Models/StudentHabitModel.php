@@ -22,6 +22,7 @@ class StudentHabitModel extends Model
         'gemar_belajar',
         'bermasyarakat',
         'tidur_cepat',
+        'habit_answers',
     ];
 
     protected $useTimestamps = true;

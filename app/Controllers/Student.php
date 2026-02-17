@@ -6,6 +6,8 @@ use App\Models\StudentModel;
 use App\Models\AttendanceSummaryModel;
 use App\Models\AttendanceLogModel;
 use App\Models\NotificationModel;
+use App\Models\StudentHabitModel;
+use App\Models\UserModel;
 
 class Student extends BaseController
 {
@@ -13,6 +15,38 @@ class Student extends BaseController
     protected $attendanceSummaryModel;
     protected $attendanceLogModel;
     protected $notificationModel;
+    protected $habitModel;
+    protected $userModel;
+
+    protected $habitFields = [
+        'bangun_pagi',
+        'beribadah',
+        'berolahraga',
+        'makan_sehat',
+        'gemar_belajar',
+        'bermasyarakat',
+        'tidur_cepat',
+    ];
+
+    protected $habitLabels = [
+        'bangun_pagi' => 'Bangun Pagi',
+        'beribadah' => 'Beribadah',
+        'berolahraga' => 'Olahraga',
+        'makan_sehat' => 'Makan Bergizi',
+        'gemar_belajar' => 'Gemar Belajar',
+        'bermasyarakat' => 'Bermasyarakat',
+        'tidur_cepat' => 'Tidur Cepat',
+    ];
+
+    protected $habitTimeWindows = [
+        'bangun_pagi' => ['04:00', '06:00'],
+        'beribadah' => ['04:00', '21:30'],
+        'berolahraga' => ['15:00', '18:00'],
+        'makan_sehat' => ['06:00', '19:00'],
+        'gemar_belajar' => ['18:30', '21:00'],
+        'bermasyarakat' => ['07:00', '20:00'],
+        'tidur_cepat' => ['20:00', '21:30'],
+    ];
 
     public function __construct()
     {
@@ -20,13 +54,15 @@ class Student extends BaseController
         $this->attendanceSummaryModel = new AttendanceSummaryModel();
         $this->attendanceLogModel = new AttendanceLogModel();
         $this->notificationModel = new NotificationModel();
+        $this->habitModel = new StudentHabitModel();
+        $this->userModel = new UserModel();
     }
 
     public function dashboard()
     {
         // Check if user is student or parent
         $role = session()->get('role');
-        if (!in_array($role, ['student', 'siswa', 'parent'])) {
+        if (!in_array($role, ['student', 'siswa', 'parent', 'orang_tua'])) {
             return redirect()->to('/')->with('error', 'Unauthorized access');
         }
 
@@ -100,7 +136,45 @@ class Student extends BaseController
 
     public function attendance()
     {
-        // Attendance history page
+        $role = session()->get('role');
+        if (!in_array($role, ['student', 'siswa', 'parent', 'orang_tua'])) {
+            return redirect()->to('/')->with('error', 'Unauthorized access');
+        }
+
+        $userId = session()->get('user_id');
+        $user = $this->userModel->find($userId);
+
+        if (!$user || empty($user['student_id'])) {
+            return redirect()->to('/')->with('error', 'Data siswa tidak ditemukan');
+        }
+
+        $student = $this->studentModel->find($user['student_id']);
+        if (!$student) {
+            return redirect()->to('/')->with('error', 'Profil siswa tidak ditemukan');
+        }
+
+        $startDate = date('Y-m-d', strtotime('-30 days'));
+        $endDate = date('Y-m-d');
+        $attendanceList = $this->attendanceSummaryModel
+            ->where('student_id', $student['id'])
+            ->where('date >=', $startDate)
+            ->where('date <=', $endDate)
+            ->orderBy('date', 'DESC')
+            ->findAll();
+
+        $monthStart = date('Y-m-01');
+        $monthEnd = date('Y-m-t');
+        $statsRaw = $this->attendanceSummaryModel->getStatistics((int) $student['id'], $monthStart, $monthEnd);
+
+        $stats = [
+            'total_days' => (int) ($statsRaw['total_days'] ?? 0),
+            'present' => (int) (($statsRaw['hadir'] ?? 0) + ($statsRaw['terlambat'] ?? 0)),
+            'late' => (int) ($statsRaw['terlambat'] ?? 0),
+            'sick' => (int) ($statsRaw['sakit'] ?? 0),
+            'izin' => (int) ($statsRaw['izin'] ?? 0),
+            'absent' => (int) ($statsRaw['alpha'] ?? 0),
+        ];
+
         $data = [
             'title' => 'Riwayat Kehadiran',
             'pageTitle' => 'Riwayat Kehadiran',
@@ -108,8 +182,18 @@ class Student extends BaseController
             'activePage' => 'student/attendance',
             'user' => [
                 'name' => session()->get('name'),
-                'role' => in_array(session()->get('role'), ['student', 'siswa']) ? 'Siswa' : 'Orang Tua'
+                'role' => in_array($role, ['student', 'siswa']) ? 'Siswa' : 'Orang Tua'
             ],
+            'student' => [
+                'name' => $student['name'] ?? '-',
+                'nis' => $student['nis'] ?? '-',
+            ],
+            'attendanceList' => $attendanceList,
+            'stats' => $stats,
+            'unreadNotifications' => $this->notificationModel
+                ->where('user_id', $userId)
+                ->where('read_at IS NULL')
+                ->countAllResults(),
         ];
 
         return view('student/attendance', $data);
@@ -153,7 +237,7 @@ class Student extends BaseController
     {
         // 7 Kebiasaan page
         $role = session()->get('role');
-        if (!in_array($role, ['student', 'siswa', 'parent'])) {
+        if (!in_array($role, ['student', 'siswa', 'parent', 'orang_tua'])) {
             return redirect()->to('/')->with('error', 'Unauthorized access');
         }
 
@@ -175,7 +259,7 @@ class Student extends BaseController
     public function apiGetTodayHabits()
     {
         $userId = session()->get('user_id');
-        $user = model('UserModel')->find($userId);
+        $user = $this->userModel->find($userId);
 
         if (!$user || !$user['student_id']) {
             return $this->response->setJSON([
@@ -184,51 +268,36 @@ class Student extends BaseController
             ]);
         }
 
-        $today = date('Y-m-d');
-        $habitModel = model('StudentHabitModel');
-
-        $habit = $habitModel->where('student_id', $user['student_id'])
-            ->where('date', $today)
-            ->first();
-
-        if (!$habit) {
-            // Create today's record with all habits false
-            $habit = [
-                'student_id' => $user['student_id'],
-                'date' => $today,
-                'bangun_pagi' => 0,
-                'beribadah' => 0,
-                'berolahraga' => 0,
-                'makan_sehat' => 0,
-                'gemar_belajar' => 0,
-                'bermasyarakat' => 0,
-                'tidur_cepat' => 0,
-            ];
-            $habitModel->insert($habit);
-            $habit['id'] = $habitModel->getInsertID();
+        $targetDate = $this->resolveTargetHabitDate($this->request->getGet('date'));
+        if ($targetDate === null) {
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'Tanggal tidak valid atau belum waktunya'
+            ]);
         }
 
-        // Calculate streak
-        $streak = $this->calculateStreak($user['student_id']);
+        $habit = $this->getOrCreateTodayHabit((int) $user['student_id'], $targetDate);
 
-        // Calculate XP (20 XP per completed habit)
-        $completed = 0;
-        $habitFields = ['bangun_pagi', 'beribadah', 'berolahraga', 'makan_sehat', 'gemar_belajar', 'bermasyarakat', 'tidur_cepat'];
-        foreach ($habitFields as $field) {
-            if ($habit[$field]) $completed++;
+        $habitAnswers = $this->decodeHabitAnswers($habit['habit_answers'] ?? null);
+        $streak = $this->calculateStreak((int) $user['student_id']);
+        $dailyStats = $this->calculateDailyStats($habit, $streak);
+        $badges = $this->calculateBadges((int) $user['student_id']);
+        $weeklySummary = $this->calculateWeeklySummary((int) $user['student_id']);
+        $activeReminders = $targetDate === date('Y-m-d') ? $this->getActiveHabitReminders($habit) : [];
+        if ($targetDate === date('Y-m-d')) {
+            $this->storeReminderNotifications((int) $userId, (int) $user['student_id'], $activeReminders);
         }
-        $xp = $completed * 20;
 
         return $this->response->setJSON([
             'success' => true,
             'data' => [
                 'habit' => $habit,
-                'stats' => [
-                    'completed' => $completed,
-                    'total' => 7,
-                    'xp' => $xp,
-                    'streak' => $streak
-                ]
+                'answers' => $habitAnswers,
+                'stats' => $dailyStats,
+                'badges' => $badges,
+                'weekly_summary' => $weeklySummary,
+                'reminders' => $activeReminders,
+                'selected_date' => $targetDate,
             ]
         ]);
     }
@@ -236,7 +305,7 @@ class Student extends BaseController
     public function apiToggleHabit()
     {
         $userId = session()->get('user_id');
-        $user = model('UserModel')->find($userId);
+        $user = $this->userModel->find($userId);
 
         if (!$user || !$user['student_id']) {
             return $this->response->setJSON([
@@ -245,23 +314,22 @@ class Student extends BaseController
             ]);
         }
 
-        $habitName = $this->request->getJSON()->habit;
-        $today = date('Y-m-d');
-        $habitModel = model('StudentHabitModel');
-
-        $habit = $habitModel->where('student_id', $user['student_id'])
-            ->where('date', $today)
-            ->first();
-
-        if (!$habit) {
+        $payload = $this->request->getJSON(true) ?? [];
+        $habitName = $payload['habit'] ?? null;
+        $answers = $payload['answers'] ?? null;
+        $updateOnly = !empty($payload['update_only']);
+        $targetDate = $this->resolveTargetHabitDate($payload['date'] ?? null);
+        if ($targetDate === null) {
             return $this->response->setJSON([
                 'success' => false,
-                'message' => 'Habit record not found'
+                'message' => 'Tanggal tidak valid atau belum waktunya'
             ]);
         }
 
+        $habit = $this->getOrCreateTodayHabit((int) $user['student_id'], $targetDate);
+
         // Toggle the habit
-        $validHabits = ['bangun_pagi', 'beribadah', 'berolahraga', 'makan_sehat', 'gemar_belajar', 'bermasyarakat', 'tidur_cepat'];
+        $validHabits = $this->habitFields;
 
         if (!in_array($habitName, $validHabits)) {
             return $this->response->setJSON([
@@ -270,24 +338,51 @@ class Student extends BaseController
             ]);
         }
 
-        $newValue = !$habit[$habitName];
-        $habitModel->update($habit['id'], [$habitName => $newValue]);
+        $updateData = [];
+
+        if (is_array($answers)) {
+            $habitAnswers = $this->decodeHabitAnswers($habit['habit_answers'] ?? null);
+            $habitAnswers[$habitName] = $answers;
+            $updateData['habit_answers'] = json_encode($habitAnswers, JSON_UNESCAPED_UNICODE);
+        }
+
+        if (!$updateOnly) {
+            $updateData[$habitName] = !$habit[$habitName];
+        }
+
+        if (empty($updateData)) {
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'No data to update'
+            ]);
+        }
+
+        $this->habitModel->update($habit['id'], $updateData);
 
         // Get updated habit
-        $habit = $habitModel->find($habit['id']);
-
-        // Calculate completed
-        $completed = 0;
-        foreach ($validHabits as $field) {
-            if ($habit[$field]) $completed++;
+        $habit = $this->habitModel->find($habit['id']);
+        $habitAnswers = $this->decodeHabitAnswers($habit['habit_answers'] ?? null);
+        $streak = $this->calculateStreak((int) $user['student_id']);
+        $dailyStats = $this->calculateDailyStats($habit, $streak);
+        $badges = $this->calculateBadges((int) $user['student_id']);
+        $weeklySummary = $this->calculateWeeklySummary((int) $user['student_id']);
+        $activeReminders = $targetDate === date('Y-m-d') ? $this->getActiveHabitReminders($habit) : [];
+        if ($targetDate === date('Y-m-d')) {
+            $this->storeReminderNotifications((int) $userId, (int) $user['student_id'], $activeReminders);
         }
 
         return $this->response->setJSON([
             'success' => true,
             'data' => [
                 'habit' => $habit,
-                'completed' => $completed,
-                'xp' => $completed * 20
+                'answers' => $habitAnswers,
+                'completed' => $dailyStats['completed'],
+                'xp' => $dailyStats['xp'],
+                'stats' => $dailyStats,
+                'badges' => $badges,
+                'weekly_summary' => $weeklySummary,
+                'reminders' => $activeReminders,
+                'selected_date' => $targetDate,
             ]
         ]);
     }
@@ -295,7 +390,7 @@ class Student extends BaseController
     public function apiGetHabitsStats()
     {
         $userId = session()->get('user_id');
-        $user = model('UserModel')->find($userId);
+        $user = $this->userModel->find($userId);
 
         if (!$user || !$user['student_id']) {
             return $this->response->setJSON([
@@ -304,11 +399,9 @@ class Student extends BaseController
             ]);
         }
 
-        $habitModel = model('StudentHabitModel');
-
         // Get this month's stats
         $thisMonth = date('Y-m');
-        $habits = $habitModel->where('student_id', $user['student_id'])
+        $habits = $this->habitModel->where('student_id', $user['student_id'])
             ->where('date >=', $thisMonth . '-01')
             ->where('date <=', date('Y-m-t'))
             ->findAll();
@@ -318,31 +411,86 @@ class Student extends BaseController
 
         foreach ($habits as $habit) {
             $completed = 0;
-            if ($habit['bangun_pagi']) $completed++;
-            if ($habit['beribadah']) $completed++;
-            if ($habit['berolahraga']) $completed++;
-            if ($habit['makan_sehat']) $completed++;
-            if ($habit['gemar_belajar']) $completed++;
-            if ($habit['bermasyarakat']) $completed++;
-            if ($habit['tidur_cepat']) $completed++;
+            foreach ($this->habitFields as $field) {
+                if (!empty($habit[$field])) {
+                    $completed++;
+                }
+            }
 
             if ($completed === 7) $totalCompleted++;
         }
+
+        $targetDate = $this->resolveTargetHabitDate($this->request->getGet('date'));
+        if ($targetDate === null) {
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'Tanggal tidak valid atau belum waktunya'
+            ]);
+        }
+
+        $todayHabit = $this->getOrCreateTodayHabit((int) $user['student_id'], $targetDate);
+        $streak = $this->calculateStreak((int) $user['student_id']);
+        $todayStats = $this->calculateDailyStats($todayHabit, $streak);
+        $badges = $this->calculateBadges((int) $user['student_id']);
+        $weeklySummary = $this->calculateWeeklySummary((int) $user['student_id']);
 
         return $this->response->setJSON([
             'success' => true,
             'data' => [
                 'totalDays' => $totalDays,
                 'perfectDays' => $totalCompleted,
-                'streak' => $this->calculateStreak($user['student_id'])
+                'streak' => $streak,
+                'today' => $todayStats,
+                'badges' => $badges,
+                'weekly_summary' => $weeklySummary,
+                'selected_date' => $targetDate,
+            ]
+        ]);
+    }
+
+    public function apiGetParentWeeklySummary()
+    {
+        $userId = session()->get('user_id');
+        $user = $this->userModel->find($userId);
+
+        if (!$user || !$user['student_id']) {
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'Student not found'
+            ]);
+        }
+
+        $student = $this->studentModel->find($user['student_id']);
+        if (!$student) {
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'Student data not found'
+            ]);
+        }
+
+        $summary = $this->calculateWeeklySummary((int) $user['student_id']);
+        $shareText = $this->buildParentSummaryText($student, $summary);
+        $waLink = $this->buildWhatsAppShareLink((string) ($student['parent_phone'] ?? ''), $shareText);
+
+        return $this->response->setJSON([
+            'success' => true,
+            'data' => [
+                'student' => [
+                    'id' => $student['id'],
+                    'name' => $student['name'],
+                    'nis' => $student['nis'] ?? '-',
+                    'parent_phone' => $student['parent_phone'] ?? null,
+                ],
+                'summary' => $summary,
+                'share_text' => $shareText,
+                'wa_share_url' => $waLink,
             ]
         ]);
     }
 
     private function calculateStreak($studentId)
     {
-        $habitModel = model('StudentHabitModel');
-        $habits = $habitModel->where('student_id', $studentId)
+        $habits = $this->habitModel->where('student_id', $studentId)
             ->where('date <=', date('Y-m-d'))
             ->orderBy('date', 'DESC')
             ->findAll(30); // Check last 30 days
@@ -356,10 +504,13 @@ class Student extends BaseController
             }
 
             // Check if all habits completed
-            $completed = $habit['bangun_pagi'] && $habit['beribadah'] &&
-                $habit['berolahraga'] && $habit['makan_sehat'] &&
-                $habit['gemar_belajar'] && $habit['bermasyarakat'] &&
-                $habit['tidur_cepat'];
+            $completed = true;
+            foreach ($this->habitFields as $field) {
+                if (empty($habit[$field])) {
+                    $completed = false;
+                    break;
+                }
+            }
 
             if ($completed) {
                 $streak++;
@@ -371,5 +522,316 @@ class Student extends BaseController
         }
 
         return $streak;
+    }
+
+    private function getOrCreateTodayHabit(int $studentId, ?string $date = null): array
+    {
+        $targetDate = $date ?: date('Y-m-d');
+        $habit = $this->habitModel
+            ->where('student_id', $studentId)
+            ->where('date', $targetDate)
+            ->first();
+
+        if ($habit) {
+            return $habit;
+        }
+
+        $newHabit = [
+            'student_id' => $studentId,
+            'date' => $targetDate,
+            'habit_answers' => '{}',
+        ];
+
+        foreach ($this->habitFields as $field) {
+            $newHabit[$field] = 0;
+        }
+
+        $this->habitModel->insert($newHabit);
+        $newHabit['id'] = $this->habitModel->getInsertID();
+
+        return $newHabit;
+    }
+
+    private function calculateDailyStats(array $habit, int $streak): array
+    {
+        $completed = 0;
+        foreach ($this->habitFields as $field) {
+            if (!empty($habit[$field])) {
+                $completed++;
+            }
+        }
+
+        $total = count($this->habitFields);
+        $percentage = $total > 0 ? (int) round(($completed / $total) * 100) : 0;
+
+        return [
+            'completed' => $completed,
+            'total' => $total,
+            'xp' => $completed * 20,
+            'streak' => $streak,
+            'percentage' => $percentage,
+            'is_perfect_today' => $completed === $total,
+            'today_status' => $completed . '/' . $total . ' selesai',
+        ];
+    }
+
+    private function calculateWeeklySummary(int $studentId): array
+    {
+        $weekStart = date('Y-m-d', strtotime('monday this week'));
+        $weekEnd = date('Y-m-d', strtotime($weekStart . ' +6 days'));
+
+        $habits = $this->habitModel
+            ->where('student_id', $studentId)
+            ->where('date >=', $weekStart)
+            ->where('date <=', $weekEnd)
+            ->orderBy('date', 'ASC')
+            ->findAll();
+
+        $daysWithData = count($habits);
+        $totalCompleted = 0;
+        $perfectDays = 0;
+        $habitHitCount = array_fill_keys($this->habitFields, 0);
+
+        foreach ($habits as $habit) {
+            $dailyCompleted = 0;
+            foreach ($this->habitFields as $field) {
+                if (!empty($habit[$field])) {
+                    $dailyCompleted++;
+                    $habitHitCount[$field]++;
+                }
+            }
+            $totalCompleted += $dailyCompleted;
+            if ($dailyCompleted === count($this->habitFields)) {
+                $perfectDays++;
+            }
+        }
+
+        $avgCompleted = $daysWithData > 0 ? round($totalCompleted / $daysWithData, 2) : 0;
+
+        $bestHabit = null;
+        $leastHabit = null;
+        if (!empty($habitHitCount)) {
+            arsort($habitHitCount);
+            $bestKey = (string) array_key_first($habitHitCount);
+            $bestHabit = [
+                'key' => $bestKey,
+                'label' => $this->habitLabels[$bestKey] ?? $bestKey,
+                'count' => $habitHitCount[$bestKey],
+            ];
+
+            asort($habitHitCount);
+            $leastKey = (string) array_key_first($habitHitCount);
+            $leastHabit = [
+                'key' => $leastKey,
+                'label' => $this->habitLabels[$leastKey] ?? $leastKey,
+                'count' => $habitHitCount[$leastKey],
+            ];
+        }
+
+        return [
+            'week_start' => $weekStart,
+            'week_end' => $weekEnd,
+            'days_with_data' => $daysWithData,
+            'perfect_days' => $perfectDays,
+            'avg_completed' => $avgCompleted,
+            'completion_rate' => $daysWithData > 0 ? round(($totalCompleted / ($daysWithData * count($this->habitFields))) * 100, 1) : 0,
+            'best_habit' => $bestHabit,
+            'least_habit' => $leastHabit,
+        ];
+    }
+
+    private function calculateBadges(int $studentId): array
+    {
+        $streak = $this->calculateStreak($studentId);
+        $olahragaCount = $this->habitModel
+            ->where('student_id', $studentId)
+            ->where('berolahraga', 1)
+            ->countAllResults();
+
+        $perfectDaysCount = 0;
+        $allHabits = $this->habitModel
+            ->where('student_id', $studentId)
+            ->orderBy('date', 'DESC')
+            ->findAll(90);
+
+        foreach ($allHabits as $habit) {
+            $done = 0;
+            foreach ($this->habitFields as $field) {
+                $done += !empty($habit[$field]) ? 1 : 0;
+            }
+            if ($done === 7) {
+                $perfectDaysCount++;
+            }
+        }
+
+        $badges = [
+            [
+                'key' => 'streak_7_days',
+                'title' => '7 Hari Tanpa Putus',
+                'description' => 'Selesaikan 7/7 kebiasaan selama 7 hari berturut-turut',
+                'earned' => $streak >= 7,
+                'progress' => min($streak, 7),
+                'target' => 7,
+            ],
+            [
+                'key' => 'olahraga_5x',
+                'title' => 'Olahraga 5x',
+                'description' => 'Lakukan check-in olahraga minimal 5 kali',
+                'earned' => $olahragaCount >= 5,
+                'progress' => min($olahragaCount, 5),
+                'target' => 5,
+            ],
+            [
+                'key' => 'perfect_10_days',
+                'title' => '10 Hari Sempurna',
+                'description' => 'Capai 10 hari dengan 7/7 kebiasaan lengkap',
+                'earned' => $perfectDaysCount >= 10,
+                'progress' => min($perfectDaysCount, 10),
+                'target' => 10,
+            ],
+        ];
+
+        $earnedCount = 0;
+        foreach ($badges as $badge) {
+            if ($badge['earned']) {
+                $earnedCount++;
+            }
+        }
+
+        return [
+            'earned_count' => $earnedCount,
+            'total' => count($badges),
+            'items' => $badges,
+        ];
+    }
+
+    private function getActiveHabitReminders(array $todayHabit): array
+    {
+        $now = date('H:i');
+        $active = [];
+
+        foreach ($this->habitFields as $field) {
+            $window = $this->habitTimeWindows[$field] ?? null;
+            if (!$window || count($window) !== 2) {
+                continue;
+            }
+
+            if (!empty($todayHabit[$field])) {
+                continue;
+            }
+
+            if ($this->isNowInRange($now, $window[0], $window[1])) {
+                $active[] = [
+                    'habit_key' => $field,
+                    'habit_label' => $this->habitLabels[$field] ?? $field,
+                    'start_time' => $window[0],
+                    'end_time' => $window[1],
+                    'message' => 'Waktunya ' . ($this->habitLabels[$field] ?? $field) . '. Yuk check-in sekarang.',
+                ];
+            }
+        }
+
+        return $active;
+    }
+
+    private function isNowInRange(string $now, string $start, string $end): bool
+    {
+        return $now >= $start && $now <= $end;
+    }
+
+    private function storeReminderNotifications(int $userId, int $studentId, array $reminders): void
+    {
+        if (empty($reminders)) {
+            return;
+        }
+
+        $todayStart = date('Y-m-d 00:00:00');
+
+        foreach ($reminders as $reminder) {
+            $title = 'Reminder Kebiasaan: ' . $reminder['habit_label'];
+            $exists = $this->notificationModel
+                ->where('user_id', $userId)
+                ->where('type', 'habit_reminder')
+                ->where('student_id', $studentId)
+                ->where('title', $title)
+                ->where('created_at >=', $todayStart)
+                ->first();
+
+            if ($exists) {
+                continue;
+            }
+
+            $this->notificationModel->insert([
+                'user_id' => $userId,
+                'type' => 'habit_reminder',
+                'title' => $title,
+                'message' => $reminder['message'] . ' (' . $reminder['start_time'] . ' - ' . $reminder['end_time'] . ')',
+                'student_id' => $studentId,
+                'is_sent' => 1,
+                'sent_at' => date('Y-m-d H:i:s'),
+            ]);
+        }
+    }
+
+    private function buildParentSummaryText(array $student, array $summary): string
+    {
+        $bestHabit = $summary['best_habit']['label'] ?? '-';
+        $leastHabit = $summary['least_habit']['label'] ?? '-';
+
+        return trim(sprintf(
+            "Ringkasan Mingguan 7 Kebiasaan\nNama: %s\nPeriode: %s s/d %s\nHari terisi: %d\nHari sempurna (7/7): %d\nRata-rata harian: %s/7\nKebiasaan terbaik: %s\nPerlu ditingkatkan: %s",
+            $student['name'] ?? '-',
+            $summary['week_start'] ?? '-',
+            $summary['week_end'] ?? '-',
+            (int) ($summary['days_with_data'] ?? 0),
+            (int) ($summary['perfect_days'] ?? 0),
+            (string) ($summary['avg_completed'] ?? '0'),
+            $bestHabit,
+            $leastHabit,
+        ));
+    }
+
+    private function buildWhatsAppShareLink(string $parentPhone, string $message): ?string
+    {
+        $phone = preg_replace('/\D+/', '', $parentPhone);
+        if (!$phone) {
+            return null;
+        }
+
+        if (strpos($phone, '0') === 0) {
+            $phone = '62' . substr($phone, 1);
+        }
+
+        return 'https://wa.me/' . $phone . '?text=' . rawurlencode($message);
+    }
+
+    private function decodeHabitAnswers($rawAnswers): array
+    {
+        if (!$rawAnswers || !is_string($rawAnswers)) {
+            return [];
+        }
+
+        $decoded = json_decode($rawAnswers, true);
+        return is_array($decoded) ? $decoded : [];
+    }
+
+    private function resolveTargetHabitDate(?string $requestedDate): ?string
+    {
+        $date = $requestedDate ?: date('Y-m-d');
+
+        if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $date)) {
+            return null;
+        }
+
+        [$year, $month, $day] = array_map('intval', explode('-', $date));
+        if (!checkdate($month, $day, $year)) {
+            return null;
+        }
+
+        if ($date > date('Y-m-d')) {
+            return null;
+        }
+
+        return $date;
     }
 }

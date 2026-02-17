@@ -31,6 +31,13 @@
         body {
             font-family: 'Inter', sans-serif;
         }
+
+        @media (max-width: 768px) {
+            #sidebar {
+                width: 17.5rem;
+                max-width: 86vw;
+            }
+        }
     </style>
 
     <?= $this->renderSection('styles') ?>
@@ -71,7 +78,7 @@
             </div>
 
             <!-- Navigation -->
-            <nav class="flex-1 overflow-y-auto py-4">
+            <nav class="flex-1 overflow-y-auto overflow-x-hidden py-4 pr-1">
                 <?= $this->renderSection('sidebar') ?>
             </nav>
 
@@ -86,12 +93,12 @@
     </aside>
 
     <!-- Main Content -->
-    <div class="ml-0 md:ml-64 min-h-screen flex flex-col">
+    <div class="ml-0 md:ml-64 min-h-screen flex flex-col overflow-x-hidden">
         <!-- Header -->
         <header class="bg-white border-b border-gray-200 sticky top-0 z-20">
-            <div class="px-6 py-4">
+            <div class="px-3 py-3 md:px-6 md:py-4">
                 <div class="flex items-center justify-between">
-                    <div class="flex items-center space-x-4">
+                    <div class="flex items-center space-x-2 md:space-x-4">
                         <!-- Mobile Hamburger Button -->
                         <button
                             id="hamburgerBtn"
@@ -124,13 +131,13 @@
         </header>
 
         <!-- Page Content -->
-        <main class="flex-1 p-6">
+        <main class="flex-1 p-3 md:p-6">
             <?= $this->renderSection('content') ?>
         </main>
 
         <!-- Footer -->
-        <footer class="bg-white border-t border-gray-200 px-6 py-4">
-            <div class="flex items-center justify-between text-sm text-gray-500">
+        <footer class="bg-white border-t border-gray-200 px-3 py-3 md:px-6 md:py-4">
+            <div class="flex flex-col gap-1 md:flex-row md:items-center md:justify-between text-xs md:text-sm text-gray-500">
                 <p>&copy; <?= date('Y') ?> Absensi Siswa. All rights reserved.</p>
                 <p>v1.0.0</p>
             </div>
@@ -151,7 +158,32 @@
             if (hamburgerBtn) {
                 hamburgerBtn.setAttribute('aria-expanded', isOpen);
             }
+
+            if (isOpen) {
+                document.body.style.overflow = 'hidden';
+            } else {
+                document.body.style.overflow = '';
+            }
         }
+
+        document.addEventListener('click', function(event) {
+            if (window.innerWidth > 768) return;
+
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            const hamburgerBtn = document.getElementById('hamburgerBtn');
+            if (!sidebar || !overlay) return;
+
+            const clickedLink = event.target.closest('#sidebar a');
+            if (!clickedLink) return;
+
+            sidebar.classList.remove('open');
+            overlay.classList.remove('active');
+            document.body.style.overflow = '';
+            if (hamburgerBtn) {
+                hamburgerBtn.setAttribute('aria-expanded', 'false');
+            }
+        });
 
         // Update current time
         function updateTime() {
