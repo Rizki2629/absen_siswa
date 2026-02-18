@@ -431,7 +431,8 @@
             const data = await resp.json();
             const select = document.getElementById('classFilter');
             if (data.data && data.data.length > 0) {
-                data.data.forEach(cls => {
+                const sortedClasses = [...data.data].sort((a, b) => compareClassName(a.name || '', b.name || ''));
+                sortedClasses.forEach(cls => {
                     const opt = document.createElement('option');
                     opt.value = cls.id;
                     opt.textContent = cls.name;
@@ -441,6 +442,30 @@
         } catch (err) {
             console.error('Gagal memuat kelas:', err);
         }
+    }
+
+    function compareClassName(leftName, rightName) {
+        const leftKey = classNameSortKey(leftName);
+        const rightKey = classNameSortKey(rightName);
+
+        for (let i = 0; i < leftKey.length; i++) {
+            if (leftKey[i] < rightKey[i]) return -1;
+            if (leftKey[i] > rightKey[i]) return 1;
+        }
+
+        return 0;
+    }
+
+    function classNameSortKey(name) {
+        const normalized = String(name || '').trim().toLowerCase();
+        const match = normalized.match(/kelas\s*(\d+)\s*([a-z])?/i);
+        if (match) {
+            const grade = parseInt(match[1] || '999', 10);
+            const section = match[2] ? match[2].toUpperCase().charCodeAt(0) - 64 : 0;
+            return [0, grade, section, normalized];
+        }
+
+        return [1, 999, 999, normalized];
     }
 
     // Cache API response per year

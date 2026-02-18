@@ -24,6 +24,7 @@ class NotificationModel extends Model
 
     protected $useTimestamps = true;
     protected $createdField  = 'created_at';
+    protected $updatedField  = '';
 
     /**
      * Get unread notifications

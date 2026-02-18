@@ -14,12 +14,24 @@ class StudentModel extends Model
 
     protected $allowedFields = [
         'nis',
+        'nipd',
         'name',
         'class_id',
         'gender',
+        'nisn',
+        'birth_place',
         'birth_date',
+        'nik',
+        'religion',
         'parent_phone',
+        'phone',
         'address',
+        'rt',
+        'rw',
+        'kelurahan',
+        'kecamatan',
+        'father_name',
+        'mother_name',
         'active',
     ];
 

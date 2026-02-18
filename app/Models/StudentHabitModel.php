@@ -27,7 +27,7 @@ class StudentHabitModel extends Model
 
     protected $useTimestamps = true;
     protected $createdField  = 'created_at';
-    protected $updatedField  = 'updated_at';
+    protected $updatedField  = '';
 
     /**
      * Habit column names and labels
