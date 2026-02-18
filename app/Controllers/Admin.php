@@ -10,6 +10,11 @@ use App\Models\DeviceUserMapModel;
 use App\Models\ClassModel;
 use App\Models\ShiftModel;
 use App\Models\SchoolHolidayModel;
+use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Shared\Date as ExcelDate;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class Admin extends BaseController
 {
@@ -171,10 +176,6 @@ class Admin extends BaseController
 
     public function users()
     {
-        // Users management page
-        $userModel = model(\App\Models\UserModel::class);
-        $users = $userModel->findAll();
-
         $data = [
             'title' => 'Manajemen User',
             'pageTitle' => 'Manajemen User',
@@ -184,7 +185,7 @@ class Admin extends BaseController
                 'name' => session()->get('name'),
                 'role' => 'Administrator'
             ],
-            'users' => $users,
+            'users' => [],
         ];
 
         return view('admin/users', $data);
@@ -297,12 +298,98 @@ class Admin extends BaseController
      */
     public function apiGetUsers()
     {
-        $userModel = model(\App\Models\UserModel::class);
-        $users = $userModel->findAll();
-        return $this->response->setJSON([
-            'status' => 'success',
-            'data' => $users
-        ]);
+        try {
+            $db = \Config\Database::connect();
+            $role = mb_strtolower(trim((string) $this->request->getGet('role')));
+            $search = trim((string) $this->request->getGet('search'));
+            $page = max(1, (int) ($this->request->getGet('page') ?? 1));
+            $perPage = (int) ($this->request->getGet('per_page') ?? 25);
+            $perPage = max(1, min(100, $perPage));
+
+            $builder = $db->table('users')
+                ->select('id, username, email, role, full_name, is_active')
+                ->where('deleted_at', null);
+
+            if ($role !== '') {
+                if ($role === 'teacher') {
+                    $builder->groupStart()
+                        ->where('role', 'teacher')
+                        ->orWhere('role', 'guru_piket')
+                        ->groupEnd();
+                } elseif ($role === 'siswa' || $role === 'student') {
+                    $builder->groupStart()
+                        ->where('role', 'siswa')
+                        ->orWhere('role', 'student')
+                        ->groupEnd();
+                } else {
+                    $builder->where('role', $role);
+                }
+            }
+
+            if ($search !== '') {
+                $builder->groupStart()
+                    ->like('full_name', $search)
+                    ->orLike('username', $search)
+                    ->orLike('email', $search)
+                    ->groupEnd();
+            }
+
+            $countBuilder = clone $builder;
+            $total = (int) $countBuilder->countAllResults();
+            $totalPages = max(1, (int) ceil($total / $perPage));
+            if ($page > $totalPages) {
+                $page = $totalPages;
+            }
+
+            $offset = ($page - 1) * $perPage;
+            $users = $builder
+                ->orderBy('full_name', 'ASC')
+                ->limit($perPage, $offset)
+                ->get()
+                ->getResultArray();
+
+            $countRows = $db->table('users')
+                ->select('role, COUNT(*) as total')
+                ->where('deleted_at', null)
+                ->groupBy('role')
+                ->get()
+                ->getResultArray();
+
+            $counts = [
+                'admin' => 0,
+                'teacher' => 0,
+                'siswa' => 0,
+            ];
+
+            foreach ($countRows as $row) {
+                $rowRole = mb_strtolower((string) ($row['role'] ?? ''));
+                $rowTotal = (int) ($row['total'] ?? 0);
+                if ($rowRole === 'admin') {
+                    $counts['admin'] += $rowTotal;
+                } elseif ($rowRole === 'teacher' || $rowRole === 'guru_piket') {
+                    $counts['teacher'] += $rowTotal;
+                } elseif ($rowRole === 'siswa' || $rowRole === 'student') {
+                    $counts['siswa'] += $rowTotal;
+                }
+            }
+
+            return $this->response->setJSON([
+                'status' => 'success',
+                'data' => $users,
+                'meta' => [
+                    'page' => $page,
+                    'per_page' => $perPage,
+                    'total' => $total,
+                    'total_pages' => $totalPages,
+                    'counts' => $counts,
+                ],
+            ]);
+        } catch (\Throwable $e) {
+            return $this->response->setStatusCode(500)->setJSON([
+                'status' => 'error',
+                'message' => 'Gagal mengambil data user: ' . $e->getMessage(),
+            ]);
+        }
     }
 
     /**
@@ -936,23 +1023,67 @@ class Admin extends BaseController
     public function apiGetStudents()
     {
         try {
+            $search = trim((string) $this->request->getGet('search'));
+            $classId = trim((string) $this->request->getGet('class_id'));
+            $page = max(1, (int) ($this->request->getGet('page') ?? 1));
+            $perPage = (int) ($this->request->getGet('per_page') ?? 25);
+            $perPage = max(1, min(100, $perPage));
+            $sortBy = trim((string) $this->request->getGet('sort_by'));
+            $sortDir = mb_strtolower(trim((string) $this->request->getGet('sort_dir')));
+            $sortDir = in_array($sortDir, ['asc', 'desc'], true) ? strtoupper($sortDir) : 'ASC';
+
             $query = $this->studentModel
                 ->select('students.*, classes.name as class_name')
                 ->join('classes', 'classes.id = students.class_id', 'left')
                 ->where('students.active', 1);
 
-            // Filter by class_id if provided
-            $classId = $this->request->getGet('class_id');
             if ($classId) {
                 $query->where('students.class_id', $classId);
             }
 
-            $query->orderBy('students.name', 'ASC');
-            $students = $query->findAll();
+            if ($search !== '') {
+                $query->groupStart()
+                    ->like('students.name', $search)
+                    ->orLike('students.nis', $search)
+                    ->orLike('students.nisn', $search)
+                    ->groupEnd();
+            }
+
+            // countAllResults(false) counts without resetting the query builder chain
+            $total = (int) $query->countAllResults(false);
+            $totalPages = max(1, (int) ceil($total / $perPage));
+            if ($page > $totalPages) {
+                $page = $totalPages;
+            }
+
+            $offset = ($page - 1) * $perPage;
+            $allowedSorts = [
+                'name'       => 'students.name',
+                'nis'        => 'students.nis',
+                'nisn'       => 'students.nisn',
+                'birth_date' => 'students.birth_date',
+                'gender'     => 'students.gender',
+                'class'      => 'classes.name',
+            ];
+            if (isset($allowedSorts[$sortBy])) {
+                $query->orderBy($allowedSorts[$sortBy], $sortDir);
+                if ($sortBy === 'class') {
+                    $query->orderBy('students.name', 'ASC');
+                }
+            } else {
+                $query->orderBy('students.name', 'ASC');
+            }
+            $students = $query->findAll($perPage, $offset);
 
             return $this->response->setJSON([
                 'status' => 'success',
-                'data' => $students
+                'data' => $students,
+                'meta' => [
+                    'page' => $page,
+                    'per_page' => $perPage,
+                    'total' => $total,
+                    'total_pages' => $totalPages,
+                ],
             ]);
         } catch (\Exception $e) {
             return $this->response->setStatusCode(500)->setJSON([
@@ -1137,6 +1268,608 @@ class Admin extends BaseController
         }
     }
 
+    public function apiGenerateStudentAccounts()
+    {
+        try {
+            $json = $this->request->getJSON(true) ?? [];
+            $classId = !empty($json['class_id']) ? (int) $json['class_id'] : null;
+            $defaultPassword = trim((string) ($json['default_password'] ?? 'siswa123'));
+
+            if (strlen($defaultPassword) < 6) {
+                return $this->response->setStatusCode(400)->setJSON([
+                    'status' => 'error',
+                    'message' => 'Password default minimal 6 karakter'
+                ]);
+            }
+
+            $query = $this->studentModel->where('active', 1);
+            if ($classId) {
+                $query->where('class_id', $classId);
+            }
+
+            $students = $query->findAll();
+            if (empty($students)) {
+                return $this->response->setJSON([
+                    'status' => 'success',
+                    'message' => 'Tidak ada siswa aktif untuk diproses',
+                    'data' => [
+                        'processed' => 0,
+                        'created' => 0,
+                        'restored' => 0,
+                        'skipped' => 0,
+                        'errors' => [],
+                        'credentials' => [],
+                    ],
+                ]);
+            }
+
+            /** @var \App\Models\UserModel $userModel */
+            $userModel = model(\App\Models\UserModel::class);
+
+            $created = 0;
+            $restored = 0;
+            $skipped = 0;
+            $errors = [];
+            $credentials = [];
+
+            foreach ($students as $student) {
+                try {
+                    $studentId = (int) ($student['id'] ?? 0);
+                    $studentName = trim((string) ($student['name'] ?? ''));
+                    $baseIdentity = trim((string) ($student['nisn'] ?? $student['nipd'] ?? $student['nis'] ?? ''));
+
+                    if ($studentId <= 0 || $studentName === '') {
+                        $skipped++;
+                        continue;
+                    }
+
+                    if ($baseIdentity === '') {
+                        $baseIdentity = 'siswa' . $studentId;
+                    }
+
+                    $existingStudentUser = $userModel->withDeleted()
+                        ->where('student_id', $studentId)
+                        ->groupStart()
+                        ->where('role', 'siswa')
+                        ->orWhere('role', 'student')
+                        ->groupEnd()
+                        ->first();
+
+                    if ($existingStudentUser && empty($existingStudentUser['deleted_at'])) {
+                        $skipped++;
+                        continue;
+                    }
+
+                    $excludeId = $existingStudentUser ? (int) $existingStudentUser['id'] : null;
+                    $username = $this->buildUniqueStudentUsername($userModel, $baseIdentity, $excludeId);
+                    $email = $this->buildUniqueStudentEmail($userModel, $username, $excludeId);
+
+                    $payload = [
+                        'username' => $username,
+                        'email' => $email,
+                        'password' => $defaultPassword,
+                        'role' => 'siswa',
+                        'full_name' => $studentName,
+                        'phone' => $student['phone'] ?? $student['parent_phone'] ?? null,
+                        'student_id' => $studentId,
+                        'is_active' => 1,
+                    ];
+
+                    if ($existingStudentUser) {
+                        $payload['deleted_at'] = null;
+                        $userModel->update((int) $existingStudentUser['id'], $payload);
+                        $restored++;
+                    } else {
+                        $userModel->insert($payload);
+                        $created++;
+                    }
+
+                    $credentials[] = [
+                        'student_id' => $studentId,
+                        'name' => $studentName,
+                        'username' => $username,
+                        'password' => $defaultPassword,
+                    ];
+                } catch (\Throwable $studentError) {
+                    $errors[] = [
+                        'student_id' => (int) ($student['id'] ?? 0),
+                        'name' => (string) ($student['name'] ?? '-'),
+                        'message' => $studentError->getMessage(),
+                    ];
+                }
+            }
+
+            return $this->response->setJSON([
+                'status' => 'success',
+                'message' => 'Proses generate akun siswa selesai',
+                'data' => [
+                    'processed' => count($students),
+                    'created' => $created,
+                    'restored' => $restored,
+                    'skipped' => $skipped,
+                    'errors' => array_slice($errors, 0, 50),
+                    'credentials' => array_slice($credentials, 0, 200),
+                ],
+            ]);
+        } catch (\Throwable $e) {
+            return $this->response->setStatusCode(500)->setJSON([
+                'status' => 'error',
+                'message' => 'Gagal generate akun siswa: ' . $e->getMessage(),
+            ]);
+        }
+    }
+
+    private function buildUniqueStudentUsername($userModel, string $identity, ?int $excludeId = null): string
+    {
+        $base = preg_replace('/[^a-zA-Z0-9._-]/', '', $identity);
+        $base = trim((string) $base);
+        if ($base === '') {
+            $base = 'siswa';
+        }
+
+        $candidate = $base;
+        $counter = 1;
+
+        while ($this->isUsernameTaken($userModel, $candidate, $excludeId)) {
+            $counter++;
+            $candidate = $base . $counter;
+        }
+
+        return $candidate;
+    }
+
+    private function buildUniqueStudentEmail($userModel, string $username, ?int $excludeId = null): string
+    {
+        $local = mb_strtolower($username);
+        $candidate = $local . '@student.local';
+        $counter = 1;
+
+        while ($this->isEmailTaken($userModel, $candidate, $excludeId)) {
+            $counter++;
+            $candidate = $local . $counter . '@student.local';
+        }
+
+        return $candidate;
+    }
+
+    private function isUsernameTaken($userModel, string $username, ?int $excludeId = null): bool
+    {
+        $query = $userModel->withDeleted()->where('username', $username);
+        if ($excludeId) {
+            $query->where('id !=', $excludeId);
+        }
+
+        return $query->first() !== null;
+    }
+
+    private function isEmailTaken($userModel, string $email, ?int $excludeId = null): bool
+    {
+        $query = $userModel->withDeleted()->where('email', $email);
+        if ($excludeId) {
+            $query->where('id !=', $excludeId);
+        }
+
+        return $query->first() !== null;
+    }
+
+    public function apiDownloadStudentUploadTemplate()
+    {
+        $format = mb_strtolower((string) $this->request->getGet('format'));
+        $format = in_array($format, ['csv', 'xlsx'], true) ? $format : 'xlsx';
+
+        $headers = $this->getStudentUploadTemplateHeaders();
+        $sample = $this->getStudentUploadTemplateSample();
+
+        if ($format === 'csv') {
+            $content = "\xEF\xBB\xBF" . implode(',', $headers) . "\n" . implode(',', array_map(static function ($value) {
+                return '"' . str_replace('"', '""', (string) $value) . '"';
+            }, $sample)) . "\n";
+
+            return $this->response
+                ->setHeader('Content-Type', 'text/csv; charset=UTF-8')
+                ->setHeader('Content-Disposition', 'attachment; filename="template-upload-siswa.csv"')
+                ->setBody($content);
+        }
+
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle('Template Siswa');
+        $sheet->fromArray($headers, null, 'A1');
+        $sheet->fromArray($sample, null, 'A2');
+
+        $columnCount = count($headers);
+        for ($index = 1; $index <= $columnCount; $index++) {
+            $columnLetter = Coordinate::stringFromColumnIndex($index);
+            $sheet->getColumnDimension($columnLetter)->setAutoSize(true);
+        }
+
+        ob_start();
+        $writer = new Xlsx($spreadsheet);
+        $writer->save('php://output');
+        $content = (string) ob_get_clean();
+        $spreadsheet->disconnectWorksheets();
+        unset($spreadsheet);
+
+        return $this->response
+            ->setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+            ->setHeader('Content-Disposition', 'attachment; filename="template-upload-siswa.xlsx"')
+            ->setBody($content);
+    }
+
+    public function apiImportStudents()
+    {
+        try {
+            $file = $this->request->getFile('file');
+
+            if (!$file || !$file->isValid()) {
+                return $this->response->setStatusCode(400)->setJSON([
+                    'status' => 'error',
+                    'message' => 'File upload tidak valid'
+                ]);
+            }
+
+            $extension = mb_strtolower((string) $file->getExtension());
+            if (!in_array($extension, ['csv', 'xlsx', 'xls'], true)) {
+                return $this->response->setStatusCode(400)->setJSON([
+                    'status' => 'error',
+                    'message' => 'Format file harus XLSX/XLS atau CSV'
+                ]);
+            }
+
+            [$header, $rows] = $this->readStudentUploadRows($file->getTempName(), $extension);
+            if (empty($header)) {
+                return $this->response->setStatusCode(400)->setJSON([
+                    'status' => 'error',
+                    'message' => 'File upload kosong atau tidak terbaca'
+                ]);
+            }
+
+            $expectedHeaderMap = $this->getExpectedStudentUploadHeaderMap();
+
+            $indexMap = [];
+            foreach ($header as $index => $col) {
+                $normalized = $this->normalizeUploadHeader($col);
+                if (isset($expectedHeaderMap[$normalized])) {
+                    $indexMap[$expectedHeaderMap[$normalized]] = $index;
+                }
+            }
+
+            $required = ['name', 'nipd', 'gender', 'class_name'];
+            $missing = [];
+            foreach ($required as $requiredField) {
+                if (!isset($indexMap[$requiredField])) {
+                    $missing[] = $requiredField;
+                }
+            }
+
+            if (!empty($missing)) {
+                return $this->response->setStatusCode(400)->setJSON([
+                    'status' => 'error',
+                    'message' => 'Header file tidak sesuai. Wajib ada: Nama, NIPD, JK, Rombel Saat Ini',
+                    'missing' => $missing,
+                ]);
+            }
+
+            $classCache = [];
+            $classes = $this->classModel->findAll();
+            foreach ($classes as $class) {
+                $classCache[mb_strtolower(trim((string) $class['name']))] = (int) $class['id'];
+            }
+
+            $inserted = 0;
+            $updated = 0;
+            $failed = 0;
+            $errors = [];
+            foreach ($rows as $rowIndex => $row) {
+                $line = $rowIndex + 2;
+
+                if ($this->isEmptyCsvRow($row)) {
+                    continue;
+                }
+
+                try {
+                    $name = $this->csvValue($row, $indexMap, 'name');
+                    $nipd = $this->csvValue($row, $indexMap, 'nipd');
+                    $className = $this->csvValue($row, $indexMap, 'class_name');
+                    $gender = $this->normalizeGenderValue($this->csvValue($row, $indexMap, 'gender'));
+
+                    if ($name === '' || $nipd === '' || $className === '' || $gender === null) {
+                        throw new \RuntimeException('Kolom wajib (Nama, NIPD, JK, Rombel Saat Ini) tidak valid');
+                    }
+
+                    $classKey = mb_strtolower(trim($className));
+                    if (!isset($classCache[$classKey])) {
+                        $classId = $this->classModel->insert([
+                            'name' => trim($className),
+                        ]);
+                        $classCache[$classKey] = (int) $classId;
+                    }
+
+                    $birthDate = $this->parseFlexibleDate($this->csvValue($row, $indexMap, 'birth_date'));
+                    $phone = $this->csvValue($row, $indexMap, 'phone');
+
+                    $studentData = [
+                        'nis' => $nipd,
+                        'nipd' => $nipd,
+                        'name' => $name,
+                        'class_id' => $classCache[$classKey],
+                        'gender' => $gender,
+                        'birth_place' => $this->csvValue($row, $indexMap, 'birth_place'),
+                        'birth_date' => $birthDate,
+                        'nisn' => $this->csvValue($row, $indexMap, 'nisn'),
+                        'nik' => $this->csvValue($row, $indexMap, 'nik'),
+                        'religion' => $this->csvValue($row, $indexMap, 'religion'),
+                        'address' => $this->csvValue($row, $indexMap, 'address'),
+                        'rt' => $this->csvValue($row, $indexMap, 'rt'),
+                        'rw' => $this->csvValue($row, $indexMap, 'rw'),
+                        'kelurahan' => $this->csvValue($row, $indexMap, 'kelurahan'),
+                        'kecamatan' => $this->csvValue($row, $indexMap, 'kecamatan'),
+                        'phone' => $phone,
+                        'parent_phone' => $phone,
+                        'father_name' => $this->csvValue($row, $indexMap, 'father_name'),
+                        'mother_name' => $this->csvValue($row, $indexMap, 'mother_name'),
+                        'active' => 1,
+                    ];
+
+                    $existing = $this->studentModel->withDeleted()->where('nis', $nipd)->first();
+
+                    if ($existing) {
+                        $this->studentModel->update((int) $existing['id'], $studentData);
+                        if (!empty($existing['deleted_at'])) {
+                            $this->studentModel->builder()
+                                ->where('id', (int) $existing['id'])
+                                ->update(['deleted_at' => null]);
+                        }
+                        $updated++;
+                    } else {
+                        $this->studentModel->insert($studentData);
+                        $inserted++;
+                    }
+                } catch (\Throwable $e) {
+                    $failed++;
+                    $errors[] = [
+                        'line' => $line,
+                        'message' => $e->getMessage(),
+                    ];
+                }
+            }
+
+            return $this->response->setJSON([
+                'status' => 'success',
+                'message' => 'Upload data siswa selesai diproses',
+                'data' => [
+                    'inserted' => $inserted,
+                    'updated' => $updated,
+                    'failed' => $failed,
+                    'errors' => array_slice($errors, 0, 50),
+                ]
+            ]);
+        } catch (\Throwable $e) {
+            return $this->response->setStatusCode(500)->setJSON([
+                'status' => 'error',
+                'message' => 'Gagal import siswa: ' . $e->getMessage()
+            ]);
+        }
+    }
+
+    private function getStudentUploadTemplateHeaders(): array
+    {
+        return [
+            'Nama',
+            'NIPD',
+            'JK',
+            'NISN',
+            'Tempat Lahir',
+            'Tanggal Lahir',
+            'NIK',
+            'Agama',
+            'Alamat',
+            'RT',
+            'RW',
+            'Kelurahan',
+            'Kecamatan',
+            'HP',
+            'Nama Ayah',
+            'Nama Ibu',
+            'Rombel Saat Ini',
+        ];
+    }
+
+    private function getStudentUploadTemplateSample(): array
+    {
+        return [
+            'Budi Santoso',
+            '4428',
+            'L',
+            '3186005758',
+            'Jakarta',
+            '15 Maret 2018',
+            '3174051503180003',
+            'Islam',
+            'Jl. Kemandoan VIII',
+            '7',
+            '9',
+            'Grogol Utara',
+            'Kec. Kebayoran Lama',
+            '081228258902',
+            'Lukman Hakim',
+            'Nida Ayu Kurniawati',
+            'Kelas 1 A',
+        ];
+    }
+
+    private function getExpectedStudentUploadHeaderMap(): array
+    {
+        return [
+            'nama' => 'name',
+            'nipd' => 'nipd',
+            'jk' => 'gender',
+            'nisn' => 'nisn',
+            'tempat lahir' => 'birth_place',
+            'tanggal lahir' => 'birth_date',
+            'nik' => 'nik',
+            'agama' => 'religion',
+            'alamat' => 'address',
+            'rt' => 'rt',
+            'rw' => 'rw',
+            'kelurahan' => 'kelurahan',
+            'kecamatan' => 'kecamatan',
+            'hp' => 'phone',
+            'nama ayah' => 'father_name',
+            'nama ibu' => 'mother_name',
+            'rombel saat ini' => 'class_name',
+        ];
+    }
+
+    private function readStudentUploadRows(string $path, string $extension): array
+    {
+        if ($extension === 'csv') {
+            $handle = fopen($path, 'rb');
+            if ($handle === false) {
+                return [[], []];
+            }
+
+            $firstLine = fgets($handle);
+            if ($firstLine === false) {
+                fclose($handle);
+                return [[], []];
+            }
+
+            $delimiter = substr_count($firstLine, ';') > substr_count($firstLine, ',') ? ';' : ',';
+            $firstLine = preg_replace('/^\xEF\xBB\xBF/', '', (string) $firstLine);
+            $header = str_getcsv($firstLine, $delimiter);
+
+            $rows = [];
+            while (($row = fgetcsv($handle, 0, $delimiter)) !== false) {
+                $rows[] = $row;
+            }
+
+            fclose($handle);
+            return [$header, $rows];
+        }
+
+        $spreadsheet = IOFactory::load($path);
+        $sheet = $spreadsheet->getActiveSheet();
+        $allRows = $sheet->toArray('', true, true, false);
+        $spreadsheet->disconnectWorksheets();
+        unset($spreadsheet);
+
+        if (empty($allRows)) {
+            return [[], []];
+        }
+
+        $header = array_shift($allRows);
+        if (!is_array($header)) {
+            $header = [];
+        }
+
+        return [$header, $allRows];
+    }
+
+    private function normalizeUploadHeader(string $value): string
+    {
+        $value = preg_replace('/^\xEF\xBB\xBF/', '', trim($value));
+        $value = mb_strtolower((string) $value);
+        return preg_replace('/\s+/', ' ', $value);
+    }
+
+    private function csvValue(array $row, array $indexMap, string $key): string
+    {
+        if (!isset($indexMap[$key])) {
+            return '';
+        }
+
+        $index = $indexMap[$key];
+        if (!array_key_exists($index, $row)) {
+            return '';
+        }
+
+        return trim((string) $row[$index]);
+    }
+
+    private function isEmptyCsvRow(array $row): bool
+    {
+        foreach ($row as $value) {
+            if (trim((string) $value) !== '') {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private function normalizeGenderValue(string $value): ?string
+    {
+        $normalized = mb_strtolower(trim($value));
+        if ($normalized === '') {
+            return null;
+        }
+
+        if (in_array($normalized, ['l', 'lk', 'laki-laki', 'laki laki'], true)) {
+            return 'L';
+        }
+
+        if (in_array($normalized, ['p', 'pr', 'perempuan'], true)) {
+            return 'P';
+        }
+
+        return null;
+    }
+
+    private function parseFlexibleDate($value): ?string
+    {
+        if ($value === null) {
+            return null;
+        }
+
+        if (is_numeric($value)) {
+            try {
+                return ExcelDate::excelToDateTimeObject((float) $value)->format('Y-m-d');
+            } catch (\Throwable $e) {
+            }
+        }
+
+        $value = trim((string) $value);
+        if ($value === '') {
+            return null;
+        }
+
+        $directFormats = ['Y-m-d', 'd-m-Y', 'd/m/Y'];
+        foreach ($directFormats as $format) {
+            $date = \DateTime::createFromFormat($format, $value);
+            if ($date && $date->format($format) === $value) {
+                return $date->format('Y-m-d');
+            }
+        }
+
+        $indoMonths = [
+            'januari' => 'January',
+            'februari' => 'February',
+            'maret' => 'March',
+            'april' => 'April',
+            'mei' => 'May',
+            'juni' => 'June',
+            'juli' => 'July',
+            'agustus' => 'August',
+            'september' => 'September',
+            'oktober' => 'October',
+            'november' => 'November',
+            'desember' => 'December',
+        ];
+
+        $normalized = mb_strtolower($value);
+        foreach ($indoMonths as $indo => $eng) {
+            $normalized = str_replace($indo, $eng, $normalized);
+        }
+
+        $timestamp = strtotime($normalized);
+        if ($timestamp === false) {
+            return null;
+        }
+
+        return date('Y-m-d', $timestamp);
+    }
+
     /**
      * API: Get all classes
      */
@@ -1148,6 +1881,8 @@ class Admin extends BaseController
                 ->join('users', 'users.id = classes.teacher_id', 'left')
                 ->findAll();
 
+            $classes = $this->sortClassesForDisplay($classes);
+
             return $this->response->setJSON([
                 'status' => 'success',
                 'data' => $classes
@@ -1158,6 +1893,42 @@ class Admin extends BaseController
                 'message' => 'Gagal mengambil data kelas: ' . $e->getMessage()
             ]);
         }
+    }
+
+    private function sortClassesForDisplay(array $classes): array
+    {
+        usort($classes, function (array $left, array $right): int {
+            $leftKey = $this->buildClassSortKey($left);
+            $rightKey = $this->buildClassSortKey($right);
+
+            for ($i = 0; $i < count($leftKey); $i++) {
+                if ($leftKey[$i] < $rightKey[$i]) {
+                    return -1;
+                }
+
+                if ($leftKey[$i] > $rightKey[$i]) {
+                    return 1;
+                }
+            }
+
+            return 0;
+        });
+
+        return $classes;
+    }
+
+    private function buildClassSortKey(array $class): array
+    {
+        $name = trim((string) ($class['name'] ?? ''));
+        $normalized = mb_strtolower($name);
+
+        if (preg_match('/kelas\s*(\d+)\s*([a-z])?/i', $normalized, $matches)) {
+            $grade = isset($matches[1]) ? (int) $matches[1] : 999;
+            $section = isset($matches[2]) && $matches[2] !== '' ? (ord(strtoupper($matches[2])) - 64) : 0;
+            return [0, $grade, $section, $normalized];
+        }
+
+        return [1, 999, 999, $normalized];
     }
 
     /**
@@ -1711,13 +2482,13 @@ class Admin extends BaseController
             $json = $this->request->getJSON(true);
             $teacherId = !empty($json['teacher_id']) ? (int)$json['teacher_id'] : null;
 
-            // Check if teacher is already assigned to another class
+            // If teacher is already assigned to another class, release previous assignment
             if ($teacherId) {
                 $existingClass = $this->classModel->where('teacher_id', $teacherId)->first();
                 if ($existingClass) {
-                    return $this->response->setStatusCode(400)->setJSON([
-                        'status' => 'error',
-                        'message' => 'Wali kelas sudah digunakan di Kelas ' . $existingClass['name']
+                    $this->classModel->update((int) $existingClass['id'], [
+                        'teacher_id' => null,
+                        'homeroom_teacher' => '',
                     ]);
                 }
             }
@@ -1769,13 +2540,13 @@ class Admin extends BaseController
             if (isset($json['teacher_id'])) {
                 $teacherId = !empty($json['teacher_id']) ? (int)$json['teacher_id'] : null;
 
-                // Check if teacher is already assigned to another class
+                // If teacher is already assigned to another class, release previous assignment
                 if ($teacherId) {
                     $existingClass = $this->classModel->where('teacher_id', $teacherId)->where('id !=', $id)->first();
                     if ($existingClass) {
-                        return $this->response->setStatusCode(400)->setJSON([
-                            'status' => 'error',
-                            'message' => 'Wali kelas sudah digunakan di Kelas ' . $existingClass['name']
+                        $this->classModel->update((int) $existingClass['id'], [
+                            'teacher_id' => null,
+                            'homeroom_teacher' => '',
                         ]);
                     }
                 }

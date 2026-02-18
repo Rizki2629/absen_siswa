@@ -18,43 +18,68 @@
     </button>
 </div>
 
-<!-- Search and Filter -->
-<div class="mb-6">
-    <div class="flex flex-col md:flex-row gap-4">
-        <div class="flex-1">
-            <div class="relative">
-                <span class="material-symbols-outlined absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">search</span>
-                <input type="text" id="searchInput" placeholder="Cari nama guru atau email..."
-                    class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500">
+<!-- Search & Filter -->
+<div class="card mb-6">
+    <div class="card-body">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div class="md:col-span-3">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Cari Guru</label>
+                <input type="text" id="searchInput" placeholder="Cari berdasarkan nama, NIP, atau email..."
+                    class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">&nbsp;</label>
+                <button onclick="resetTeacherFilters()" class="w-full btn-secondary">
+                    <span class="material-symbols-outlined text-sm mr-2">filter_alt_off</span>
+                    Reset Filter
+                </button>
             </div>
         </div>
     </div>
 </div>
 
 <!-- Teachers Table -->
-<div>
-    <div>
+<div class="card">
+    <div class="card-body">
         <div class="overflow-x-auto">
             <table class="w-full">
-                <thead>
-                    <tr class="border-b border-gray-200 bg-gray-50">
-                        <th class="text-left py-3 px-4 font-semibold text-gray-700">Nama</th>
-                        <th class="text-left py-3 px-4 font-semibold text-gray-700">NIP</th>
-                        <th class="text-left py-3 px-4 font-semibold text-gray-700">Email</th>
-                        <th class="text-left py-3 px-4 font-semibold text-gray-700">No. Telepon</th>
-                        <th class="text-center py-3 px-4 font-semibold text-gray-700">Status</th>
-                        <th class="text-center py-3 px-4 font-semibold text-gray-700">Aksi</th>
+                <thead class="bg-primary-50">
+                    <tr class="border-b border-primary-100">
+                        <th class="text-left py-3.5 px-4 text-xs font-bold uppercase tracking-wide text-primary-700 whitespace-nowrap">No</th>
+                        <th onclick="setTeacherSort('name')" class="text-left py-3.5 px-4 text-xs font-bold uppercase tracking-wide text-primary-700 whitespace-nowrap cursor-pointer select-none hover:bg-primary-100 transition-colors">Nama<span id="teacherSortIndicator_name" class="ml-1 text-primary-500"></span></th>
+                        <th onclick="setTeacherSort('nip')" class="text-left py-3.5 px-4 text-xs font-bold uppercase tracking-wide text-primary-700 whitespace-nowrap cursor-pointer select-none hover:bg-primary-100 transition-colors">NIP<span id="teacherSortIndicator_nip" class="ml-1 text-primary-500"></span></th>
+                        <th onclick="setTeacherSort('email')" class="text-left py-3.5 px-4 text-xs font-bold uppercase tracking-wide text-primary-700 whitespace-nowrap cursor-pointer select-none hover:bg-primary-100 transition-colors">Email<span id="teacherSortIndicator_email" class="ml-1 text-primary-500"></span></th>
+                        <th onclick="setTeacherSort('phone')" class="text-left py-3.5 px-4 text-xs font-bold uppercase tracking-wide text-primary-700 whitespace-nowrap cursor-pointer select-none hover:bg-primary-100 transition-colors">No. Telepon<span id="teacherSortIndicator_phone" class="ml-1 text-primary-500"></span></th>
+                        <th onclick="setTeacherSort('is_active')" class="text-center py-3.5 px-4 text-xs font-bold uppercase tracking-wide text-primary-700 whitespace-nowrap cursor-pointer select-none hover:bg-primary-100 transition-colors">Status<span id="teacherSortIndicator_is_active" class="ml-1 text-primary-500"></span></th>
+                        <th class="text-center py-3.5 px-4 text-xs font-bold uppercase tracking-wide text-primary-700 whitespace-nowrap">Aksi</th>
                     </tr>
                 </thead>
                 <tbody id="teachersTable">
                     <tr>
-                        <td colspan="6" class="text-center py-12">
+                        <td colspan="7" class="text-center py-12">
                             <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
                             <p class="text-gray-500 mt-4">Memuat data guru...</p>
                         </td>
                     </tr>
                 </tbody>
             </table>
+        </div>
+
+        <div class="mt-4 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+            <p id="teachersPaginationInfo" class="text-sm text-gray-600">Memuat data...</p>
+            <div class="flex items-center gap-x-2">
+                <button id="teachersPrevBtn" onclick="goToTeachersPage(teachersPage - 1)" disabled
+                    class="h-10 px-4 rounded-xl border border-gray-200 bg-white text-gray-500 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1 text-sm font-medium transition">
+                    <span class="material-symbols-outlined text-base">chevron_left</span>
+                    <span>Sebelumnya</span>
+                </button>
+                <div id="teachersPaginationNumbers" class="flex items-center gap-x-1"></div>
+                <button id="teachersNextBtn" onclick="goToTeachersPage(teachersPage + 1)" disabled
+                    class="h-10 px-4 rounded-xl border border-gray-200 bg-white text-gray-500 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1 text-sm font-medium transition">
+                    <span>Berikutnya</span>
+                    <span class="material-symbols-outlined text-base">chevron_right</span>
+                </button>
+            </div>
         </div>
     </div>
 </div>
@@ -133,55 +158,88 @@
 
 <script>
     let allTeachers = [];
+    let teachersPage = 1;
+    let teachersTotalPages = 1;
+    let teachersPerPage = 25;
+    let teacherSortCol = '';
+    let teacherSortDir = '';
+    let teacherSearchDebounce = null;
 
     document.addEventListener('DOMContentLoaded', function() {
         loadTeachers();
-
-        // Search functionality
-        document.getElementById('searchInput').addEventListener('input', function(e) {
-            const searchTerm = e.target.value.toLowerCase();
-            const filtered = allTeachers.filter(teacher =>
-                (teacher.full_name || teacher.username).toLowerCase().includes(searchTerm) ||
-                (teacher.email || '').toLowerCase().includes(searchTerm)
-            );
-            renderTeachers(filtered);
+        document.getElementById('searchInput').addEventListener('input', function() {
+            clearTimeout(teacherSearchDebounce);
+            teacherSearchDebounce = setTimeout(() => {
+                teachersPage = 1;
+                applyTeacherFilterAndRender();
+            }, 300);
         });
     });
 
     async function loadTeachers() {
         try {
-            console.log('🔄 Loading teachers from API...');
-            const response = await fetch('<?= base_url('api/admin/teachers') ?>');
-            console.log('📡 Response status:', response.status, response.ok);
-
+            const response = await fetch('<?= base_url('api/admin/teachers') ?>', {
+                credentials: 'same-origin',
+                cache: 'no-store'
+            });
             const data = await response.json();
-            console.log('📦 Teachers data received:', data);
-            console.log('📊 Number of teachers:', data.data ? data.data.length : 0);
-
             if (data.status === 'success') {
                 allTeachers = data.data;
-                console.log('✅ Setting allTeachers:', allTeachers);
-                renderTeachers(allTeachers);
+                teachersPage = 1;
+                applyTeacherFilterAndRender();
             } else {
-                console.error('❌ API returned error status');
-                showError('Gagal memuat data guru');
+                showTeacherError('Gagal memuat data guru');
             }
         } catch (error) {
-            console.error('❌ Error loading teachers:', error);
-            showError('Gagal memuat data guru');
+            showTeacherError('Gagal memuat data guru');
         }
     }
 
-    function renderTeachers(teachers) {
-        console.log('🎨 Rendering teachers:', teachers);
+    function applyTeacherFilterAndRender() {
+        const term = (document.getElementById('searchInput').value || '').toLowerCase();
+        let list = allTeachers.filter(t =>
+            (t.full_name || t.username || '').toLowerCase().includes(term) ||
+            (t.nip || '').toLowerCase().includes(term) ||
+            (t.email || '').toLowerCase().includes(term)
+        );
+
+        if (teacherSortCol) {
+            list = [...list].sort((a, b) => {
+                let va = String(a[teacherSortCol] ?? '').toLowerCase();
+                let vb = String(b[teacherSortCol] ?? '').toLowerCase();
+                if (teacherSortCol === 'full_name') {
+                    va = String(a.full_name || a.username || '').toLowerCase();
+                    vb = String(b.full_name || b.username || '').toLowerCase();
+                }
+                if (teacherSortCol === 'is_active') {
+                    va = Number(a.is_active);
+                    vb = Number(b.is_active);
+                    return teacherSortDir === 'asc' ? va - vb : vb - va;
+                }
+                if (va < vb) return teacherSortDir === 'asc' ? -1 : 1;
+                if (va > vb) return teacherSortDir === 'asc' ? 1 : -1;
+                return 0;
+            });
+        }
+
+        const total = list.length;
+        teachersTotalPages = Math.max(1, Math.ceil(total / teachersPerPage));
+        if (teachersPage > teachersTotalPages) teachersPage = teachersTotalPages;
+
+        const offset = (teachersPage - 1) * teachersPerPage;
+        const pageList = list.slice(offset, offset + teachersPerPage);
+        renderTeachers(pageList, offset);
+        updateTeachersPagination(total, offset);
+    }
+
+    function renderTeachers(teachers, offset) {
         const tbody = document.getElementById('teachersTable');
 
         if (!teachers || teachers.length === 0) {
-            console.log('⚠️ No teachers to render');
             tbody.innerHTML = `
                 <tr>
-                    <td colspan="6" class="text-center py-12 text-gray-500">
-                        <span class="material-symbols-outlined text-5xl text-gray-300 mb-2">person</span>
+                    <td colspan="7" class="text-center py-12 text-gray-500">
+                        <span class="material-symbols-outlined text-5xl text-gray-300 block mb-2">person</span>
                         <p>Belum ada data guru</p>
                     </td>
                 </tr>
@@ -189,42 +247,130 @@
             return;
         }
 
-        console.log('✅ Rendering ' + teachers.length + ' teachers');
-        tbody.innerHTML = teachers.map(teacher => `
-            <tr class="border-b border-gray-100 hover:bg-gray-50">
-                <td class="py-3 px-4">
-                    <div class="flex items-center">
-                        <div class="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center mr-3">
-                            <span class="text-primary-600 font-bold">${(teacher.full_name || teacher.username).charAt(0).toUpperCase()}</span>
-                        </div>
-                        <span class="font-medium text-gray-900">${teacher.full_name || teacher.username}</span>
-                    </div>
-                </td>
-                <td class="py-3 px-4 text-gray-600">${teacher.nip || '-'}</td>
-                <td class="py-3 px-4 text-gray-600">${teacher.email || '-'}</td>
-                <td class="py-3 px-4 text-gray-600">${teacher.phone || '-'}</td>
+        tbody.innerHTML = teachers.map((teacher, index) => {
+            const rowNumber = offset + index + 1;
+            const name = teacher.full_name || teacher.username || '-';
+            return `
+            <tr class="bg-white border-b border-gray-100 hover:bg-gray-50">
+                <td class="py-3 px-4 text-gray-500 font-medium">${rowNumber}</td>
+                <td class="py-3 px-4 font-medium text-gray-900">${name}</td>
+                <td class="py-3 px-4 text-gray-700">${teacher.nip || '-'}</td>
+                <td class="py-3 px-4 text-gray-700">${teacher.email || '-'}</td>
+                <td class="py-3 px-4 text-gray-700">${teacher.phone || '-'}</td>
                 <td class="py-3 px-4 text-center">
-                    <span class="badge-${teacher.is_active ? 'success' : 'danger'}">
-                        ${teacher.is_active ? 'Aktif' : 'Nonaktif'}
-                    </span>
+                    <span class="badge-${teacher.is_active ? 'success' : 'danger'}">${teacher.is_active ? 'Aktif' : 'Nonaktif'}</span>
                 </td>
                 <td class="py-3 px-4 text-center">
-                    <button onclick="editTeacher(${teacher.id})" class="text-primary-600 hover:text-primary-800 mr-2">
+                    <button onclick="editTeacher(${teacher.id})" class="text-primary-600 hover:text-primary-800 mr-2 p-1 rounded focus:outline-none" style="border:none;background:none;box-shadow:none;">
                         <span class="material-symbols-outlined">edit</span>
                     </button>
-                    <button onclick="deleteTeacher(${teacher.id})" class="text-danger-600 hover:text-danger-800">
+                    <button onclick="deleteTeacher(${teacher.id})" class="text-danger-600 hover:text-danger-800 p-1 rounded focus:outline-none" style="border:none;background:none;box-shadow:none;">
                         <span class="material-symbols-outlined">delete</span>
                     </button>
                 </td>
             </tr>
-        `).join('');
+        `;
+        }).join('');
     }
 
-    function showError(message) {
+    function setTeacherSort(col) {
+        const colMap = {
+            name: 'full_name',
+            nip: 'nip',
+            email: 'email',
+            phone: 'phone',
+            is_active: 'is_active'
+        };
+        const actualCol = colMap[col] || col;
+        if (teacherSortCol === actualCol) {
+            if (teacherSortDir === 'asc') teacherSortDir = 'desc';
+            else if (teacherSortDir === 'desc') {
+                teacherSortCol = '';
+                teacherSortDir = '';
+            } else teacherSortDir = 'asc';
+        } else {
+            teacherSortCol = actualCol;
+            teacherSortDir = 'asc';
+        }
+        updateTeacherSortIndicators(col);
+        teachersPage = 1;
+        applyTeacherFilterAndRender();
+    }
+
+    function updateTeacherSortIndicators(activeCol) {
+        ['name', 'nip', 'email', 'phone', 'is_active'].forEach(col => {
+            const el = document.getElementById('teacherSortIndicator_' + col);
+            if (!el) return;
+            const colMap = {
+                name: 'full_name',
+                nip: 'nip',
+                email: 'email',
+                phone: 'phone',
+                is_active: 'is_active'
+            };
+            const actual = colMap[col] || col;
+            if (teacherSortCol === actual) {
+                el.textContent = teacherSortDir === 'asc' ? '↑' : '↓';
+            } else {
+                el.textContent = '';
+            }
+        });
+    }
+
+    function resetTeacherFilters() {
+        document.getElementById('searchInput').value = '';
+        teacherSortCol = '';
+        teacherSortDir = '';
+        updateTeacherSortIndicators('');
+        teachersPage = 1;
+        applyTeacherFilterAndRender();
+    }
+
+    function updateTeachersPagination(total, offset) {
+        const start = total === 0 ? 0 : offset + 1;
+        const end = Math.min(offset + teachersPerPage, total);
+        document.getElementById('teachersPaginationInfo').textContent = `Menampilkan ${start}–${end} dari ${total} guru`;
+        document.getElementById('teachersPrevBtn').disabled = teachersPage <= 1;
+        document.getElementById('teachersNextBtn').disabled = teachersPage >= teachersTotalPages;
+        renderTeachersPaginationNumbers();
+    }
+
+    function renderTeachersPaginationNumbers() {
+        const container = document.getElementById('teachersPaginationNumbers');
+        const pages = [];
+        if (teachersTotalPages <= 7) {
+            for (let i = 1; i <= teachersTotalPages; i++) pages.push(i);
+        } else {
+            pages.push(1);
+            if (teachersPage > 3) pages.push('ellipsis-start');
+            const s = Math.max(2, teachersPage - 1);
+            const e = Math.min(teachersTotalPages - 1, teachersPage + 1);
+            for (let i = s; i <= e; i++) pages.push(i);
+            if (teachersPage < teachersTotalPages - 2) pages.push('ellipsis-end');
+            pages.push(teachersTotalPages);
+        }
+        container.innerHTML = pages.map(item => {
+            if (typeof item !== 'number') {
+                const jp = item === 'ellipsis-start' ? Math.max(1, teachersPage - 5) : Math.min(teachersTotalPages, teachersPage + 5);
+                return `<button type="button" onclick="goToTeachersPage(${jp})" class="w-10 h-10 rounded-xl border border-gray-200 bg-white text-gray-500 hover:bg-gray-50 flex items-center justify-center"><span class="material-symbols-outlined text-base">more_horiz</span></button>`;
+            }
+            const isCurrent = item === teachersPage;
+            const cls = isCurrent ? 'bg-primary-600 text-white border-primary-600' : 'bg-white text-gray-700 border-gray-200 hover:bg-gray-50';
+            return `<button type="button" onclick="goToTeachersPage(${item})" class="w-10 h-10 rounded-xl border text-sm font-semibold transition ${cls}">${item}</button>`;
+        }).join('');
+    }
+
+    function goToTeachersPage(page) {
+        if (page < 1 || page > teachersTotalPages || page === teachersPage) return;
+        teachersPage = page;
+        applyTeacherFilterAndRender();
+    }
+
+    function showTeacherError(message) {
         document.getElementById('teachersTable').innerHTML = `
             <tr>
-                <td colspan="6" class="text-center py-12 text-red-500">
-                    <span class="material-symbols-outlined text-5xl mb-2">error</span>
+                <td colspan="7" class="text-center py-12 text-red-500">
+                    <span class="material-symbols-outlined text-5xl block mb-2">error</span>
                     <p>${message}</p>
                 </td>
             </tr>

@@ -18,11 +18,68 @@
     </button>
 </div>
 
-<!-- Classes Grid -->
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="classesContainer">
-    <div class="text-center col-span-3 py-12">
-        <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
-        <p class="text-gray-500 mt-4">Memuat data kelas...</p>
+<!-- Search & Filter -->
+<div class="card mb-6">
+    <div class="card-body">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div class="md:col-span-3">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Cari Kelas</label>
+                <input type="text" id="searchClass" placeholder="Cari berdasarkan nama kelas atau wali kelas..."
+                    class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">&nbsp;</label>
+                <button onclick="resetClassFilters()" class="w-full btn-secondary">
+                    <span class="material-symbols-outlined text-sm mr-2">filter_alt_off</span>
+                    Reset Filter
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Classes Table -->
+<div class="card" id="classesContainer">
+    <div class="card-body">
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead class="bg-primary-50">
+                    <tr class="border-b border-primary-100">
+                        <th class="text-left py-3.5 px-4 text-xs font-bold uppercase tracking-wide text-primary-700 whitespace-nowrap">No</th>
+                        <th onclick="setClassSort('name')" class="text-left py-3.5 px-4 text-xs font-bold uppercase tracking-wide text-primary-700 whitespace-nowrap cursor-pointer select-none hover:bg-primary-100 transition-colors">Nama Kelas<span id="classSortIndicator_name" class="ml-1 text-primary-500"></span></th>
+                        <th onclick="setClassSort('teacher')" class="text-left py-3.5 px-4 text-xs font-bold uppercase tracking-wide text-primary-700 whitespace-nowrap cursor-pointer select-none hover:bg-primary-100 transition-colors">Wali Kelas<span id="classSortIndicator_teacher" class="ml-1 text-primary-500"></span></th>
+                        <th onclick="setClassSort('student_count')" class="text-center py-3.5 px-4 text-xs font-bold uppercase tracking-wide text-primary-700 whitespace-nowrap cursor-pointer select-none hover:bg-primary-100 transition-colors">Jumlah Siswa<span id="classSortIndicator_student_count" class="ml-1 text-primary-500"></span></th>
+                        <th onclick="setClassSort('year')" class="text-left py-3.5 px-4 text-xs font-bold uppercase tracking-wide text-primary-700 whitespace-nowrap cursor-pointer select-none hover:bg-primary-100 transition-colors">Tahun Ajaran<span id="classSortIndicator_year" class="ml-1 text-primary-500"></span></th>
+                        <th class="text-center py-3.5 px-4 text-xs font-bold uppercase tracking-wide text-primary-700 whitespace-nowrap">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="classesTableBody">
+                    <tr>
+                        <td colspan="6" class="text-center py-12">
+                            <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
+                            <p class="text-gray-500 mt-4">Memuat data kelas...</p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="mt-4 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+            <p id="classesPaginationInfo" class="text-sm text-gray-600">Memuat data...</p>
+            <div class="flex items-center gap-x-2">
+                <button id="classesPrevBtn" onclick="goToClassesPage(classesPage - 1)" disabled
+                    class="h-10 px-4 rounded-xl border border-gray-200 bg-white text-gray-500 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1 text-sm font-medium transition">
+                    <span class="material-symbols-outlined text-base">chevron_left</span>
+                    <span>Sebelumnya</span>
+                </button>
+                <div id="classesPaginationNumbers" class="flex items-center gap-x-1"></div>
+                <button id="classesNextBtn" onclick="goToClassesPage(classesPage + 1)" disabled
+                    class="h-10 px-4 rounded-xl border border-gray-200 bg-white text-gray-500 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1 text-sm font-medium transition">
+                    <span>Berikutnya</span>
+                    <span class="material-symbols-outlined text-base">chevron_right</span>
+                </button>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -87,11 +144,25 @@
 </div>
 
 <script>
+    let allClasses = [];
     let allTeachersForClass = [];
+    let classesPage = 1;
+    let classesTotalPages = 1;
+    let classesPerPage = 25;
+    let classSortCol = '';
+    let classSortDir = '';
+    let classSearchDebounce = null;
 
     document.addEventListener('DOMContentLoaded', function() {
         loadClasses();
         loadTeachersForDropdown();
+        document.getElementById('searchClass').addEventListener('input', function() {
+            clearTimeout(classSearchDebounce);
+            classSearchDebounce = setTimeout(() => {
+                classesPage = 1;
+                applyClassFilterAndRender();
+            }, 300);
+        });
     });
 
     async function loadTeachersForDropdown() {
@@ -116,75 +187,185 @@
             const option = document.createElement('option');
             option.value = teacher.id;
             option.textContent = teacher.full_name || teacher.username;
-            if (teacher.nip) {
-                option.textContent += ` (NIP: ${teacher.nip})`;
-            }
-            if (selectedId && teacher.id == selectedId) {
-                option.selected = true;
-            }
+            if (teacher.nip) option.textContent += ` (NIP: ${teacher.nip})`;
+            if (selectedId && teacher.id == selectedId) option.selected = true;
             select.appendChild(option);
         });
     }
 
     function loadClasses() {
         fetch('<?= base_url('api/admin/classes') ?>', {
-                credentials: 'same-origin'
+                credentials: 'same-origin',
+                cache: 'no-store'
             })
             .then(response => response.json())
             .then(data => {
                 if (data.status === 'success') {
-                    renderClasses(data.data);
+                    allClasses = data.data;
+                    classesPage = 1;
+                    applyClassFilterAndRender();
                 }
             })
-            .catch(error => {
-                console.error('Error:', error);
-                document.getElementById('classesContainer').innerHTML = `
-                <div class="text-center col-span-3 py-12 text-red-500">
-                    Gagal memuat data kelas
-                </div>
-            `;
+            .catch(() => {
+                document.getElementById('classesTableBody').innerHTML = `
+                    <tr><td colspan="6" class="text-center py-12 text-red-500">Gagal memuat data kelas</td></tr>
+                `;
             });
     }
 
-    function renderClasses(classes) {
-        const container = document.getElementById('classesContainer');
+    function applyClassFilterAndRender() {
+        const term = (document.getElementById('searchClass').value || '').toLowerCase();
+        let list = allClasses.filter(c =>
+            (c.name || '').toLowerCase().includes(term) ||
+            (c.teacher_name || c.homeroom_teacher || '').toLowerCase().includes(term)
+        );
+
+        if (classSortCol) {
+            list = [...list].sort((a, b) => {
+                let va, vb;
+                if (classSortCol === 'teacher') {
+                    va = String(a.teacher_name || a.homeroom_teacher || '').toLowerCase();
+                    vb = String(b.teacher_name || b.homeroom_teacher || '').toLowerCase();
+                } else if (classSortCol === 'student_count') {
+                    return classSortDir === 'asc' ? Number(a.student_count || 0) - Number(b.student_count || 0) : Number(b.student_count || 0) - Number(a.student_count || 0);
+                } else {
+                    va = String(a[classSortCol] || '').toLowerCase();
+                    vb = String(b[classSortCol] || '').toLowerCase();
+                }
+                if (va < vb) return classSortDir === 'asc' ? -1 : 1;
+                if (va > vb) return classSortDir === 'asc' ? 1 : -1;
+                return 0;
+            });
+        }
+
+        const total = list.length;
+        classesTotalPages = Math.max(1, Math.ceil(total / classesPerPage));
+        if (classesPage > classesTotalPages) classesPage = classesTotalPages;
+
+        const offset = (classesPage - 1) * classesPerPage;
+        renderClasses(list.slice(offset, offset + classesPerPage), offset);
+        updateClassesPagination(total, offset);
+    }
+
+    function renderClasses(classes, offset) {
+        const tbody = document.getElementById('classesTableBody');
 
         if (!classes || classes.length === 0) {
-            container.innerHTML = `
-            <div class="card col-span-3 text-center py-12">
-                <span class="material-symbols-outlined text-5xl text-gray-300 mb-2">class</span>
-                <p class="text-gray-500">Belum ada data kelas</p>
-                <button onclick="openAddClassModal()" class="btn-primary mt-4">Tambah Kelas Pertama</button>
-            </div>
+            tbody.innerHTML = `
+            <tr>
+                <td colspan="6" class="text-center py-12 text-gray-500">
+                    <span class="material-symbols-outlined text-5xl text-gray-300 block mb-2">class</span>
+                    <p>Belum ada data kelas</p>
+                    <button onclick="openAddClassModal()" class="btn-primary mt-4">Tambah Kelas Pertama</button>
+                </td>
+            </tr>
         `;
             return;
         }
 
-        container.innerHTML = classes.map(cls => `
-        <div class="bg-white rounded-2xl shadow hover:shadow-lg transition-shadow p-4">
-            <div>
-                <div class="flex justify-between items-start mb-4">
-                    <div class="bg-primary-100 rounded-full p-3">
-                        <span class="material-symbols-outlined text-primary-600 text-2xl">class</span>
-                    </div>
-                    <div class="flex space-x-2">
-                        <button onclick="editClass(${cls.id})" class="text-primary-600 hover:text-primary-800 p-1 rounded focus:outline-none" style="border:none;background:none;box-shadow:none;">
-                            <span class="material-symbols-outlined">edit</span>
-                        </button>
-                        <button onclick="deleteClass(${cls.id})" class="text-danger-600 hover:text-danger-800 p-1 rounded focus:outline-none" style="border:none;background:none;box-shadow:none;">
-                            <span class="material-symbols-outlined">delete</span>
-                        </button>
-                    </div>
-                </div>
-                <h3 class="text-lg font-bold text-gray-900">${cls.name}</h3>
-                <p class="text-sm text-gray-500 mt-1">${cls.teacher_name || cls.homeroom_teacher || 'Wali kelas belum ditentukan'}</p>
-                <div class="flex items-center mt-4 text-sm text-gray-600">
-                    <span class="material-symbols-outlined text-sm mr-1">groups</span>
-                    <span>${cls.student_count || 0} Siswa</span>
-                </div>
-            </div>
-        </div>
-    `).join('');
+        tbody.innerHTML = classes.map((cls, index) => {
+            const rowNumber = offset + index + 1;
+            const waliKelas = cls.teacher_name || cls.homeroom_teacher || '-';
+            return `
+            <tr class="bg-white border-b border-gray-100 hover:bg-gray-50">
+                <td class="py-3 px-4 text-gray-500 font-medium">${rowNumber}</td>
+                <td class="py-3 px-4 font-medium text-gray-900">${cls.name}</td>
+                <td class="py-3 px-4 text-gray-700">${waliKelas}</td>
+                <td class="py-3 px-4 text-center">
+                    <span class="inline-flex items-center gap-1 text-gray-700">
+                        <span class="material-symbols-outlined text-sm text-primary-500">groups</span>
+                        ${cls.student_count || 0} Siswa
+                    </span>
+                </td>
+                <td class="py-3 px-4 text-gray-700">${cls.year || cls.academic_year || '-'}</td>
+                <td class="py-3 px-4 text-center">
+                    <button onclick="editClass(${cls.id})" class="text-primary-600 hover:text-primary-800 mr-2 p-1 rounded focus:outline-none" style="border:none;background:none;box-shadow:none;">
+                        <span class="material-symbols-outlined">edit</span>
+                    </button>
+                    <button onclick="deleteClass(${cls.id})" class="text-danger-600 hover:text-danger-800 p-1 rounded focus:outline-none" style="border:none;background:none;box-shadow:none;">
+                        <span class="material-symbols-outlined">delete</span>
+                    </button>
+                </td>
+            </tr>
+        `;
+        }).join('');
+    }
+
+    function setClassSort(col) {
+        if (classSortCol === col) {
+            if (classSortDir === 'asc') classSortDir = 'desc';
+            else if (classSortDir === 'desc') {
+                classSortCol = '';
+                classSortDir = '';
+            } else classSortDir = 'asc';
+        } else {
+            classSortCol = col;
+            classSortDir = 'asc';
+        }
+        updateClassSortIndicators();
+        classesPage = 1;
+        applyClassFilterAndRender();
+    }
+
+    function updateClassSortIndicators() {
+        ['name', 'teacher', 'student_count', 'year'].forEach(col => {
+            const el = document.getElementById('classSortIndicator_' + col);
+            if (!el) return;
+            if (classSortCol === col) {
+                el.textContent = classSortDir === 'asc' ? '↑' : '↓';
+            } else {
+                el.textContent = '';
+            }
+        });
+    }
+
+    function resetClassFilters() {
+        document.getElementById('searchClass').value = '';
+        classSortCol = '';
+        classSortDir = '';
+        updateClassSortIndicators();
+        classesPage = 1;
+        applyClassFilterAndRender();
+    }
+
+    function updateClassesPagination(total, offset) {
+        const start = total === 0 ? 0 : offset + 1;
+        const end = Math.min(offset + classesPerPage, total);
+        document.getElementById('classesPaginationInfo').textContent = `Menampilkan ${start}–${end} dari ${total} kelas`;
+        document.getElementById('classesPrevBtn').disabled = classesPage <= 1;
+        document.getElementById('classesNextBtn').disabled = classesPage >= classesTotalPages;
+        renderClassesPaginationNumbers();
+    }
+
+    function renderClassesPaginationNumbers() {
+        const container = document.getElementById('classesPaginationNumbers');
+        const pages = [];
+        if (classesTotalPages <= 7) {
+            for (let i = 1; i <= classesTotalPages; i++) pages.push(i);
+        } else {
+            pages.push(1);
+            if (classesPage > 3) pages.push('ellipsis-start');
+            const s = Math.max(2, classesPage - 1);
+            const e = Math.min(classesTotalPages - 1, classesPage + 1);
+            for (let i = s; i <= e; i++) pages.push(i);
+            if (classesPage < classesTotalPages - 2) pages.push('ellipsis-end');
+            pages.push(classesTotalPages);
+        }
+        container.innerHTML = pages.map(item => {
+            if (typeof item !== 'number') {
+                const jp = item === 'ellipsis-start' ? Math.max(1, classesPage - 5) : Math.min(classesTotalPages, classesPage + 5);
+                return `<button type="button" onclick="goToClassesPage(${jp})" class="w-10 h-10 rounded-xl border border-gray-200 bg-white text-gray-500 hover:bg-gray-50 flex items-center justify-center"><span class="material-symbols-outlined text-base">more_horiz</span></button>`;
+            }
+            const isCurrent = item === classesPage;
+            const cls = isCurrent ? 'bg-primary-600 text-white border-primary-600' : 'bg-white text-gray-700 border-gray-200 hover:bg-gray-50';
+            return `<button type="button" onclick="goToClassesPage(${item})" class="w-10 h-10 rounded-xl border text-sm font-semibold transition ${cls}">${item}</button>`;
+        }).join('');
+    }
+
+    function goToClassesPage(page) {
+        if (page < 1 || page > classesTotalPages || page === classesPage) return;
+        classesPage = page;
+        applyClassFilterAndRender();
     }
 
     function openAddClassModal() {
@@ -199,36 +380,23 @@
         document.getElementById('classModal').style.display = 'none';
     }
 
-
     function editClass(id) {
-        fetch(`<?= base_url('api/admin/classes') ?>`)
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    const cls = data.data.find(c => c.id == id);
-                    if (!cls) {
-                        alert('Data kelas tidak ditemukan');
-                        return;
-                    }
-                    document.getElementById('classModalTitle').textContent = 'Edit Kelas';
-                    document.getElementById('classId').value = cls.id;
-                    document.getElementById('className').value = cls.name || '';
-                    document.getElementById('classLevel').value = cls.grade || '';
-                    populateTeacherDropdown(cls.teacher_id);
-                    document.getElementById('academicYear').value = cls.year || '';
-                    document.getElementById('classModal').style.display = 'flex';
-                } else {
-                    alert('Gagal mengambil data kelas');
-                }
-            })
-            .catch(() => alert('Gagal mengambil data kelas'));
+        const cls = allClasses.find(c => c.id == id);
+        if (!cls) {
+            alert('Data kelas tidak ditemukan');
+            return;
+        }
+        document.getElementById('classModalTitle').textContent = 'Edit Kelas';
+        document.getElementById('classId').value = cls.id;
+        document.getElementById('className').value = cls.name || '';
+        document.getElementById('classLevel').value = cls.grade || '';
+        populateTeacherDropdown(cls.teacher_id);
+        document.getElementById('academicYear').value = cls.year || cls.academic_year || '';
+        document.getElementById('classModal').style.display = 'flex';
     }
 
     async function deleteClass(id) {
-        if (!confirm('Apakah Anda yakin ingin menghapus kelas ini?')) {
-            return;
-        }
-
+        if (!confirm('Apakah Anda yakin ingin menghapus kelas ini?')) return;
         try {
             const response = await fetch(`<?= base_url('api/admin/classes') ?>/${id}`, {
                 method: 'DELETE',
@@ -239,9 +407,7 @@
                 },
                 credentials: 'same-origin'
             });
-
             const data = await response.json();
-
             if (data.status === 'success') {
                 alert('Kelas berhasil dihapus');
                 loadClasses();
@@ -249,7 +415,6 @@
                 alert(data.message || 'Gagal menghapus kelas');
             }
         } catch (error) {
-            console.error('Error:', error);
             alert('Terjadi kesalahan saat menghapus kelas');
         }
     }
@@ -257,16 +422,11 @@
     document.getElementById('classForm').addEventListener('submit', async function(e) {
         e.preventDefault();
         const id = document.getElementById('classId').value;
-        const name = document.getElementById('className').value;
-        const level = document.getElementById('classLevel').value;
-        const teacher_id = document.getElementById('classTeacher').value;
-        const academic_year = document.getElementById('academicYear').value;
-
         const payload = {
-            name,
-            level,
-            teacher_id: teacher_id || null,
-            academic_year
+            name: document.getElementById('className').value,
+            level: document.getElementById('classLevel').value,
+            teacher_id: document.getElementById('classTeacher').value || null,
+            academic_year: document.getElementById('academicYear').value
         };
 
         let url = '<?= base_url('api/admin/classes') ?>';
@@ -278,7 +438,7 @@
 
         try {
             const resp = await fetch(url, {
-                method: method,
+                method,
                 headers: {
                     'Content-Type': 'application/json',
                     'Accept': 'application/json',

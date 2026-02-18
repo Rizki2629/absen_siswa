@@ -53,13 +53,16 @@ class UserModel extends Model
             ->orWhere('email', $username)
             ->first();
 
-        // If not found, try NISN for students
+        // If not found, try NISN/NIS for students
         if (!$user) {
             $db = \Config\Database::connect();
             $builder = $db->table('users');
             $builder->select('users.*');
             $builder->join('students', 'students.id = users.student_id', 'left');
-            $builder->where('students.nis', $username);
+            $builder->groupStart()
+                ->where('students.nisn', $username)
+                ->orWhere('students.nis', $username)
+                ->groupEnd();
             $user = $builder->get()->getRowArray();
         }
 
