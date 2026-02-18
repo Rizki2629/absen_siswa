@@ -439,7 +439,7 @@ class Admin extends BaseController
             $data = [
                 'username' => $json['username'] ?? '',
                 'email' => $json['email'] ?? null,
-                'password' => $json['password'] ?? '',
+                'password_hash' => password_hash($json['password'] ?? '', PASSWORD_DEFAULT),
                 'role' => $json['role'] ?? 'teacher',
                 'full_name' => $json['name'] ?? '',
                 'phone' => $json['phone'] ?? null,
@@ -470,7 +470,7 @@ class Admin extends BaseController
             $data = [];
             if (isset($json['username'])) $data['username'] = $json['username'];
             if (isset($json['email'])) $data['email'] = $json['email'];
-            if (isset($json['password']) && $json['password']) $data['password'] = $json['password'];
+            if (isset($json['password']) && $json['password']) $data['password_hash'] = password_hash($json['password'], PASSWORD_DEFAULT);
             if (isset($json['role'])) $data['role'] = $json['role'];
             if (isset($json['name'])) $data['full_name'] = $json['name'];
             if (isset($json['phone'])) $data['phone'] = $json['phone'];
@@ -575,7 +575,7 @@ class Admin extends BaseController
                         'deleted_at' => null,
                     ];
                     if (isset($json['password']) && !empty($json['password'])) {
-                        $data['password'] = $json['password'];
+                        $data['password_hash'] = password_hash($json['password'], PASSWORD_DEFAULT);
                     }
                     $userModel->update($existingUser['id'], $data);
                     return $this->response->setJSON([
@@ -595,7 +595,7 @@ class Admin extends BaseController
             $data = [
                 'username' => $json['username'] ?? '',
                 'email' => $json['email'] ?? null,
-                'password' => $json['password'] ?? '',
+                'password_hash' => password_hash($json['password'] ?? '', PASSWORD_DEFAULT),
                 'role' => 'teacher',
                 'full_name' => $json['name'] ?? '',
                 'nip' => $json['nip'] ?? null,
@@ -632,7 +632,7 @@ class Admin extends BaseController
             if (isset($json['phone'])) $data['phone'] = $json['phone'];
             if (isset($json['is_active'])) $data['is_active'] = (int)$json['is_active'];
             if (isset($json['password']) && !empty($json['password'])) {
-                $data['password'] = $json['password'];
+                $data['password_hash'] = password_hash($json['password'], PASSWORD_DEFAULT);
             }
             if (!empty($data)) {
                 $userModel->update($id, $data);
