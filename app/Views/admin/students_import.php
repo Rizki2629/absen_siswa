@@ -392,7 +392,10 @@
             document.getElementById('uploadBtn').disabled = false;
 
             // Scroll to result
-            document.getElementById('uploadResultCard').scrollIntoView({ behavior: 'smooth', block: 'center' });
+            document.getElementById('uploadResultCard').scrollIntoView({
+                behavior: 'smooth',
+                block: 'center'
+            });
 
         } catch (error) {
             console.error('Error:', error);

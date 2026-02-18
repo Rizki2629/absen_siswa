@@ -1,0 +1,7 @@
+=== ALL TEACHERS ===
+ID:3 username:[pipit.raniasih] name:[Pipit Raniasih, M.Pd] active:1 deleted: hash:
+
+=== SEARCH PIPIT ===
+ID:3 username:[pipit.raniasih] name:[Pipit Raniasih, M.Pd] active:1 deleted:[]
+  password_verify('guru123456') = FALSE WRONG
+  hash: 
