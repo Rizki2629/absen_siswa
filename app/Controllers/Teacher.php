@@ -72,8 +72,11 @@ class Teacher extends BaseController
         $check = $this->checkTeacherAuth();
         if ($check) return $check;
 
+        $classes = $this->getTeacherClasses();
+
         return view('teacher/attendance', [
-            'activePage' => 'teacher/attendance'
+            'activePage' => 'teacher/attendance',
+            'classes'    => $classes,
         ]);
     }
 

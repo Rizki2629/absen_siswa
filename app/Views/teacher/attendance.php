@@ -6,25 +6,57 @@
 
 <?= $this->section('content') ?>
 
+<?php
+$classes = $classes ?? [];
+$singleClass = count($classes) === 1 ? $classes[0] : null;
+$defaultClassId = $singleClass ? $singleClass['id'] : '';
+$defaultClassName = $singleClass ? $singleClass['name'] : '';
+?>
+
 <!-- Header -->
 <div class="mb-6">
     <h2 class="text-2xl font-bold text-gray-900">Daftar Hadir</h2>
-    <p class="text-gray-600 mt-1">Input kehadiran siswa</p>
+    <p class="text-gray-600 mt-1">
+        <?php if ($singleClass): ?>
+            Kelas <?= esc($singleClass['name']) ?>
+        <?php else: ?>
+            Input kehadiran siswa
+        <?php endif; ?>
+    </p>
 </div>
+
+<?php if (empty($classes)): ?>
+<!-- No Class Assigned -->
+<div class="bg-white rounded-2xl shadow p-12 text-center">
+    <span class="material-symbols-outlined text-6xl text-gray-300 mb-4">school</span>
+    <p class="text-gray-500 text-lg">Anda belum ditetapkan sebagai wali kelas</p>
+    <p class="text-gray-400 text-sm mt-2">Hubungi administrator untuk mengatur kelas Anda</p>
+</div>
+<?php else: ?>
 
 <!-- Filter Form -->
 <div class="bg-white rounded-2xl shadow p-6 mb-6">
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <!-- Kelas -->
+    <div class="grid grid-cols-1 <?= $singleClass ? 'md:grid-cols-3' : 'md:grid-cols-4' ?> gap-4">
+
+        <?php if (!$singleClass): ?>
+        <!-- Kelas dropdown (multiple classes) -->
         <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">
                 <span class="material-symbols-outlined text-sm align-middle">class</span>
                 Kelas
             </label>
-            <select id="classId" class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+            <select id="classId" onchange="tryAutoLoad()"
+                class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
                 <option value="">Pilih Kelas</option>
+                <?php foreach ($classes as $cls): ?>
+                    <option value="<?= esc($cls['id']) ?>"><?= esc($cls['name']) ?></option>
+                <?php endforeach; ?>
             </select>
         </div>
+        <?php else: ?>
+        <!-- Hidden input for single class -->
+        <input type="hidden" id="classId" value="<?= esc($singleClass['id']) ?>">
+        <?php endif; ?>
 
         <!-- Tanggal -->
         <div>
@@ -32,7 +64,7 @@
                 <span class="material-symbols-outlined text-sm align-middle">calendar_today</span>
                 Tanggal
             </label>
-            <input type="date" id="date"
+            <input type="date" id="date" onchange="tryAutoLoad()"
                 class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                 value="<?= date('Y-m-d') ?>">
         </div>
@@ -43,12 +75,14 @@
                 <span class="material-symbols-outlined text-sm align-middle">schedule</span>
                 Shift
             </label>
-            <select id="shiftId" class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+            <select id="shiftId" onchange="tryAutoLoad()"
+                class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
                 <option value="">Pilih Shift</option>
             </select>
         </div>
 
-        <!-- Button -->
+        <?php if (!$singleClass): ?>
+        <!-- Button only shown when multiple classes -->
         <div class="flex items-end">
             <button onclick="loadAttendance()"
                 class="w-full px-4 py-2 bg-primary-600 text-white rounded-xl hover:bg-primary-700 transition-colors font-medium">
@@ -56,6 +90,7 @@
                 Tampilkan
             </button>
         </div>
+        <?php endif; ?>
     </div>
 </div>
 
@@ -83,31 +118,22 @@
 <!-- Empty State -->
 <div id="emptyState" class="bg-white rounded-2xl shadow p-12 text-center">
     <span class="material-symbols-outlined text-6xl text-gray-300 mb-4">person_search</span>
-    <p class="text-gray-500">Pilih kelas dan tanggal untuk menampilkan daftar siswa</p>
+    <p class="text-gray-500"><?= $singleClass ? 'Pilih shift untuk menampilkan daftar siswa' : 'Pilih kelas dan tanggal untuk menampilkan daftar siswa' ?></p>
 </div>
+
+<?php endif; ?>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        loadClasses();
         loadShifts();
     });
 
-    async function loadClasses() {
-        try {
-            const response = await fetch('<?= base_url('api/teacher/classes') ?>');
-            const result = await response.json();
-
-            const select = document.getElementById('classId');
-            select.innerHTML = '<option value="">Pilih Kelas</option>';
-
-            result.data.forEach(cls => {
-                const option = document.createElement('option');
-                option.value = cls.id;
-                option.textContent = cls.name;
-                select.appendChild(option);
-            });
-        } catch (error) {
-            console.error('Error loading classes:', error);
+    function tryAutoLoad() {
+        const classId = document.getElementById('classId').value;
+        const date = document.getElementById('date').value;
+        const shiftId = document.getElementById('shiftId').value;
+        if (classId && date && shiftId) {
+            loadAttendance();
         }
     }
 
@@ -135,10 +161,7 @@
         const date = document.getElementById('date').value;
         const shiftId = document.getElementById('shiftId').value;
 
-        if (!classId || !date || !shiftId) {
-            alert('Mohon lengkapi semua field');
-            return;
-        }
+        if (!classId || !date || !shiftId) return;
 
         try {
             const response = await fetch(`<?= base_url('api/teacher/attendance') ?>?class_id=${classId}&date=${date}&shift_id=${shiftId}`);
