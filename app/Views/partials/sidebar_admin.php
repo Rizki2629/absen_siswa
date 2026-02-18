@@ -30,9 +30,10 @@ $menuGroups = [
         'icon' => 'folder_shared',
         'label' => 'Data Master',
         'items' => [
-            ['url' => 'admin/students',       'icon' => 'groups',            'label' => 'Data Siswa'],
-            ['url' => 'admin/teachers',       'icon' => 'person',            'label' => 'Data Guru'],
-            ['url' => 'admin/classes',        'icon' => 'class',             'label' => 'Data Kelas'],
+            ['url' => 'admin/students',        'icon' => 'groups',            'label' => 'Data Siswa'],
+            ['url' => 'admin/students-import', 'icon' => 'upload_file',       'label' => 'Import Siswa'],
+            ['url' => 'admin/teachers',        'icon' => 'person',            'label' => 'Data Guru'],
+            ['url' => 'admin/classes',         'icon' => 'class',             'label' => 'Data Kelas'],
         ]
     ],
     [

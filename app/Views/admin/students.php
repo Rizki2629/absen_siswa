@@ -13,9 +13,13 @@
         <p class="text-gray-600 mt-1">Kelola data siswa dan informasi absensi</p>
     </div>
     <div class="flex gap-2">
+        <a href="<?= base_url('admin/students-import') ?>" class="btn-secondary flex items-center space-x-2">
+            <span class="material-symbols-outlined">upload_file</span>
+            <span>Import Excel</span>
+        </a>
         <button onclick="generateStudentAccounts()" class="btn-secondary flex items-center space-x-2">
             <span class="material-symbols-outlined">manage_accounts</span>
-            <span>Generate Akun Siswa</span>
+            <span>Generate Akun</span>
         </button>
         <button onclick="openAddStudentModal()" class="btn-primary flex items-center space-x-2">
             <span class="material-symbols-outlined">add</span>
@@ -45,28 +49,6 @@
                 <button onclick="resetFilters()" class="w-full btn-secondary">
                     <span class="material-symbols-outlined text-sm mr-2">filter_alt_off</span>
                     Reset Filter
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="card mb-6">
-    <div class="card-body">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
-            <div class="md:col-span-2">
-                <label class="block text-sm font-medium text-gray-700 mb-2">Upload Data Siswa (XLSX / CSV)</label>
-                <input type="file" id="studentUploadFile" accept=".xlsx,.xls,.csv"
-                    class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 bg-white">
-                <p class="text-xs text-gray-500 mt-2">Gunakan template agar header sesuai: Nama, NIPD, JK, NISN, Tempat Lahir, Tanggal Lahir, NIK, Agama, Alamat, RT, RW, Kelurahan, Kecamatan, HP, Nama Ayah, Nama Ibu, Rombel Saat Ini.</p>
-                <p class="text-xs text-gray-500 mt-1">Format data: JK = L/P, Tanggal Lahir bisa format tanggal Excel atau teks (contoh: 15 Maret 2018), Rombel Saat Ini otomatis dipetakan ke kelas.</p>
-            </div>
-            <div class="flex gap-2">
-                <button onclick="downloadStudentTemplateXlsx()" class="btn-secondary w-full">
-                    Template XLSX
-                </button>
-                <button onclick="uploadStudentsFile()" class="btn-primary w-full">
-                    Upload File
                 </button>
             </div>
         </div>
@@ -624,55 +606,6 @@
             alert('Terjadi kesalahan saat menyimpan data siswa');
         }
     });
-
-    function downloadStudentTemplateXlsx() {
-        window.location.href = '<?= base_url('api/admin/students/upload-template?format=xlsx') ?>';
-    }
-
-    async function uploadStudentsFile() {
-        const input = document.getElementById('studentUploadFile');
-        if (!input.files || !input.files.length) {
-            alert('Pilih file XLSX/CSV terlebih dahulu');
-            return;
-        }
-
-        const formData = new FormData();
-        formData.append('file', input.files[0]);
-
-        try {
-            const response = await fetch('<?= base_url('api/admin/students/import') ?>', {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest'
-                }
-            });
-
-            const result = await response.json();
-
-            if (result.status !== 'success') {
-                alert(result.message || 'Gagal upload data siswa');
-                return;
-            }
-
-            const summary = result.data || {};
-            let message = `Upload selesai\nBerhasil tambah: ${summary.inserted || 0}\nBerhasil update: ${summary.updated || 0}\nGagal: ${summary.failed || 0}`;
-
-            if (summary.failed > 0 && Array.isArray(summary.errors) && summary.errors.length > 0) {
-                const firstErrors = summary.errors.slice(0, 3)
-                    .map(err => `Baris ${err.line}: ${err.message}`)
-                    .join('\n');
-                message += `\n\nContoh error:\n${firstErrors}`;
-            }
-
-            alert(message);
-            input.value = '';
-            loadStudents();
-        } catch (error) {
-            console.error('Error:', error);
-            alert('Terjadi kesalahan saat upload data siswa');
-        }
-    }
 
     async function generateStudentAccounts() {
         const classId = document.getElementById('filterClass').value || null;

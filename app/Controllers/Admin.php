@@ -157,6 +157,23 @@ class Admin extends BaseController
         return view('admin/students', $data);
     }
 
+    public function studentsImport()
+    {
+        // Students import page
+        $data = [
+            'title' => 'Import Data Siswa',
+            'pageTitle' => 'Import Data Siswa',
+            'pageDescription' => 'Upload data siswa dari file Excel atau CSV',
+            'activePage' => 'admin/students-import',
+            'user' => [
+                'name' => session()->get('name'),
+                'role' => 'Administrator'
+            ],
+        ];
+
+        return view('admin/students_import', $data);
+    }
+
     public function classes()
     {
         // Classes management page

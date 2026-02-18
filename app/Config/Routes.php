@@ -25,6 +25,7 @@ $routes->group('admin', ['filter' => 'auth'], static function (RouteCollection $
 	$routes->get('rekap', 'Admin::rekap');
 	$routes->get('shifts', 'Admin::shifts');
 	$routes->get('students', 'Admin::students');
+	$routes->get('students-import', 'Admin::studentsImport');
 	$routes->get('teachers', 'Admin::teachers');
 	$routes->get('classes', 'Admin::classes');
 	$routes->get('habits', static function () {
