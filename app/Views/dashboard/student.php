@@ -19,7 +19,7 @@ $dayNames   = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
 $monthNames = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
 $now        = new DateTime();
 $todayLabel = $dayNames[(int)$now->format('w')] . ', ' . $now->format('d') . ' ' . $monthNames[(int)$now->format('n') - 1] . ' ' . $now->format('Y');
-$firstName  = explode(' ', $student['name'] ?? 'Siswa')[0];
+$fullName   = $student['name'] ?? 'Siswa';
 
 $todayStatus = $todayAttendance['status'] ?? null;
 $isHadir     = in_array($todayStatus, ['hadir', 'terlambat']);
@@ -47,7 +47,7 @@ $statusIcon  = $isHadir ? ($todayStatus === 'terlambat' ? 'timer' : 'check_circl
             <!-- Greeting Section -->
             <div class="text-white min-w-0 flex-1">
                 <h1 class="text-2xl md:text-3xl font-bold mb-3 tracking-tight">
-                    Halo, <?= esc($firstName) ?>! 👋
+                    Halo, <?= esc($fullName) ?>! 👋
                 </h1>
                 <div class="flex flex-wrap gap-2">
                     <span class="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg"
