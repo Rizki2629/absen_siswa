@@ -42,7 +42,7 @@ class Teacher extends BaseController
      */
     private function getTeacherClasses()
     {
-        $userId = session()->get('id');
+        $userId = session()->get('user_id');
         return $this->classModel
             ->where('teacher_id', $userId)
             ->findAll();
@@ -178,7 +178,7 @@ class Teacher extends BaseController
             $classId = $this->request->getGet('class_id');
 
             // Verify this class belongs to the teacher
-            $userId = session()->get('id');
+            $userId = session()->get('user_id');
             $class = $this->classModel
                 ->where('id', $classId)
                 ->where('teacher_id', $userId)
@@ -225,7 +225,7 @@ class Teacher extends BaseController
             $date = $this->request->getGet('date') ?? date('Y-m-d');
 
             // Verify class belongs to teacher
-            $userId = session()->get('id');
+            $userId = session()->get('user_id');
             $class = $this->classModel
                 ->where('id', $classId)
                 ->where('teacher_id', $userId)
@@ -302,7 +302,7 @@ class Teacher extends BaseController
                 $student = $this->studentModel->find($studentId);
                 if (!$student) continue;
 
-                $userId = session()->get('id');
+                $userId = session()->get('user_id');
                 $class = $this->classModel
                     ->where('id', $student['class_id'])
                     ->where('teacher_id', $userId)
@@ -354,7 +354,7 @@ class Teacher extends BaseController
             $year = $this->request->getGet('year') ?? date('Y');
 
             // Verify class
-            $userId = session()->get('id');
+            $userId = session()->get('user_id');
             $class = $this->classModel
                 ->where('id', $classId)
                 ->where('teacher_id', $userId)
@@ -446,7 +446,7 @@ class Teacher extends BaseController
             $year = $this->request->getGet('year') ?? date('Y');
 
             // Verify class
-            $userId = session()->get('id');
+            $userId = session()->get('user_id');
             $class = $this->classModel
                 ->where('id', $classId)
                 ->where('teacher_id', $userId)
@@ -571,7 +571,7 @@ class Teacher extends BaseController
             $classId = $this->request->getGet('class_id');
             $endDate = $this->request->getGet('date') ?? date('Y-m-d');
 
-            $userId = session()->get('id');
+            $userId = session()->get('user_id');
             $class = $this->classModel
                 ->where('id', $classId)
                 ->where('teacher_id', $userId)
@@ -691,7 +691,7 @@ class Teacher extends BaseController
             $year = $this->request->getGet('year') ?? date('Y');
 
             // Verify class
-            $userId = session()->get('id');
+            $userId = session()->get('user_id');
             $class = $this->classModel
                 ->where('id', $classId)
                 ->where('teacher_id', $userId)
@@ -811,7 +811,7 @@ class Teacher extends BaseController
             }
 
             // Verify class belongs to teacher
-            $userId = session()->get('id');
+            $userId = session()->get('user_id');
             $class = $this->classModel
                 ->where('id', $student['class_id'])
                 ->where('teacher_id', $userId)

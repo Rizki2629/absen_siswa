@@ -71,8 +71,8 @@
                         <span class="material-symbols-outlined text-primary-600 text-2xl">account_circle</span>
                     </div>
                     <div class="flex-1 min-w-0">
-                        <p class="text-sm font-semibold text-gray-900 truncate"><?= esc($user['name'] ?? 'User') ?></p>
-                        <p class="text-xs text-gray-500 truncate"><?= esc($user['role'] ?? 'Role') ?></p>
+                        <p class="text-sm font-semibold text-gray-900 truncate"><?= esc(session()->get('name') ?? 'User') ?></p>
+                        <p class="text-xs text-gray-500 truncate"><?= esc(session()->get('role') ?? 'Role') ?></p>
                     </div>
                 </div>
             </div>
