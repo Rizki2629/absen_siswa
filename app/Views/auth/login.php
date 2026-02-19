@@ -114,28 +114,6 @@
                 </form>
             </div>
 
-            <!-- Role cards -->
-            <div class="role-cards">
-                <button type="button" class="role-card">
-                    <div class="role-icon role-admin">
-                        <span class="material-symbols-outlined">admin_panel_settings</span>
-                    </div>
-                    <p>Admin</p>
-                </button>
-                <button type="button" class="role-card">
-                    <div class="role-icon role-guru">
-                        <span class="material-symbols-outlined">person</span>
-                    </div>
-                    <p>Guru Piket</p>
-                </button>
-                <button type="button" class="role-card">
-                    <div class="role-icon role-siswa">
-                        <span class="material-symbols-outlined">school</span>
-                    </div>
-                    <p>Siswa/Ortu</p>
-                </button>
-            </div>
-
             <!-- Footer -->
             <p class="login-footer">
                 © <?= date('Y') ?> Absensi Siswa. All rights reserved.
