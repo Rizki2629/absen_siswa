@@ -1362,14 +1362,14 @@ class Admin extends BaseController
                     $email = $this->buildUniqueStudentEmail($userModel, $username, $excludeId);
 
                     $payload = [
-                        'username' => $username,
-                        'email' => $email,
-                        'password' => $defaultPassword,
-                        'role' => 'siswa',
-                        'full_name' => $studentName,
-                        'phone' => $student['phone'] ?? $student['parent_phone'] ?? null,
-                        'student_id' => $studentId,
-                        'is_active' => 1,
+                        'username'      => $username,
+                        'email'         => $email,
+                        'password_hash' => password_hash($defaultPassword, PASSWORD_DEFAULT),
+                        'role'          => 'siswa',
+                        'full_name'     => $studentName,
+                        'phone'         => $student['phone'] ?? $student['parent_phone'] ?? null,
+                        'student_id'    => $studentId,
+                        'is_active'     => 1,
                     ];
 
                     if ($existingStudentUser) {
