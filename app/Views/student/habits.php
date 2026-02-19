@@ -77,9 +77,18 @@
         object-fit: cover;
         display: block;
         border-radius: 20px;
-        background: #e2e8f0;
+        background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
         margin: 0 auto;
         z-index: 1;
+        transition: opacity 0.3s ease;
+    }
+
+    .poster-image.loading {
+        opacity: 0;
+    }
+
+    .poster-image.loaded {
+        opacity: 1;
     }
 
     .poster-image-wrap {
@@ -87,13 +96,32 @@
         width: 100%;
         height: 310px;
         aspect-ratio: auto;
-        background: #e2e8f0;
+        background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
         border-radius: 20px;
         overflow: hidden;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: flex-start;
+    }
+
+    .poster-image-wrap::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 50%, #cbd5e1 100%);
+        background-size: 200% 200%;
+        animation: shimmer 1.5s infinite;
+        z-index: 0;
+    }
+
+    .poster-image-wrap.image-loaded::before {
+        display: none;
+    }
+
+    @keyframes shimmer {
+        0% { background-position: -200% 0; }
+        100% { background-position: 200% 0; }
     }
 
     .poster-title-overlay {
@@ -1005,8 +1033,10 @@
                 <div class="poster-image-wrap">
                     <img src="<?= base_url('images/habits/') ?>${def.image}" 
                          alt="${def.title}" 
-                         class="poster-image"
-                         onerror="this.src='<?= base_url('images/habits/placeholder.png') ?>';">
+                         class="poster-image loading"
+                         loading="lazy"
+                         onload="this.classList.remove('loading'); this.classList.add('loaded'); this.parentElement.classList.add('image-loaded');"
+                         onerror="this.src='<?= base_url('images/habits/placeholder.png') ?>'; this.classList.add('loaded');">
 
                     <div class="poster-title-overlay"></div>
                     <div class="poster-title">${def.title}</div>
