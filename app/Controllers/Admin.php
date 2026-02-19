@@ -3070,6 +3070,63 @@ class Admin extends BaseController
     }
 
     /**
+     * API: Test WhatsApp notification manually (without fingerprint device)
+     * POST /api/admin/test-whatsapp
+     * Body: { "student_id": 1, "att_time": "07:30" } (att_time optional, defaults to now)
+     */
+    public function apiTestWhatsapp(): \CodeIgniter\HTTP\ResponseInterface
+    {
+        $studentId = (int) ($this->request->getJSON(true)['student_id'] ?? 0);
+        $attTime   = trim($this->request->getJSON(true)['att_time'] ?? '');
+
+        if ($studentId <= 0) {
+            return $this->response->setJSON(['status' => 'error', 'message' => 'student_id diperlukan'])->setStatusCode(400);
+        }
+
+        $student = $this->studentModel->find($studentId);
+        if (! $student) {
+            return $this->response->setJSON(['status' => 'error', 'message' => 'Siswa tidak ditemukan'])->setStatusCode(404);
+        }
+
+        $phone = $student['parent_phone'] ?? '';
+        if (empty($phone)) {
+            return $this->response->setJSON(['status' => 'error', 'message' => 'Nomor HP orang tua tidak tersedia untuk siswa ini'])->setStatusCode(422);
+        }
+
+        // Determine time label
+        if (empty($attTime)) {
+            $attTime = date('H:i');
+        } else {
+            // Accept full datetime or just HH:MM
+            if (strlen($attTime) > 5) {
+                $attTime = date('H:i', strtotime($attTime));
+            }
+        }
+
+        $nama    = $student['nama'] ?? ($student['name'] ?? 'Siswa');
+        $message = "Ananda {$nama} hadir di sekolah pukul {$attTime} WIB.";
+
+        $waService = new \App\Libraries\WhatsAppService();
+
+        if (! $waService->isConfigured()) {
+            return $this->response->setJSON([
+                'status'  => 'error',
+                'message' => 'FONNTE_TOKEN belum dikonfigurasi di environment',
+            ])->setStatusCode(500);
+        }
+
+        $result = $waService->send($phone, $message);
+
+        return $this->response->setJSON([
+            'status'     => $result['success'] ? 'success' : 'error',
+            'message'    => $result['message'],
+            'student'    => $nama,
+            'phone_used' => $phone,
+            'wa_message' => $message,
+        ])->setStatusCode($result['success'] ? 200 : 500);
+    }
+
+    /**
      * Helper: Get Indonesian day name
      */
     private function getIndonesianDayName(int $dayOfWeek): string

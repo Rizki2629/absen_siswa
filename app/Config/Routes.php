@@ -139,6 +139,9 @@ $routes->group('api/admin', ['filter' => 'auth'], static function (RouteCollecti
 	// School Holidays API
 	$routes->get('school-holidays', 'Admin::apiGetSchoolHolidays');
 	$routes->post('school-holidays', 'Admin::apiSaveSchoolHoliday');
+
+	// WhatsApp Test API
+	$routes->post('test-whatsapp', 'Admin::apiTestWhatsapp');
 });
 
 // Student/Parent Routes
