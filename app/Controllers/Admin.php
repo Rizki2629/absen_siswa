@@ -3103,7 +3103,7 @@ class Admin extends BaseController
             }
         }
 
-        $nama    = $student['nama'] ?? ($student['name'] ?? 'Siswa');
+        $nama    = $student['name'] ?? 'Siswa';
         $message = "Ananda {$nama} hadir di sekolah pukul {$attTime} WIB.";
 
         $waService = new \App\Libraries\WhatsAppService();
