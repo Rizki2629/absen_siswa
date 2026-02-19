@@ -81,6 +81,34 @@ class Teacher extends BaseController
     }
 
     /**
+     * Students page (Daftar Siswa walikelas)
+     */
+    public function students()
+    {
+        $check = $this->checkTeacherAuth();
+        if ($check) return $check;
+
+        $classes = $this->getTeacherClasses();
+        $singleClass = count($classes) === 1 ? $classes[0] : null;
+
+        $students = [];
+        if ($singleClass) {
+            $students = $this->studentModel
+                ->where('class_id', $singleClass['id'])
+                ->where('active', 1)
+                ->orderBy('name', 'ASC')
+                ->findAll();
+        }
+
+        return view('teacher/students', [
+            'activePage' => 'teacher/students',
+            'classes'    => $classes,
+            'singleClass' => $singleClass,
+            'students'   => $students,
+        ]);
+    }
+
+    /**
      * Rekap page
      */
     public function rekap()

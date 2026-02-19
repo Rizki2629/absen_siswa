@@ -8,6 +8,7 @@
 $menuItems = [
     ['url' => 'teacher/dashboard',       'icon' => 'dashboard',        'label' => 'Dashboard'],
     ['url' => 'teacher/attendance',      'icon' => 'how_to_reg',       'label' => 'Daftar Hadir'],
+    ['url' => 'teacher/students',        'icon' => 'groups',           'label' => 'Daftar Siswa'],
     ['url' => 'teacher/rekap',           'icon' => 'table_chart',      'label' => 'Rekap Daftar Hadir'],
     ['url' => 'teacher/habits-daily',    'icon' => 'today',            'label' => 'Rekap Harian 7 Kebiasaan'],
     ['url' => 'teacher/habits-monthly',  'icon' => 'date_range',       'label' => 'Rekap Bulanan 7 Kebiasaan'],

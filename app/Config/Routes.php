@@ -42,6 +42,7 @@ $routes->group('admin', ['filter' => 'auth'], static function (RouteCollection $
 $routes->group('teacher', ['filter' => 'auth'], static function (RouteCollection $routes): void {
 	$routes->get('dashboard', 'Teacher::dashboard');
 	$routes->get('attendance', 'Teacher::attendance');
+	$routes->get('students', 'Teacher::students');
 	$routes->get('rekap', 'Teacher::rekap');
 	$routes->get('habits-daily', 'Teacher::habitsDaily');
 	$routes->get('habits-monthly', 'Teacher::habitsMonthly');
