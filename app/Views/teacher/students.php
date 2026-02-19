@@ -12,7 +12,7 @@
         <h2 class="text-2xl font-bold text-gray-900">Daftar Siswa</h2>
         <p class="text-gray-600 mt-1">
             <?php if ($singleClass): ?>
-                Kelas <?= esc($singleClass['name']) ?> &mdash; <?= count($students) ?> siswa
+                <?= esc($singleClass['name']) ?> &mdash; <?= count($students) ?> siswa
             <?php else: ?>
                 Data siswa kelas Anda
             <?php endif; ?>
@@ -53,21 +53,21 @@
         <div class="px-6 py-4 bg-primary-600 text-white">
             <h3 class="text-lg font-bold flex items-center">
                 <span class="material-symbols-outlined mr-2">groups</span>
-                Siswa Kelas <?= esc($singleClass['name'] ?? '') ?>
+                Siswa <?= esc($singleClass['name'] ?? '') ?>
             </h3>
         </div>
 
-        <!-- Desktop Table -->
-        <div class="overflow-x-auto hidden md:block">
+        <!-- Table -->
+        <div class="overflow-x-auto">
             <table class="w-full" id="studentsTable">
                 <thead class="bg-gray-50 border-b border-gray-200">
                     <tr>
-                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">No</th>
-                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Nama</th>
-                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">NIS</th>
-                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">NISN</th>
-                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Jenis Kelamin</th>
-                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">No. HP Orang Tua</th>
+                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">No</th>
+                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Nama</th>
+                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">NIS</th>
+                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">NISN</th>
+                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">L/P</th>
+                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">HP Orang Tua</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100" id="tableBody">
@@ -75,8 +75,8 @@
                         <tr class="hover:bg-gray-50 transition-colors student-row"
                             data-name="<?= strtolower(esc($student['name'])) ?>"
                             data-nis="<?= esc($student['nis']) ?>">
-                            <td class="px-6 py-4 text-sm text-gray-500"><?= $i + 1 ?></td>
-                            <td class="px-6 py-4">
+                            <td class="px-4 py-3 text-sm text-gray-500"><?= $i + 1 ?></td>
+                            <td class="px-4 py-3">
                                 <div class="flex items-center">
                                     <div class="w-8 h-8 rounded-lg flex items-center justify-center mr-3 <?= ($student['gender'] === 'L') ? 'bg-blue-100' : 'bg-pink-100' ?>">
                                         <span class="material-symbols-outlined text-sm <?= ($student['gender'] === 'L') ? 'text-blue-600' : 'text-pink-600' ?>">person</span>
@@ -84,56 +84,20 @@
                                     <span class="font-medium text-gray-900"><?= esc($student['name']) ?></span>
                                 </div>
                             </td>
-                            <td class="px-6 py-4 text-sm text-gray-700"><?= esc($student['nis'] ?? '-') ?></td>
-                            <td class="px-6 py-4 text-sm text-gray-700"><?= esc($student['nisn'] ?? '-') ?></td>
-                            <td class="px-6 py-4">
+                            <td class="px-4 py-3 text-sm text-gray-700"><?= esc($student['nis'] ?? '-') ?></td>
+                            <td class="px-4 py-3 text-sm text-gray-700"><?= esc($student['nisn'] ?? '-') ?></td>
+                            <td class="px-4 py-3">
                                 <?php if ($student['gender'] === 'L'): ?>
-                                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-700">
-                                        Laki-laki
-                                    </span>
+                                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-700">Laki-laki</span>
                                 <?php else: ?>
-                                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-pink-100 text-pink-700">
-                                        Perempuan
-                                    </span>
+                                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-pink-100 text-pink-700">Perempuan</span>
                                 <?php endif; ?>
                             </td>
-                            <td class="px-6 py-4 text-sm text-gray-700"><?= esc($student['parent_phone'] ?? '-') ?></td>
+                            <td class="px-4 py-3 text-sm text-gray-700"><?= esc($student['parent_phone'] ?? '-') ?></td>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>
             </table>
-        </div>
-
-        <!-- Mobile Cards -->
-        <div class="md:hidden divide-y divide-gray-100" id="mobileCards">
-            <?php foreach ($students as $i => $student): ?>
-                <div class="p-4 student-row"
-                    data-name="<?= strtolower(esc($student['name'])) ?>"
-                    data-nis="<?= esc($student['nis']) ?>">
-                    <div class="flex items-center">
-                        <div class="w-10 h-10 rounded-xl flex items-center justify-center mr-3 <?= ($student['gender'] === 'L') ? 'bg-blue-100' : 'bg-pink-100' ?>">
-                            <span class="material-symbols-outlined <?= ($student['gender'] === 'L') ? 'text-blue-600' : 'text-pink-600' ?>">person</span>
-                        </div>
-                        <div class="flex-1">
-                            <p class="font-semibold text-gray-900"><?= esc($student['name']) ?></p>
-                            <p class="text-sm text-gray-500">NIS: <?= esc($student['nis'] ?? '-') ?></p>
-                        </div>
-                        <div class="text-right">
-                            <?php if ($student['gender'] === 'L'): ?>
-                                <span class="inline-flex px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-700">L</span>
-                            <?php else: ?>
-                                <span class="inline-flex px-2 py-1 rounded-full text-xs font-medium bg-pink-100 text-pink-700">P</span>
-                            <?php endif; ?>
-                        </div>
-                    </div>
-                    <?php if (!empty($student['parent_phone'])): ?>
-                        <p class="text-sm text-gray-500 mt-2 ml-13">
-                            <span class="material-symbols-outlined text-xs align-middle mr-1">phone</span>
-                            <?= esc($student['parent_phone']) ?>
-                        </p>
-                    <?php endif; ?>
-                </div>
-            <?php endforeach; ?>
         </div>
 
         <!-- Empty Search Result -->
