@@ -26,100 +26,100 @@ $defaultClassName = $singleClass ? $singleClass['name'] : '';
 </div>
 
 <?php if (empty($classes)): ?>
-<!-- No Class Assigned -->
-<div class="bg-white rounded-2xl shadow p-12 text-center">
-    <span class="material-symbols-outlined text-6xl text-gray-300 mb-4">school</span>
-    <p class="text-gray-500 text-lg">Anda belum ditetapkan sebagai wali kelas</p>
-    <p class="text-gray-400 text-sm mt-2">Hubungi administrator untuk mengatur kelas Anda</p>
-</div>
+    <!-- No Class Assigned -->
+    <div class="bg-white rounded-2xl shadow p-12 text-center">
+        <span class="material-symbols-outlined text-6xl text-gray-300 mb-4">school</span>
+        <p class="text-gray-500 text-lg">Anda belum ditetapkan sebagai wali kelas</p>
+        <p class="text-gray-400 text-sm mt-2">Hubungi administrator untuk mengatur kelas Anda</p>
+    </div>
 <?php else: ?>
 
-<!-- Filter Form -->
-<div class="bg-white rounded-2xl shadow p-6 mb-6">
-    <div class="grid grid-cols-1 <?= $singleClass ? 'md:grid-cols-3' : 'md:grid-cols-4' ?> gap-4">
+    <!-- Filter Form -->
+    <div class="bg-white rounded-2xl shadow p-6 mb-6">
+        <div class="grid grid-cols-1 <?= $singleClass ? 'md:grid-cols-3' : 'md:grid-cols-4' ?> gap-4">
 
-        <?php if (!$singleClass): ?>
-        <!-- Kelas dropdown (multiple classes) -->
-        <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">
-                <span class="material-symbols-outlined text-sm align-middle">class</span>
-                Kelas
-            </label>
-            <select id="classId" onchange="tryAutoLoad()"
-                class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
-                <option value="">Pilih Kelas</option>
-                <?php foreach ($classes as $cls): ?>
-                    <option value="<?= esc($cls['id']) ?>"><?= esc($cls['name']) ?></option>
-                <?php endforeach; ?>
-            </select>
-        </div>
-        <?php else: ?>
-        <!-- Hidden input for single class -->
-        <input type="hidden" id="classId" value="<?= esc($singleClass['id']) ?>">
-        <?php endif; ?>
+            <?php if (!$singleClass): ?>
+                <!-- Kelas dropdown (multiple classes) -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        <span class="material-symbols-outlined text-sm align-middle">class</span>
+                        Kelas
+                    </label>
+                    <select id="classId" onchange="tryAutoLoad()"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                        <option value="">Pilih Kelas</option>
+                        <?php foreach ($classes as $cls): ?>
+                            <option value="<?= esc($cls['id']) ?>"><?= esc($cls['name']) ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+            <?php else: ?>
+                <!-- Hidden input for single class -->
+                <input type="hidden" id="classId" value="<?= esc($singleClass['id']) ?>">
+            <?php endif; ?>
 
-        <!-- Tanggal -->
-        <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">
-                <span class="material-symbols-outlined text-sm align-middle">calendar_today</span>
-                Tanggal
-            </label>
-            <input type="date" id="date" onchange="tryAutoLoad()"
-                class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                value="<?= date('Y-m-d') ?>">
-        </div>
+            <!-- Tanggal -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                    <span class="material-symbols-outlined text-sm align-middle">calendar_today</span>
+                    Tanggal
+                </label>
+                <input type="date" id="date" onchange="tryAutoLoad()"
+                    class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                    value="<?= date('Y-m-d') ?>">
+            </div>
 
-        <!-- Shift -->
-        <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">
-                <span class="material-symbols-outlined text-sm align-middle">schedule</span>
-                Shift
-            </label>
-            <select id="shiftId" onchange="tryAutoLoad()"
-                class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
-                <option value="">Pilih Shift</option>
-            </select>
-        </div>
+            <!-- Shift -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                    <span class="material-symbols-outlined text-sm align-middle">schedule</span>
+                    Shift
+                </label>
+                <select id="shiftId" onchange="tryAutoLoad()"
+                    class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                    <option value="">Pilih Shift</option>
+                </select>
+            </div>
 
-        <?php if (!$singleClass): ?>
-        <!-- Button only shown when multiple classes -->
-        <div class="flex items-end">
-            <button onclick="loadAttendance()"
-                class="w-full px-4 py-2 bg-primary-600 text-white rounded-xl hover:bg-primary-700 transition-colors font-medium">
-                <span class="material-symbols-outlined text-sm align-middle mr-1">search</span>
-                Tampilkan
-            </button>
-        </div>
-        <?php endif; ?>
-    </div>
-</div>
-
-<!-- Attendance List -->
-<div id="attendanceContainer" class="hidden">
-    <div class="bg-white rounded-2xl shadow overflow-hidden">
-        <div class="px-6 py-4 bg-primary-600 text-white flex items-center justify-between">
-            <h3 class="text-lg font-bold flex items-center">
-                <span class="material-symbols-outlined mr-2">how_to_reg</span>
-                Daftar Siswa
-            </h3>
-            <button onclick="saveAttendance()"
-                class="px-4 py-2 bg-white text-primary-600 rounded-xl hover:bg-primary-50 transition-colors font-medium">
-                <span class="material-symbols-outlined text-sm align-middle mr-1">save</span>
-                Simpan
-            </button>
-        </div>
-
-        <div class="p-6">
-            <div id="attendanceList"></div>
+            <?php if (!$singleClass): ?>
+                <!-- Button only shown when multiple classes -->
+                <div class="flex items-end">
+                    <button onclick="loadAttendance()"
+                        class="w-full px-4 py-2 bg-primary-600 text-white rounded-xl hover:bg-primary-700 transition-colors font-medium">
+                        <span class="material-symbols-outlined text-sm align-middle mr-1">search</span>
+                        Tampilkan
+                    </button>
+                </div>
+            <?php endif; ?>
         </div>
     </div>
-</div>
 
-<!-- Empty State -->
-<div id="emptyState" class="bg-white rounded-2xl shadow p-12 text-center">
-    <span class="material-symbols-outlined text-6xl text-gray-300 mb-4">person_search</span>
-    <p class="text-gray-500"><?= $singleClass ? 'Pilih shift untuk menampilkan daftar siswa' : 'Pilih kelas dan tanggal untuk menampilkan daftar siswa' ?></p>
-</div>
+    <!-- Attendance List -->
+    <div id="attendanceContainer" class="hidden">
+        <div class="bg-white rounded-2xl shadow overflow-hidden">
+            <div class="px-6 py-4 bg-primary-600 text-white flex items-center justify-between">
+                <h3 class="text-lg font-bold flex items-center">
+                    <span class="material-symbols-outlined mr-2">how_to_reg</span>
+                    Daftar Siswa
+                </h3>
+                <button onclick="saveAttendance()"
+                    class="px-4 py-2 bg-white text-primary-600 rounded-xl hover:bg-primary-50 transition-colors font-medium">
+                    <span class="material-symbols-outlined text-sm align-middle mr-1">save</span>
+                    Simpan
+                </button>
+            </div>
+
+            <div class="p-6">
+                <div id="attendanceList"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Empty State -->
+    <div id="emptyState" class="bg-white rounded-2xl shadow p-12 text-center">
+        <span class="material-symbols-outlined text-6xl text-gray-300 mb-4">person_search</span>
+        <p class="text-gray-500"><?= $singleClass ? 'Pilih shift untuk menampilkan daftar siswa' : 'Pilih kelas dan tanggal untuk menampilkan daftar siswa' ?></p>
+    </div>
 
 <?php endif; ?>
 
