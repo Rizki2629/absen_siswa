@@ -15,8 +15,8 @@ $totalDays      = max(1, (int)($stats['total_days'] ?? 20));
 $attendanceRate = round(($totalPresent / $totalDays) * 100);
 /* ---- COMPACT_REDESIGN_V2 ---- */
 
-$dayNames   = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
-$monthNames = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+$dayNames   = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+$monthNames = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
 $now        = new DateTime();
 $todayLabel = $dayNames[(int)$now->format('w')] . ', ' . $now->format('d') . ' ' . $monthNames[(int)$now->format('n') - 1] . ' ' . $now->format('Y');
 $firstName  = explode(' ', $student['name'] ?? 'Siswa')[0];
@@ -31,9 +31,11 @@ $statusIcon  = $isHadir ? ($todayStatus === 'terlambat' ? 'timer' : 'check_circl
 
 <!-- HERO BANNER -->
 <div class="relative overflow-hidden rounded-2xl mb-6 shadow-lg"
-     style="background: linear-gradient(135deg, #4338ca 0%, #6366f1 55%, #818cf8 100%);">
-    <div class="absolute -top-8 -right-8 w-36 h-36 rounded-full opacity-10 bg-white pointer-events-none"></div>
-    <div class="absolute bottom-0 right-14 w-20 h-20 rounded-full opacity-10 bg-white pointer-events-none"></div>
+    style="background: linear-gradient(135deg, #4338ca 0%, #6366f1 55%, #818cf8 100%);">
+    <!-- Decorative circles - subtle background -->
+    <div class="absolute -top-12 -right-12 w-40 h-40 rounded-full opacity-5 bg-white pointer-events-none"></div>
+    <div class="absolute bottom-0 -left-10 w-28 h-28 rounded-full opacity-5 bg-white pointer-events-none"></div>
+    <div class="absolute top-1/2 right-1/4 w-20 h-20 rounded-full opacity-5 bg-white pointer-events-none"></div>
 
     <div class="relative px-5 py-5 md:px-6 md:py-6 z-10">
         <!-- Date Header -->
@@ -51,17 +53,17 @@ $statusIcon  = $isHadir ? ($todayStatus === 'terlambat' ? 'timer' : 'check_circl
                 </h1>
                 <div class="flex flex-wrap gap-2">
                     <span class="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg"
-                          style="background:rgba(255,255,255,0.2);color:#fff;">
+                        style="background:rgba(255,255,255,0.2);color:#fff;">
                         <span class="material-symbols-outlined" style="font-size:14px;">badge</span>
                         <?= esc($student['nis'] ?? '-') ?>
                     </span>
                     <span class="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg"
-                          style="background:rgba(255,255,255,0.2);color:#fff;">
+                        style="background:rgba(255,255,255,0.2);color:#fff;">
                         <span class="material-symbols-outlined" style="font-size:14px;">class</span>
                         <?= esc($student['class'] ?? '-') ?>
                     </span>
                     <span class="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg"
-                          style="background:rgba(255,255,255,0.2);color:#fff;">
+                        style="background:rgba(255,255,255,0.2);color:#fff;">
                         <span class="material-symbols-outlined" style="font-size:14px;">school</span>
                         <?= esc($student['major'] ?? '-') ?>
                     </span>
@@ -70,7 +72,7 @@ $statusIcon  = $isHadir ? ($todayStatus === 'terlambat' ? 'timer' : 'check_circl
 
             <!-- Status Today Box -->
             <div class="rounded-xl px-5 py-4 flex-shrink-0 lg:min-w-[240px]"
-                 style="background:rgba(255,255,255,0.15);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.3);">
+                style="background:rgba(255,255,255,0.15);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.3);">
                 <p class="text-xs font-bold uppercase tracking-wider mb-3 text-white/90">Status Hari Ini</p>
 
                 <?php if ($todayStatus): ?>
@@ -192,10 +194,10 @@ $statusIcon  = $isHadir ? ($todayStatus === 'terlambat' ? 'timer' : 'check_circl
         <div class="card-body py-6 px-5 flex flex-col items-center">
             <div class="relative w-28 h-28 mb-4">
                 <svg class="w-full h-full" style="transform:rotate(-90deg);" viewBox="0 0 36 36">
-                    <circle cx="18" cy="18" r="15.9" fill="none" stroke="#e5e7eb" stroke-width="3.5"/>
+                    <circle cx="18" cy="18" r="15.9" fill="none" stroke="#e5e7eb" stroke-width="3.5" />
                     <circle cx="18" cy="18" r="15.9" fill="none" stroke="#6366f1" stroke-width="3.5"
-                            stroke-dasharray="<?= $attendanceRate ?> <?= 100 - $attendanceRate ?>"
-                            stroke-linecap="round"/>
+                        stroke-dasharray="<?= $attendanceRate ?> <?= 100 - $attendanceRate ?>"
+                        stroke-linecap="round" />
                 </svg>
                 <div class="absolute inset-0 flex flex-col items-center justify-center">
                     <span class="text-2xl font-extrabold text-gray-900 leading-none"><?= $attendanceRate ?>%</span>
@@ -229,7 +231,7 @@ $statusIcon  = $isHadir ? ($todayStatus === 'terlambat' ? 'timer' : 'check_circl
 
         <!-- Riwayat Kehadiran -->
         <a href="<?= base_url('student/attendance') ?>"
-           class="card shadow-md hover:shadow-lg hover:-translate-y-1 transition-all duration-200 group cursor-pointer">
+            class="card shadow-md hover:shadow-lg hover:-translate-y-1 transition-all duration-200 group cursor-pointer">
             <div class="card-body flex flex-col items-center justify-center py-6 px-4 text-center">
                 <div class="bg-primary-100 rounded-xl p-4 mb-3 group-hover:bg-primary-200 transition-colors">
                     <span class="material-symbols-outlined text-primary-600" style="font-size:28px;">calendar_month</span>
@@ -241,7 +243,7 @@ $statusIcon  = $isHadir ? ($todayStatus === 'terlambat' ? 'timer' : 'check_circl
 
         <!-- 7 Kebiasaan -->
         <a href="<?= base_url('student/habits') ?>"
-           class="card shadow-md hover:shadow-lg hover:-translate-y-1 transition-all duration-200 group cursor-pointer">
+            class="card shadow-md hover:shadow-lg hover:-translate-y-1 transition-all duration-200 group cursor-pointer">
             <div class="card-body flex flex-col items-center justify-center py-6 px-4 text-center">
                 <div class="bg-success-100 rounded-xl p-4 mb-3 group-hover:bg-success-200 transition-colors">
                     <span class="material-symbols-outlined text-success-600" style="font-size:28px;">emoji_people</span>
@@ -253,7 +255,7 @@ $statusIcon  = $isHadir ? ($todayStatus === 'terlambat' ? 'timer' : 'check_circl
 
         <!-- Notifikasi -->
         <a href="<?= base_url('student/notifications') ?>"
-           class="card shadow-md hover:shadow-lg hover:-translate-y-1 transition-all duration-200 group cursor-pointer">
+            class="card shadow-md hover:shadow-lg hover:-translate-y-1 transition-all duration-200 group cursor-pointer">
             <div class="card-body flex flex-col items-center justify-center py-6 px-4 text-center">
                 <div class="relative bg-warning-100 rounded-xl p-4 mb-3 group-hover:bg-warning-200 transition-colors inline-block">
                     <span class="material-symbols-outlined text-warning-600" style="font-size:28px;">notifications</span>
