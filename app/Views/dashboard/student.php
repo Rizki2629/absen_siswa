@@ -32,10 +32,8 @@ $statusIcon  = $isHadir ? ($todayStatus === 'terlambat' ? 'timer' : 'check_circl
 <!-- HERO BANNER -->
 <div class="relative overflow-hidden rounded-2xl mb-6 shadow-lg"
     style="background: linear-gradient(135deg, #4338ca 0%, #6366f1 55%, #818cf8 100%);">
-    <!-- Decorative circles - subtle background -->
-    <div class="absolute -top-12 -right-12 w-40 h-40 rounded-full opacity-5 bg-white pointer-events-none"></div>
-    <div class="absolute bottom-0 -left-10 w-28 h-28 rounded-full opacity-5 bg-white pointer-events-none"></div>
-    <div class="absolute top-1/2 right-1/4 w-20 h-20 rounded-full opacity-5 bg-white pointer-events-none"></div>
+    <!-- Subtle pattern background only -->
+    <div class="absolute inset-0 opacity-5" style="background-image: radial-gradient(circle at 20% 50%, white 1px, transparent 1px), radial-gradient(circle at 80% 20%, white 1px, transparent 1px); background-size: 50px 50px;"></div>
 
     <div class="relative px-5 py-5 md:px-6 md:py-6 z-10">
         <!-- Date Header -->
