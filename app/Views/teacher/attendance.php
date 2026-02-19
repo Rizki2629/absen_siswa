@@ -280,7 +280,8 @@ $teacherClass = $teacherClass ?? null;
         isLocked = lock.locked;
         if (lock.locked) {
             banner.classList.remove('hidden');
-            document.getElementById('lockReason').textContent = 'Absensi dikunci karena: ' + lock.reason;
+            const reason = lock.reason || 'Hari Libur';
+            document.getElementById('lockReason').textContent = 'Absensi dikunci karena: ' + reason;
             document.getElementById('submitBtn').disabled = true;
             document.body.classList.add('page-locked');
         } else {

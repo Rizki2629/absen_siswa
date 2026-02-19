@@ -58,8 +58,7 @@
                         <span class="material-symbols-outlined text-white text-3xl">fingerprint</span>
                     </div>
                     <div>
-                        <h1 class="text-lg font-bold text-gray-900">Absensi Siswa</h1>
-                        <p class="text-xs text-gray-500">Fingerprint System</p>
+                        <h1 class="text-lg font-bold text-gray-900">Manajemen Kelas</h1>
                     </div>
                 </div>
             </div>
@@ -71,8 +70,13 @@
                         <span class="material-symbols-outlined text-primary-600 text-2xl">account_circle</span>
                     </div>
                     <div class="flex-1 min-w-0">
+                        <?php
+                        $roleLabels = ['admin' => 'Administrator', 'teacher' => 'Walikelas', 'student' => 'Siswa', 'orang_tua' => 'Orang Tua'];
+                        $roleKey    = session()->get('role') ?? '';
+                        $roleLabel  = $roleLabels[$roleKey] ?? ucfirst($roleKey) ?: 'Pengguna';
+                        ?>
                         <p class="text-sm font-semibold text-gray-900 truncate"><?= esc(session()->get('name') ?? 'User') ?></p>
-                        <p class="text-xs text-gray-500 truncate"><?= esc(session()->get('role') ?? 'Role') ?></p>
+                        <p class="text-xs text-gray-500 truncate"><?= esc($roleLabel) ?></p>
                     </div>
                 </div>
             </div>
