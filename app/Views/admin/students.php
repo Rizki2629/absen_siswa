@@ -7,23 +7,25 @@
 <?= $this->section('content') ?>
 
 <!-- Header -->
-<div class="flex justify-between items-center mb-6">
+<div class="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-6">
     <div>
         <h2 class="text-2xl font-bold text-gray-900">Data Siswa</h2>
         <p class="text-gray-600 mt-1">Kelola data siswa dan informasi absensi</p>
     </div>
-    <div class="flex gap-2">
-        <a href="<?= base_url('admin/students-import') ?>" class="btn-secondary flex items-center space-x-2">
-            <span class="material-symbols-outlined">upload_file</span>
-            <span>Import Excel</span>
+    <div class="flex flex-wrap gap-2">
+        <a href="<?= base_url('admin/students-import') ?>" class="btn-secondary flex items-center justify-center space-x-2 flex-1 md:flex-none">
+            <span class="material-symbols-outlined text-lg">upload_file</span>
+            <span class="hidden sm:inline">Import Excel</span>
+            <span class="sm:hidden">Import</span>
         </a>
-        <button onclick="generateStudentAccounts()" class="btn-secondary flex items-center space-x-2">
-            <span class="material-symbols-outlined">manage_accounts</span>
-            <span>Generate Akun</span>
+        <button onclick="generateStudentAccounts()" class="btn-secondary flex items-center justify-center space-x-2 flex-1 md:flex-none">
+            <span class="material-symbols-outlined text-lg">manage_accounts</span>
+            <span class="hidden sm:inline">Generate Akun</span>
+            <span class="sm:hidden">Akun</span>
         </button>
-        <button onclick="openAddStudentModal()" class="btn-primary flex items-center space-x-2">
-            <span class="material-symbols-outlined">add</span>
-            <span>Tambah Siswa</span>
+        <button onclick="openAddStudentModal()" class="btn-primary flex items-center justify-center space-x-2 flex-1 md:flex-none">
+            <span class="material-symbols-outlined text-lg">add</span>
+            <span>Tambah</span>
         </button>
     </div>
 </div>
@@ -31,24 +33,31 @@
 <!-- Search & Filter -->
 <div class="card mb-6">
     <div class="card-body">
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div class="md:col-span-2">
-                <label class="block text-sm font-medium text-gray-700 mb-2">Cari Siswa</label>
-                <input type="text" id="searchStudent" placeholder="Cari berdasarkan nama, NIS, atau NISN..."
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
+            <div class="md:col-span-6">
+                <label class="block text-sm font-semibold text-gray-700 mb-2">
+                    <span class="material-symbols-outlined text-base align-middle mr-1">search</span>
+                    Cari Siswa
+                </label>
+                <input type="text" id="searchStudent" placeholder="Cari berdasarkan nama atau NIS..."
                     onkeyup="filterStudents()"
-                    class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500">
+                    class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all">
             </div>
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Filter Kelas</label>
-                <select id="filterClass" onchange="filterStudents()" class="w-full px-4 py-2 border border-gray-300 rounded-xl">
+            <div class="md:col-span-4">
+                <label class="block text-sm font-semibold text-gray-700 mb-2">
+                    <span class="material-symbols-outlined text-base align-middle mr-1">filter_list</span>
+                    Filter Kelas
+                </label>
+                <select id="filterClass" onchange="filterStudents()" class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all">
                     <option value="">Semua Kelas</option>
                 </select>
             </div>
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">&nbsp;</label>
-                <button onclick="resetFilters()" class="w-full btn-secondary">
-                    <span class="material-symbols-outlined text-sm mr-2">filter_alt_off</span>
-                    Reset Filter
+            <div class="md:col-span-2">
+                <label class="block text-sm font-semibold text-gray-700 mb-2">&nbsp;</label>
+                <button onclick="resetFilters()" class="w-full btn-secondary py-3">
+                    <span class="material-symbols-outlined text-lg mr-2">filter_alt_off</span>
+                    <span class="hidden sm:inline">Reset</span>
+                    <span class="sm:hidden">Reset</span>
                 </button>
             </div>
         </div>
@@ -58,29 +67,44 @@
 <!-- Students Table -->
 <div class="card">
     <div class="card-body">
-        <div class="overflow-x-auto">
+        <!-- Desktop Table View -->
+        <div class="hidden lg:block overflow-x-auto">
             <table class="w-full">
-                <thead class="bg-primary-50">
-                    <tr class="border-b border-primary-100">
-                        <th class="text-left py-3.5 px-4 text-xs font-bold uppercase tracking-wide text-primary-700 whitespace-nowrap">No</th>
-                        <th onclick="setSortColumn('nis')" class="text-left py-3.5 px-4 text-xs font-bold uppercase tracking-wide text-primary-700 whitespace-nowrap cursor-pointer select-none hover:bg-primary-100 transition-colors">NIS<span id="sortIndicator_nis" class="ml-1 text-primary-500"></span></th>
-                        <th onclick="setSortColumn('nisn')" class="text-left py-3.5 px-4 text-xs font-bold uppercase tracking-wide text-primary-700 whitespace-nowrap cursor-pointer select-none hover:bg-primary-100 transition-colors">NISN<span id="sortIndicator_nisn" class="ml-1 text-primary-500"></span></th>
-                        <th onclick="setSortColumn('name')" class="text-left py-3.5 px-4 text-xs font-bold uppercase tracking-wide text-primary-700 whitespace-nowrap cursor-pointer select-none hover:bg-primary-100 transition-colors">Nama Siswa<span id="sortIndicator_name" class="ml-1 text-primary-500"></span></th>
-                        <th onclick="setSortColumn('birth_date')" class="text-left py-3.5 px-4 text-xs font-bold uppercase tracking-wide text-primary-700 whitespace-nowrap cursor-pointer select-none hover:bg-primary-100 transition-colors">Tempat, Tanggal Lahir<span id="sortIndicator_birth_date" class="ml-1 text-primary-500"></span></th>
-                        <th onclick="setSortColumn('gender')" class="text-left py-3.5 px-4 text-xs font-bold uppercase tracking-wide text-primary-700 whitespace-nowrap cursor-pointer select-none hover:bg-primary-100 transition-colors">Jenis Kelamin<span id="sortIndicator_gender" class="ml-1 text-primary-500"></span></th>
-                        <th onclick="setSortColumn('class')" class="text-left py-3.5 px-4 text-xs font-bold uppercase tracking-wide text-primary-700 whitespace-nowrap cursor-pointer select-none hover:bg-primary-100 transition-colors">Kelas<span id="sortIndicator_class" class="ml-1 text-primary-500"></span></th>
-                        <th class="text-center py-3.5 px-4 text-xs font-bold uppercase tracking-wide text-primary-700 whitespace-nowrap">Aksi</th>
+                <thead class="bg-gradient-to-r from-primary-50 to-primary-100">
+                    <tr class="border-b-2 border-primary-200">
+                        <th class="text-left py-4 px-4 text-xs font-bold uppercase tracking-wide text-primary-800 whitespace-nowrap">No</th>
+                        <th onclick="setSortColumn('nis')" class="text-left py-4 px-4 text-xs font-bold uppercase tracking-wide text-primary-800 whitespace-nowrap cursor-pointer select-none hover:bg-primary-200 transition-colors rounded-lg">
+                            NIS<span id="sortIndicator_nis" class="ml-1 text-primary-600 text-sm"></span>
+                        </th>
+                        <th onclick="setSortColumn('name')" class="text-left py-4 px-4 text-xs font-bold uppercase tracking-wide text-primary-800 whitespace-nowrap cursor-pointer select-none hover:bg-primary-200 transition-colors rounded-lg">
+                            Nama Siswa<span id="sortIndicator_name" class="ml-1 text-primary-600 text-sm"></span>
+                        </th>
+                        <th onclick="setSortColumn('gender')" class="text-center py-4 px-4 text-xs font-bold uppercase tracking-wide text-primary-800 whitespace-nowrap cursor-pointer select-none hover:bg-primary-200 transition-colors rounded-lg">
+                            L/P<span id="sortIndicator_gender" class="ml-1 text-primary-600 text-sm"></span>
+                        </th>
+                        <th onclick="setSortColumn('class')" class="text-left py-4 px-4 text-xs font-bold uppercase tracking-wide text-primary-800 whitespace-nowrap cursor-pointer select-none hover:bg-primary-200 transition-colors rounded-lg">
+                            Kelas<span id="sortIndicator_class" class="ml-1 text-primary-600 text-sm"></span>
+                        </th>
+                        <th class="text-center py-4 px-4 text-xs font-bold uppercase tracking-wide text-primary-800 whitespace-nowrap">Aksi</th>
                     </tr>
                 </thead>
                 <tbody id="studentsTable">
                     <tr>
-                        <td colspan="8" class="text-center py-12">
-                            <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
-                            <p class="text-gray-500 mt-4">Memuat data siswa...</p>
+                        <td colspan="6" class="text-center py-16">
+                            <div class="inline-block animate-spin rounded-full h-10 w-10 border-4 border-primary-200 border-t-primary-600"></div>
+                            <p class="text-gray-500 mt-4 font-medium">Memuat data siswa...</p>
                         </td>
                     </tr>
                 </tbody>
             </table>
+        </div>
+
+        <!-- Mobile Card View -->
+        <div class="lg:hidden space-y-3" id="studentsMobile">
+            <div class="text-center py-12">
+                <div class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-primary-200 border-t-primary-600"></div>
+                <p class="text-gray-500 mt-4">Memuat data...</p>
+            </div>
         </div>
 
         <?= view('partials/pagination_soft', [
@@ -98,82 +122,156 @@
 </div>
 
 <!-- Add/Edit Student Modal -->
-<div id="studentModal" class="fixed inset-0 bg-gray-900 bg-opacity-50 z-50 items-center justify-center p-4" style="display: none;">
-    <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-        <div class="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center rounded-t-2xl">
-            <h3 class="text-xl font-bold text-gray-900" id="studentModalTitle">Tambah Siswa Baru</h3>
-            <button onclick="closeStudentModal()" class="text-gray-400 hover:text-gray-600">
+<div id="studentModal" class="fixed inset-0 bg-black bg-opacity-60 z-50 items-center justify-center p-4 backdrop-blur-sm" style="display: none;">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-hidden flex flex-col animate-fade-in">
+        <!-- Modal Header -->
+        <div class="sticky top-0 bg-gradient-to-r from-primary-600 to-primary-700 px-6 py-5 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 bg-white bg-opacity-20 rounded-xl flex items-center justify-center">
+                    <span class="material-symbols-outlined text-white">person_add</span>
+                </div>
+                <h3 class="text-xl font-bold text-white" id="studentModalTitle">Tambah Siswa Baru</h3>
+            </div>
+            <button onclick="closeStudentModal()" class="text-white hover:bg-white hover:bg-opacity-20 rounded-lg p-2 transition-colors">
                 <span class="material-symbols-outlined">close</span>
             </button>
         </div>
 
-        <form id="studentForm" class="p-6 space-y-4">
+        <!-- Modal Body -->
+        <form id="studentForm" class="p-6 space-y-5 overflow-y-auto flex-1">
             <input type="hidden" id="studentId" name="student_id">
 
-            <div class="grid grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">NIS *</label>
-                    <input type="text" id="studentNis" name="nis" required
-                        class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500"
-                        placeholder="Nomor Induk Siswa">
+            <!-- Identitas Section -->
+            <div class="space-y-4">
+                <h4 class="text-sm font-bold text-gray-700 uppercase tracking-wide flex items-center">
+                    <span class="material-symbols-outlined text-primary-600 mr-2">badge</span>
+                    Identitas Siswa
+                </h4>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">
+                            NIS <span class="text-red-500">*</span>
+                        </label>
+                        <input type="text" id="studentNis" name="nis" required
+                            class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all"
+                            placeholder="Nomor Induk Siswa">
+                        <p class="text-xs text-gray-500 mt-1">Contoh: 2024001</p>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">
+                            NISN <span class="text-gray-400">(opsional)</span>
+                        </label>
+                        <input type="text" id="studentNisn" name="nisn"
+                            class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all"
+                            placeholder="Nomor Induk Siswa Nasional">
+                    </div>
                 </div>
+
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Nama Lengkap *</label>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">
+                        Nama Lengkap <span class="text-red-500">*</span>
+                    </label>
                     <input type="text" id="studentName" name="name" required
-                        class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500"
+                        class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all"
                         placeholder="Nama lengkap siswa">
                 </div>
-            </div>
 
-            <div class="grid grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Kelas *</label>
-                    <select id="studentClass" name="class_id" required
-                        class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500">
-                        <option value="">Pilih Kelas</option>
-                    </select>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">
+                            Jenis Kelamin <span class="text-red-500">*</span>
+                        </label>
+                        <select id="studentGender" name="gender" required
+                            class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all">
+                            <option value="">Pilih jenis kelamin</option>
+                            <option value="L">Laki-laki</option>
+                            <option value="P">Perempuan</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">
+                            Kelas <span class="text-red-500">*</span>
+                        </label>
+                        <select id="studentClass" name="class_id" required
+                            class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all">
+                            <option value="">Pilih kelas</option>
+                        </select>
+                    </div>
                 </div>
+            </div>
+
+            <!-- Kontak Section -->
+            <div class="space-y-4 pt-4 border-t-2 border-gray-100">
+                <h4 class="text-sm font-bold text-gray-700 uppercase tracking-wide flex items-center">
+                    <span class="material-symbols-outlined text-primary-600 mr-2">contacts</span>
+                    Informasi Kontak
+                </h4>
+                
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Jenis Kelamin *</label>
-                    <select id="studentGender" name="gender" required
-                        class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500">
-                        <option value="">Pilih</option>
-                        <option value="L">Laki-laki</option>
-                        <option value="P">Perempuan</option>
-                    </select>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">
+                        No. HP Orang Tua <span class="text-gray-400">(opsional)</span>
+                    </label>
+                    <input type="text" id="parentPhone" name="parent_phone"
+                        class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all"
+                        placeholder="08xxxxxxxxxx">
+                    <p class="text-xs text-gray-500 mt-1">Untuk notifikasi absensi</p>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">
+                        Alamat <span class="text-gray-400">(opsional)</span>
+                    </label>
+                    <textarea id="studentAddress" name="address" rows="3"
+                        class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all"
+                        placeholder="Alamat lengkap siswa"></textarea>
                 </div>
             </div>
 
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">No. HP Orang Tua</label>
-                <input type="text" id="parentPhone" name="parent_phone"
-                    class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500"
-                    placeholder="08xxxxxxxxxx">
+            <!-- Status Section -->
+            <div class="pt-4 border-t-2 border-gray-100">
+                <label class="flex items-center space-x-3 cursor-pointer group">
+                    <input type="checkbox" id="studentActive" name="is_active" checked
+                        class="w-5 h-5 text-primary-600 rounded-lg focus:ring-2 focus:ring-primary-500 border-2 border-gray-300">
+                    <div>
+                        <span class="text-sm font-semibold text-gray-700 group-hover:text-primary-600 transition-colors">Siswa Aktif</span>
+                        <p class="text-xs text-gray-500">Siswa dapat melakukan absensi</p>
+                    </div>
+                </label>
             </div>
 
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Alamat</label>
-                <textarea id="studentAddress" name="address" rows="2"
-                    class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500"
-                    placeholder="Alamat lengkap siswa"></textarea>
-            </div>
-
-            <div class="flex items-center">
-                <input type="checkbox" id="studentActive" name="is_active" checked
-                    class="w-4 h-4 text-primary-600 rounded focus:ring-primary-500">
-                <label for="studentActive" class="ml-2 text-sm text-gray-700">Siswa Aktif</label>
-            </div>
-
-            <div class="flex justify-end space-x-3 pt-4">
-                <button type="button" onclick="closeStudentModal()" class="btn-secondary">Batal</button>
-                <button type="submit" class="btn-primary">
+            <!-- Action Buttons -->
+            <div class="flex flex-col-reverse md:flex-row justify-end gap-3 pt-6 border-t-2 border-gray-100">
+                <button type="button" onclick="closeStudentModal()" class="btn-secondary py-3 px-6">
+                    <span class="material-symbols-outlined mr-2">close</span>
+                    Batal
+                </button>
+                <button type="submit" class="btn-primary py-3 px-6">
                     <span class="material-symbols-outlined mr-2">save</span>
-                    Simpan
+                    Simpan Data
                 </button>
             </div>
         </form>
     </div>
 </div>
+
+<style>
+    @keyframes fade-in {
+        from {
+            opacity: 0;
+            transform: scale(0.95);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+    .animate-fade-in {
+        animation: fade-in 0.2s ease-out;
+    }
+</style>
 
 <script>
     let studentsPage = 1;
@@ -271,17 +369,24 @@
 
     function renderStudents(students) {
         const tbody = document.getElementById('studentsTable');
+        const mobileContainer = document.getElementById('studentsMobile');
 
         if (!students || students.length === 0) {
-            tbody.innerHTML = `
-            <tr>
-                <td colspan="8" class="text-center py-12 text-gray-500">
-                    <span class="material-symbols-outlined text-5xl text-gray-300 mb-2">groups</span>
-                    <p>Belum ada data siswa</p>
-                    <button onclick="openAddStudentModal()" class="btn-primary mt-4">Tambah Siswa Pertama</button>
-                </td>
-            </tr>
-        `;
+            const emptyState = `
+                <div class="text-center py-16 text-gray-500">
+                    <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gray-100 mb-4">
+                        <span class="material-symbols-outlined text-5xl text-gray-300">groups</span>
+                    </div>
+                    <p class="text-lg font-semibold text-gray-700 mb-2">Belum ada data siswa</p>
+                    <p class="text-sm text-gray-500 mb-6">Mulai tambahkan siswa untuk mengelola data absensi</p>
+                    <button onclick="openAddStudentModal()" class="btn-primary inline-flex items-center">
+                        <span class="material-symbols-outlined mr-2">add</span>
+                        Tambah Siswa Pertama
+                    </button>
+                </div>
+            `;
+            tbody.innerHTML = `<tr><td colspan="6">${emptyState}</td></tr>`;
+            mobileContainer.innerHTML = emptyState;
             return;
         }
 
@@ -292,79 +397,98 @@
                 .trim();
         };
 
-        const formatBirthInfo = (student) => {
-            const place = String(student.birth_place || '').trim();
-            const birthDateRaw = String(student.birth_date || '').trim();
-
-            let birthDateText = '';
-            if (birthDateRaw) {
-                const parsed = new Date(birthDateRaw);
-                if (!Number.isNaN(parsed.getTime())) {
-                    birthDateText = parsed.toLocaleDateString('id-ID', {
-                        day: '2-digit',
-                        month: 'long',
-                        year: 'numeric'
-                    });
-                } else {
-                    birthDateText = birthDateRaw;
-                }
-            }
-
-            if (place && birthDateText) {
-                return `${toTitleCase(place)}, ${birthDateText}`;
-            }
-            if (place) {
-                return toTitleCase(place);
-            }
-            if (birthDateText) {
-                return birthDateText;
-            }
-            return '-';
-        };
-
         const formatClassLabel = (value) => {
             const raw = String(value || '').trim();
             if (raw === '') {
                 return '';
             }
-
-            return raw
-                .replace(/^kelas\s*/i, '')
-                .replace(/\s+/g, ' ')
-                .trim();
+            return raw.replace(/^kelas\s*/i, '').replace(/\s+/g, ' ').trim();
         };
 
         const getClassDisplay = (student) => {
             const classNameFromApi = String(student.class_name || '').trim();
             const classNameFromMap = classesById[String(student.class_id || '')] || '';
             const normalized = formatClassLabel(classNameFromApi || classNameFromMap);
-
-            if (normalized !== '') {
-                return `Kelas ${normalized}`;
-            }
-            return 'Belum diatur';
+            return normalized !== '' ? normalized : 'Belum diatur';
         };
 
+        const getGenderBadge = (gender) => {
+            return gender === 'L' 
+                ? '<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-100 text-blue-800">L</span>'
+                : '<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-pink-100 text-pink-800">P</span>';
+        };
+
+        // Desktop Table View
         tbody.innerHTML = students.map((student, index) => {
             const rowNumber = ((studentsPage - 1) * studentsPerPage) + index + 1;
+            const classDisplay = getClassDisplay(student);
             return `
-        <tr class="bg-white border-b border-gray-100 hover:bg-gray-50">
-            <td class="py-3 px-4 text-gray-500 font-medium">${rowNumber}</td>
-            <td class="py-3 px-4 font-medium text-gray-900">${student.nis}</td>
-            <td class="py-3 px-4 text-gray-700">${student.nisn || '-'}</td>
-            <td class="py-3 px-4 font-medium text-gray-900">${toTitleCase(student.name)}</td>
-            <td class="py-3 px-4 text-gray-700">${formatBirthInfo(student)}</td>
-            <td class="py-3 px-4">${student.gender === 'L' ? 'Laki-laki' : 'Perempuan'}</td>
-            <td class="py-3 px-4 text-gray-700 font-medium">${getClassDisplay(student)}</td>
-            <td class="py-3 px-4 text-center">
-                <button onclick="editStudent(${student.id})" class="text-primary-600 hover:text-primary-800 mr-2 p-1 rounded focus:outline-none" style="border:none;background:none;box-shadow:none;">
-                    <span class="material-symbols-outlined">edit</span>
-                </button>
-                <button onclick="deleteStudent(${student.id})" class="text-danger-600 hover:text-danger-800 p-1 rounded focus:outline-none" style="border:none;background:none;box-shadow:none;">
-                    <span class="material-symbols-outlined">delete</span>
-                </button>
+        <tr class="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+            <td class="py-4 px-4 text-gray-400 font-medium text-sm">${rowNumber}</td>
+            <td class="py-4 px-4">
+                <span class="font-mono text-sm font-semibold text-gray-900">${student.nis}</span>
+            </td>
+            <td class="py-4 px-4">
+                <div class="font-semibold text-gray-900">${toTitleCase(student.name)}</div>
+                ${student.nisn ? `<div class="text-xs text-gray-500 mt-0.5">NISN: ${student.nisn}</div>` : ''}
+            </td>
+            <td class="py-4 px-4 text-center">${getGenderBadge(student.gender)}</td>
+            <td class="py-4 px-4">
+                <span class="inline-flex items-center px-3 py-1 rounded-lg text-sm font-semibold bg-primary-50 text-primary-700">
+                    ${classDisplay}
+                </span>
+            </td>
+            <td class="py-4 px-4">
+                <div class="flex items-center justify-center space-x-1">
+                    <button onclick="editStudent(${student.id})" 
+                        title="Edit data siswa"
+                        class="p-2 text-primary-600 hover:bg-primary-50 rounded-lg transition-colors">
+                        <span class="material-symbols-outlined text-xl">edit</span>
+                    </button>
+                    <button onclick="deleteStudent(${student.id})" 
+                        title="Hapus siswa"
+                        class="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors">
+                        <span class="material-symbols-outlined text-xl">delete</span>
+                    </button>
+                </div>
             </td>
         </tr>
+    `;
+        }).join('');
+
+        // Mobile Card View
+        mobileContainer.innerHTML = students.map((student, index) => {
+            const rowNumber = ((studentsPage - 1) * studentsPerPage) + index + 1;
+            const classDisplay = getClassDisplay(student);
+            return `
+        <div class="bg-white border border-gray-200 rounded-xl p-4 hover:shadow-md transition-shadow">
+            <div class="flex items-start justify-between mb-3">
+                <div class="flex-1">
+                    <div class="flex items-center space-x-2 mb-1">
+                        <span class="text-xs font-semibold text-gray-400">#${rowNumber}</span>
+                        ${getGenderBadge(student.gender)}
+                    </div>
+                    <h3 class="font-bold text-gray-900 text-lg">${toTitleCase(student.name)}</h3>
+                    <p class="text-sm text-gray-500 font-mono mt-0.5">NIS: ${student.nis}</p>
+                </div>
+                <span class="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-bold bg-primary-100 text-primary-700">
+                    ${classDisplay}
+                </span>
+            </div>
+            ${student.nisn ? `<p class="text-xs text-gray-500 mb-3">NISN: ${student.nisn}</p>` : ''}
+            <div class="flex space-x-2 pt-3 border-t border-gray-100">
+                <button onclick="editStudent(${student.id})" 
+                    class="flex-1 btn-secondary text-sm py-2">
+                    <span class="material-symbols-outlined text-base mr-1">edit</span>
+                    Edit
+                </button>
+                <button onclick="deleteStudent(${student.id})" 
+                    class="flex-1 bg-red-50 text-red-600 hover:bg-red-100 font-semibold rounded-xl py-2 text-sm transition-colors">
+                    <span class="material-symbols-outlined text-base mr-1">delete</span>
+                    Hapus
+                </button>
+            </div>
+        </div>
     `;
         }).join('');
     }
@@ -389,7 +513,7 @@
     }
 
     function updateSortIndicators() {
-        ['nis', 'nisn', 'name', 'birth_date', 'gender', 'class'].forEach(col => {
+        ['nis', 'name', 'gender', 'class'].forEach(col => {
             const el = document.getElementById('sortIndicator_' + col);
             if (!el) return;
             if (sortColumn === col) {
@@ -516,6 +640,7 @@
                 document.getElementById('studentModalTitle').textContent = 'Edit Data Siswa';
                 document.getElementById('studentId').value = student.id;
                 document.getElementById('studentNis').value = student.nis;
+                document.getElementById('studentNisn').value = student.nisn || '';
                 document.getElementById('studentName').value = student.name;
                 document.getElementById('studentClass').value = student.class_id;
                 document.getElementById('studentGender').value = student.gender;
@@ -568,11 +693,12 @@
         const studentId = document.getElementById('studentId').value;
         const formData = {
             nis: document.getElementById('studentNis').value,
+            nisn: document.getElementById('studentNisn').value || null,
             name: document.getElementById('studentName').value,
             class_id: document.getElementById('studentClass').value,
             gender: document.getElementById('studentGender').value,
-            parent_phone: document.getElementById('parentPhone').value,
-            address: document.getElementById('studentAddress').value,
+            parent_phone: document.getElementById('parentPhone').value || null,
+            address: document.getElementById('studentAddress').value || null,
             is_active: document.getElementById('studentActive').checked
         };
 
@@ -592,7 +718,7 @@
             const result = await response.json();
 
             if (result.status === 'success') {
-                alert(studentId ? 'Data siswa berhasil diperbarui' : 'Siswa berhasil ditambahkan');
+                alert(studentId ? 'Data siswa berhasil diperbarui! ✓' : 'Siswa berhasil ditambahkan! ✓');
                 closeStudentModal();
                 loadStudents();
             } else {
