@@ -6,10 +6,15 @@
     "dev": "tailwindcss -i ./assets/css/input.css -o ./public/css/style.css --watch",
     "build": "tailwindcss -i ./assets/css/input.css -o ./public/css/style.css --minify"
   },
-  "keywords": ["attendance", "fingerprint", "codeigniter"],
+  "keywords": [
+    "attendance",
+    "fingerprint",
+    "codeigniter"
+  ],
   "author": "",
   "license": "MIT",
   "devDependencies": {
+    "sharp": "^0.34.5",
     "tailwindcss": "^3.4.1"
   }
 }
