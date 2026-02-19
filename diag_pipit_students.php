@@ -2,8 +2,8 @@
 // Quick diagnostic: pipit user ID vs classes teacher_id vs students class_id
 // Run: heroku run "php /app/diag_pipit_students.php"
 
-$url = getenv('DATABASE_URL');
-if (!$url) die("DATABASE_URL not found\n");
+$url = getenv('JAWSDB_URL') ?: getenv('DATABASE_URL');
+if (!$url) die("DB URL not found\n");
 $p = parse_url($url);
 $conn = new mysqli($p['host'], $p['user'], $p['pass'], ltrim($p['path'],'/'), $p['port'] ?? 3306);
 if ($conn->connect_error) die("Connect: ".$conn->connect_error."\n");
