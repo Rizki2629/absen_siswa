@@ -30,146 +30,147 @@ $statusIcon  = $isHadir ? ($todayStatus === 'terlambat' ? 'timer' : 'check_circl
 ?>
 
 <!-- HERO BANNER -->
-<div class="relative overflow-hidden rounded-2xl mb-5 shadow-md"
+<div class="relative overflow-hidden rounded-2xl mb-6 shadow-lg"
      style="background: linear-gradient(135deg, #4338ca 0%, #6366f1 55%, #818cf8 100%);">
     <div class="absolute -top-8 -right-8 w-36 h-36 rounded-full opacity-10 bg-white pointer-events-none"></div>
-    <div class="absolute bottom-0 right-14 w-20 h-20 rounded-full opacity-10 bg-white pointer-events-none" style="transform:translateY(40%);"></div>
+    <div class="absolute bottom-0 right-14 w-20 h-20 rounded-full opacity-10 bg-white pointer-events-none"></div>
 
-    <div class="relative px-5 py-4 md:px-6 md:py-5">
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+    <div class="relative px-5 py-5 md:px-6 md:py-6 z-10">
+        <!-- Date Header -->
+        <p class="text-xs font-medium mb-3 flex items-center gap-1.5 text-white/90">
+            <span class="material-symbols-outlined" style="font-size:14px;">calendar_today</span>
+            <?= $todayLabel ?>
+        </p>
 
-            <!-- Greeting -->
-            <div class="text-white min-w-0">
-                <p class="text-xs font-medium mb-1 flex items-center gap-1" style="color:rgba(199,210,254,0.85);">
-                    <span class="material-symbols-outlined" style="font-size:13px;">calendar_today</span>
-                    <?= $todayLabel ?>
-                </p>
-                <h1 class="text-xl font-bold mb-2.5 tracking-tight">
+        <!-- Main Content -->
+        <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
+            <!-- Greeting Section -->
+            <div class="text-white min-w-0 flex-1">
+                <h1 class="text-2xl md:text-3xl font-bold mb-3 tracking-tight">
                     Halo, <?= esc($firstName) ?>! 👋
                 </h1>
-                <div class="flex flex-wrap gap-1.5">
-                    <span class="inline-flex items-center gap-1 text-xs font-medium px-2.5 py-1 rounded-full"
-                          style="background:rgba(255,255,255,0.18);color:#e0e7ff;">
-                        <span class="material-symbols-outlined" style="font-size:12px;">badge</span>
+                <div class="flex flex-wrap gap-2">
+                    <span class="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg"
+                          style="background:rgba(255,255,255,0.2);color:#fff;">
+                        <span class="material-symbols-outlined" style="font-size:14px;">badge</span>
                         <?= esc($student['nis'] ?? '-') ?>
                     </span>
-                    <span class="inline-flex items-center gap-1 text-xs font-medium px-2.5 py-1 rounded-full"
-                          style="background:rgba(255,255,255,0.18);color:#e0e7ff;">
-                        <span class="material-symbols-outlined" style="font-size:12px;">class</span>
+                    <span class="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg"
+                          style="background:rgba(255,255,255,0.2);color:#fff;">
+                        <span class="material-symbols-outlined" style="font-size:14px;">class</span>
                         <?= esc($student['class'] ?? '-') ?>
                     </span>
-                    <span class="inline-flex items-center gap-1 text-xs font-medium px-2.5 py-1 rounded-full"
-                          style="background:rgba(255,255,255,0.18);color:#e0e7ff;">
-                        <span class="material-symbols-outlined" style="font-size:12px;">school</span>
+                    <span class="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg"
+                          style="background:rgba(255,255,255,0.2);color:#fff;">
+                        <span class="material-symbols-outlined" style="font-size:14px;">school</span>
                         <?= esc($student['major'] ?? '-') ?>
                     </span>
                 </div>
             </div>
 
-            <!-- Today Status -->
-            <div class="rounded-xl px-4 py-3 flex-shrink-0"
-                 style="background:rgba(255,255,255,0.15);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.25);min-width:180px;">
-                <p class="text-xs font-bold uppercase tracking-widest mb-2" style="color:rgba(199,210,254,0.85);">Status Hari Ini</p>
+            <!-- Status Today Box -->
+            <div class="rounded-xl px-5 py-4 flex-shrink-0 lg:min-w-[240px]"
+                 style="background:rgba(255,255,255,0.15);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.3);">
+                <p class="text-xs font-bold uppercase tracking-wider mb-3 text-white/90">Status Hari Ini</p>
 
                 <?php if ($todayStatus): ?>
-                    <div class="flex items-center gap-2 mb-2">
-                        <div class="rounded-full p-1.5 flex-shrink-0
-                            <?= $statusColor === 'success' ? 'bg-success-400' : ($statusColor === 'warning' ? 'bg-warning-400' : ($statusColor === 'danger' ? 'bg-danger-400' : 'bg-primary-300')) ?>">
-                            <span class="material-symbols-outlined text-white" style="font-size:16px;"><?= $statusIcon ?></span>
+                    <div class="flex items-center gap-2.5 mb-3">
+                        <div class="rounded-full p-2 flex-shrink-0
+                            <?= $statusColor === 'success' ? 'bg-green-400' : ($statusColor === 'warning' ? 'bg-yellow-400' : ($statusColor === 'danger' ? 'bg-red-400' : 'bg-blue-300')) ?>">
+                            <span class="material-symbols-outlined text-white" style="font-size:18px;"><?= $statusIcon ?></span>
                         </div>
-                        <span class="text-white font-bold text-sm"><?= $statusLabel ?></span>
+                        <span class="text-white font-bold text-base"><?= $statusLabel ?></span>
                     </div>
                     <?php if ($isHadir): ?>
-                        <div class="space-y-1 text-xs" style="color:rgba(199,210,254,0.9);">
-                            <p class="flex items-center gap-1">
-                                <span class="material-symbols-outlined" style="font-size:12px;">login</span>
-                                Masuk: <span class="font-semibold text-white ml-1"><?= esc($todayAttendance['check_in'] ?? '-') ?></span>
+                        <div class="space-y-1.5 text-xs text-white/90">
+                            <p class="flex items-center gap-1.5">
+                                <span class="material-symbols-outlined" style="font-size:14px;">login</span>
+                                Masuk: <span class="font-bold text-white ml-auto"><?= esc($todayAttendance['check_in'] ?? '-') ?></span>
                             </p>
-                            <p class="flex items-center gap-1">
-                                <span class="material-symbols-outlined" style="font-size:12px;">logout</span>
-                                Pulang: <span class="font-semibold text-white ml-1"><?= esc($todayAttendance['check_out'] ?? 'Belum') ?></span>
+                            <p class="flex items-center gap-1.5">
+                                <span class="material-symbols-outlined" style="font-size:14px;">logout</span>
+                                Pulang: <span class="font-bold text-white ml-auto"><?= esc($todayAttendance['check_out'] ?? 'Belum') ?></span>
                             </p>
                         </div>
                     <?php endif; ?>
                 <?php else: ?>
-                    <div class="flex items-center gap-2">
-                        <div class="bg-warning-400 rounded-full p-1.5 flex-shrink-0">
-                            <span class="material-symbols-outlined text-white" style="font-size:16px;">schedule</span>
+                    <div class="flex items-center gap-2.5">
+                        <div class="bg-yellow-400 rounded-full p-2 flex-shrink-0">
+                            <span class="material-symbols-outlined text-white" style="font-size:18px;">schedule</span>
                         </div>
                         <div>
                             <p class="text-white font-bold text-sm">Belum Tercatat</p>
-                            <p class="text-xs mt-0.5" style="color:rgba(199,210,254,0.8);">Data belum tersedia</p>
+                            <p class="text-xs mt-0.5 text-white/80">Data belum tersedia</p>
                         </div>
                     </div>
                 <?php endif; ?>
             </div>
-
         </div>
     </div>
 </div>
 
 <!-- STATS GRID -->
-<div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-5">
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
 
     <!-- Hadir -->
-    <div class="card border-l-4 border-success-500 hover:shadow-md transition-shadow">
-        <div class="card-body py-3 px-4">
+    <div class="card border-l-4 border-success-500 hover:shadow-lg transition-shadow duration-200">
+        <div class="card-body py-4 px-4">
             <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-xs text-gray-500 font-medium mb-0.5">Hadir</p>
-                    <h3 class="text-2xl font-bold text-gray-900 leading-none"><?= $totalPresent ?></h3>
-                    <p class="text-xs text-gray-400 mt-0.5">hari</p>
+                <div class="flex-1">
+                    <p class="text-xs text-gray-500 font-semibold mb-1 uppercase tracking-wide">Hadir</p>
+                    <h3 class="text-3xl font-bold text-gray-900 leading-none"><?= $totalPresent ?></h3>
+                    <p class="text-xs text-gray-400 mt-1.5">hari</p>
                 </div>
-                <div class="bg-success-100 rounded-xl p-2.5">
-                    <span class="material-symbols-outlined text-success-600" style="font-size:22px;">check_circle</span>
+                <div class="bg-success-100 rounded-xl p-3 flex-shrink-0">
+                    <span class="material-symbols-outlined text-success-600" style="font-size:26px;">check_circle</span>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Terlambat -->
-    <div class="card border-l-4 border-warning-500 hover:shadow-md transition-shadow">
-        <div class="card-body py-3 px-4">
+    <div class="card border-l-4 border-warning-500 hover:shadow-lg transition-shadow duration-200">
+        <div class="card-body py-4 px-4">
             <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-xs text-gray-500 font-medium mb-0.5">Terlambat</p>
-                    <h3 class="text-2xl font-bold text-gray-900 leading-none"><?= $totalLate ?></h3>
-                    <p class="text-xs text-gray-400 mt-0.5">hari</p>
+                <div class="flex-1">
+                    <p class="text-xs text-gray-500 font-semibold mb-1 uppercase tracking-wide">Terlambat</p>
+                    <h3 class="text-3xl font-bold text-gray-900 leading-none"><?= $totalLate ?></h3>
+                    <p class="text-xs text-gray-400 mt-1.5">hari</p>
                 </div>
-                <div class="bg-warning-100 rounded-xl p-2.5">
-                    <span class="material-symbols-outlined text-warning-600" style="font-size:22px;">timer</span>
+                <div class="bg-warning-100 rounded-xl p-3 flex-shrink-0">
+                    <span class="material-symbols-outlined text-warning-600" style="font-size:26px;">timer</span>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Sakit / Izin -->
-    <div class="card border-l-4 border-primary-400 hover:shadow-md transition-shadow">
-        <div class="card-body py-3 px-4">
+    <div class="card border-l-4 border-primary-400 hover:shadow-lg transition-shadow duration-200">
+        <div class="card-body py-4 px-4">
             <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-xs text-gray-500 font-medium mb-0.5">Sakit/Izin</p>
-                    <h3 class="text-2xl font-bold text-gray-900 leading-none"><?= $totalSick ?></h3>
-                    <p class="text-xs text-gray-400 mt-0.5">hari</p>
+                <div class="flex-1">
+                    <p class="text-xs text-gray-500 font-semibold mb-1 uppercase tracking-wide">Sakit/Izin</p>
+                    <h3 class="text-3xl font-bold text-gray-900 leading-none"><?= $totalSick ?></h3>
+                    <p class="text-xs text-gray-400 mt-1.5">hari</p>
                 </div>
-                <div class="bg-primary-100 rounded-xl p-2.5">
-                    <span class="material-symbols-outlined text-primary-500" style="font-size:22px;">medical_information</span>
+                <div class="bg-primary-100 rounded-xl p-3 flex-shrink-0">
+                    <span class="material-symbols-outlined text-primary-500" style="font-size:26px;">medical_information</span>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Alpha -->
-    <div class="card border-l-4 border-danger-500 hover:shadow-md transition-shadow">
-        <div class="card-body py-3 px-4">
+    <div class="card border-l-4 border-danger-500 hover:shadow-lg transition-shadow duration-200">
+        <div class="card-body py-4 px-4">
             <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-xs text-gray-500 font-medium mb-0.5">Alpha</p>
-                    <h3 class="text-2xl font-bold text-gray-900 leading-none"><?= $totalAbsent ?></h3>
-                    <p class="text-xs text-gray-400 mt-0.5">hari</p>
+                <div class="flex-1">
+                    <p class="text-xs text-gray-500 font-semibold mb-1 uppercase tracking-wide">Alpha</p>
+                    <h3 class="text-3xl font-bold text-gray-900 leading-none"><?= $totalAbsent ?></h3>
+                    <p class="text-xs text-gray-400 mt-1.5">hari</p>
                 </div>
-                <div class="bg-danger-100 rounded-xl p-2.5">
-                    <span class="material-symbols-outlined text-danger-600" style="font-size:22px;">cancel</span>
+                <div class="bg-danger-100 rounded-xl p-3 flex-shrink-0">
+                    <span class="material-symbols-outlined text-danger-600" style="font-size:26px;">cancel</span>
                 </div>
             </div>
         </div>
@@ -178,94 +179,94 @@ $statusIcon  = $isHadir ? ($todayStatus === 'terlambat' ? 'timer' : 'check_circl
 </div>
 
 <!-- ATTENDANCE RATE + QUICK ACCESS -->
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
 
     <!-- Attendance Rate Card -->
-    <div class="card">
-        <div class="card-header py-3 px-4">
-            <h3 class="text-sm font-bold text-gray-900 flex items-center gap-1.5">
-                <span class="material-symbols-outlined text-primary-600" style="font-size:18px;">analytics</span>
+    <div class="card shadow-md hover:shadow-lg transition-shadow">
+        <div class="card-header py-4 px-5 border-b border-gray-100">
+            <h3 class="text-sm font-bold text-gray-900 flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary-600" style="font-size:20px;">analytics</span>
                 Tingkat Kehadiran
             </h3>
         </div>
-        <div class="card-body py-4 px-4 flex flex-col items-center">
-            <div class="relative w-24 h-24 mb-3">
+        <div class="card-body py-6 px-5 flex flex-col items-center">
+            <div class="relative w-28 h-28 mb-4">
                 <svg class="w-full h-full" style="transform:rotate(-90deg);" viewBox="0 0 36 36">
-                    <circle cx="18" cy="18" r="15.9" fill="none" stroke="#e0e7ff" stroke-width="3"/>
-                    <circle cx="18" cy="18" r="15.9" fill="none" stroke="#6366f1" stroke-width="3"
+                    <circle cx="18" cy="18" r="15.9" fill="none" stroke="#e5e7eb" stroke-width="3.5"/>
+                    <circle cx="18" cy="18" r="15.9" fill="none" stroke="#6366f1" stroke-width="3.5"
                             stroke-dasharray="<?= $attendanceRate ?> <?= 100 - $attendanceRate ?>"
                             stroke-linecap="round"/>
                 </svg>
                 <div class="absolute inset-0 flex flex-col items-center justify-center">
-                    <span class="text-lg font-extrabold text-gray-900 leading-none"><?= $attendanceRate ?>%</span>
-                    <span class="text-xs text-gray-400 mt-0.5">Hadir</span>
+                    <span class="text-2xl font-extrabold text-gray-900 leading-none"><?= $attendanceRate ?>%</span>
+                    <span class="text-xs text-gray-400 mt-1">Hadir</span>
                 </div>
             </div>
 
-            <p class="text-xs text-gray-500 text-center mb-2.5">
-                <span class="font-semibold text-gray-700"><?= $totalPresent ?></span> dari
-                <span class="font-semibold text-gray-700"><?= $totalDays ?></span> hari bulan ini
+            <p class="text-sm text-gray-600 text-center mb-4">
+                <span class="font-bold text-gray-900"><?= $totalPresent ?></span> dari
+                <span class="font-bold text-gray-900"><?= $totalDays ?></span> hari bulan ini
             </p>
 
             <?php if ($attendanceRate >= 90): ?>
-                <span class="inline-flex items-center gap-1 bg-success-100 text-success-700 text-xs font-semibold px-3 py-1 rounded-full">
-                    <span class="material-symbols-outlined" style="font-size:13px;">star</span> Sangat Baik!
+                <span class="inline-flex items-center gap-1.5 bg-success-100 text-success-700 text-xs font-bold px-4 py-2 rounded-lg">
+                    <span class="material-symbols-outlined" style="font-size:14px;">star</span> Sangat Baik!
                 </span>
             <?php elseif ($attendanceRate >= 75): ?>
-                <span class="inline-flex items-center gap-1 bg-warning-100 text-warning-700 text-xs font-semibold px-3 py-1 rounded-full">
-                    <span class="material-symbols-outlined" style="font-size:13px;">thumb_up</span> Pertahankan!
+                <span class="inline-flex items-center gap-1.5 bg-warning-100 text-warning-700 text-xs font-bold px-4 py-2 rounded-lg">
+                    <span class="material-symbols-outlined" style="font-size:14px;">thumb_up</span> Pertahankan!
                 </span>
             <?php else: ?>
-                <span class="inline-flex items-center gap-1 bg-danger-100 text-danger-700 text-xs font-semibold px-3 py-1 rounded-full">
-                    <span class="material-symbols-outlined" style="font-size:13px;">warning</span> Perlu Ditingkatkan
+                <span class="inline-flex items-center gap-1.5 bg-danger-100 text-danger-700 text-xs font-bold px-4 py-2 rounded-lg">
+                    <span class="material-symbols-outlined" style="font-size:14px;">warning</span> Perlu Ditingkatkan
                 </span>
             <?php endif; ?>
         </div>
     </div>
 
     <!-- Quick Access Cards -->
-    <div class="lg:col-span-2 grid grid-cols-3 gap-3">
+    <div class="lg:col-span-2 grid grid-cols-3 gap-4">
 
         <!-- Riwayat Kehadiran -->
         <a href="<?= base_url('student/attendance') ?>"
-           class="card hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 group cursor-pointer">
-            <div class="card-body flex flex-col items-center justify-center py-5 px-3 text-center">
-                <div class="bg-primary-100 rounded-xl p-3 mb-2 group-hover:bg-primary-200 transition-colors">
-                    <span class="material-symbols-outlined text-primary-600" style="font-size:24px;">calendar_month</span>
+           class="card shadow-md hover:shadow-lg hover:-translate-y-1 transition-all duration-200 group cursor-pointer">
+            <div class="card-body flex flex-col items-center justify-center py-6 px-4 text-center">
+                <div class="bg-primary-100 rounded-xl p-4 mb-3 group-hover:bg-primary-200 transition-colors">
+                    <span class="material-symbols-outlined text-primary-600" style="font-size:28px;">calendar_month</span>
                 </div>
-                <h4 class="font-semibold text-gray-800 text-xs leading-tight mb-0.5">Riwayat Kehadiran</h4>
-                <p class="text-xs text-gray-400">Lihat rekap</p>
+                <h4 class="font-bold text-gray-800 text-sm leading-tight mb-1">Riwayat Kehadiran</h4>
+                <p class="text-xs text-gray-500">Lihat rekap</p>
             </div>
         </a>
 
         <!-- 7 Kebiasaan -->
         <a href="<?= base_url('student/habits') ?>"
-           class="card hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 group cursor-pointer">
-            <div class="card-body flex flex-col items-center justify-center py-5 px-3 text-center">
-                <div class="bg-success-100 rounded-xl p-3 mb-2 group-hover:bg-success-200 transition-colors">
-                    <span class="material-symbols-outlined text-success-600" style="font-size:24px;">emoji_people</span>
+           class="card shadow-md hover:shadow-lg hover:-translate-y-1 transition-all duration-200 group cursor-pointer">
+            <div class="card-body flex flex-col items-center justify-center py-6 px-4 text-center">
+                <div class="bg-success-100 rounded-xl p-4 mb-3 group-hover:bg-success-200 transition-colors">
+                    <span class="material-symbols-outlined text-success-600" style="font-size:28px;">emoji_people</span>
                 </div>
-                <h4 class="font-semibold text-gray-800 text-xs leading-tight mb-0.5">7 Kebiasaan</h4>
-                <p class="text-xs text-gray-400">Kebiasaan harian</p>
+                <h4 class="font-bold text-gray-800 text-sm leading-tight mb-1">7 Kebiasaan</h4>
+                <p class="text-xs text-gray-500">Kebiasaan harian</p>
             </div>
         </a>
 
         <!-- Notifikasi -->
         <a href="<?= base_url('student/notifications') ?>"
-           class="card hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 group cursor-pointer">
-            <div class="card-body flex flex-col items-center justify-center py-5 px-3 text-center">
-                <div class="relative bg-warning-100 rounded-xl p-3 mb-2 group-hover:bg-warning-200 transition-colors inline-block">
-                    <span class="material-symbols-outlined text-warning-600" style="font-size:24px;">notifications</span>
+           class="card shadow-md hover:shadow-lg hover:-translate-y-1 transition-all duration-200 group cursor-pointer">
+            <div class="card-body flex flex-col items-center justify-center py-6 px-4 text-center">
+                <div class="relative bg-warning-100 rounded-xl p-4 mb-3 group-hover:bg-warning-200 transition-colors inline-block">
+                    <span class="material-symbols-outlined text-warning-600" style="font-size:28px;">notifications</span>
                     <?php if (isset($unreadNotifications) && $unreadNotifications > 0): ?>
-                        <span class="absolute -top-1 -right-1 bg-danger-500 text-white font-bold rounded-full w-4 h-4 flex items-center justify-center leading-none" style="font-size:10px;">
+                        <span class="absolute -top-1 -right-1 bg-danger-500 text-white font-bold rounded-full w-5 h-5 flex items-center justify-center leading-none text-xs">
                             <?= $unreadNotifications > 9 ? '9+' : $unreadNotifications ?>
                         </span>
                     <?php endif; ?>
                 </div>
-                <h4 class="font-semibold text-gray-800 text-xs leading-tight mb-0.5">Notifikasi</h4>
-                <p class="text-xs text-gray-400">
+                <h4 class="font-bold text-gray-800 text-sm leading-tight mb-1">Notifikasi</h4>
+                <p class="text-xs text-gray-500">
                     <?php if (isset($unreadNotifications) && $unreadNotifications > 0): ?>
-                        <?= $unreadNotifications ?> pesan baru
+                        <?= $unreadNotifications ?> baru
                     <?php else: ?>
                         Tidak ada baru
                     <?php endif; ?>
