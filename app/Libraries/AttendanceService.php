@@ -8,6 +8,8 @@ use App\Models\AttendanceExceptionModel;
 use App\Models\ShiftModel;
 use App\Models\NotificationModel;
 use App\Models\DeviceUserMapModel;
+use App\Models\StudentModel;
+use App\Libraries\WhatsAppService;
 
 class AttendanceService
 {
@@ -17,15 +19,19 @@ class AttendanceService
     protected $shiftModel;
     protected $notificationModel;
     protected $deviceUserMapModel;
+    protected $studentModel;
+    protected $waService;
 
     public function __construct()
     {
-        $this->logModel = new AttendanceLogModel();
-        $this->summaryModel = new AttendanceSummaryModel();
-        $this->exceptionModel = new AttendanceExceptionModel();
-        $this->shiftModel = new ShiftModel();
-        $this->notificationModel = new NotificationModel();
+        $this->logModel           = new AttendanceLogModel();
+        $this->summaryModel       = new AttendanceSummaryModel();
+        $this->exceptionModel     = new AttendanceExceptionModel();
+        $this->shiftModel         = new ShiftModel();
+        $this->notificationModel  = new NotificationModel();
         $this->deviceUserMapModel = new DeviceUserMapModel();
+        $this->studentModel       = new StudentModel();
+        $this->waService          = new WhatsAppService();
     }
 
     /**
@@ -82,8 +88,11 @@ class AttendanceService
         if ($studentId) {
             $this->processAttendanceSummary($studentId, date('Y-m-d', strtotime($attTime)));
 
-            // Create notification for parent
+            // Create in-app notification for parent
             $this->notificationModel->createCheckInNotification($studentId, $attTime);
+
+            // Send WhatsApp notification to parent on first scan of the day
+            $this->sendWhatsAppCheckIn($studentId, $attTime);
         }
 
         return [
@@ -92,6 +101,50 @@ class AttendanceService
             'log_id'     => $logId,
             'student_id' => $studentId,
         ];
+    }
+
+    /**
+     * Send WhatsApp notification to parent on student's first check-in of the day.
+     * Only fires once per student per day.
+     */
+    protected function sendWhatsAppCheckIn(int $studentId, string $attTime): void
+    {
+        if (! $this->waService->isConfigured()) {
+            return;
+        }
+
+        $date = date('Y-m-d', strtotime($attTime));
+
+        // Count logs for this student today — only send on the very first scan
+        $todayCount = $this->logModel
+            ->where('student_id', $studentId)
+            ->where('DATE(att_time)', $date)
+            ->countAllResults();
+
+        if ($todayCount > 1) {
+            // Not the first scan today, skip
+            return;
+        }
+
+        $student = $this->studentModel->find($studentId);
+        if (! $student) {
+            return;
+        }
+
+        $parentPhone = $student['parent_phone'] ?? '';
+        if ($parentPhone === '' || $parentPhone === null) {
+            log_message('info', '[WhatsApp] No parent phone for student ID ' . $studentId);
+            return;
+        }
+
+        $timeWIB = date('H:i', strtotime($attTime)) . ' WIB';
+        $message  = "Ananda {$student['name']} hadir di sekolah pukul {$timeWIB}.";
+
+        $result = $this->waService->send($parentPhone, $message);
+
+        if (! $result['success']) {
+            log_message('warning', '[WhatsApp] Failed for student ' . $studentId . ': ' . $result['message']);
+        }
     }
 
     /**

@@ -109,3 +109,10 @@ CI_ENVIRONMENT = development
 #--------------------------------------------------------------------
 
 # logger.threshold = 4
+
+#--------------------------------------------------------------------
+# WHATSAPP NOTIFICATION (Fonnte Gateway)
+#--------------------------------------------------------------------
+# Dapatkan token di https://fonnte.com
+# Set di Heroku: heroku config:set FONNTE_TOKEN=xxxxxxxxxxxxxxxx
+# FONNTE_TOKEN =

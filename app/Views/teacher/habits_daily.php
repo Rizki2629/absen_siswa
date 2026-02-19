@@ -21,12 +21,12 @@
         <!-- Info Kelas -->
         <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">
-                <span class="material-symbols-outlined text-sm align-middle">class</span>
+                <span class="material-symbols text-sm align-middle">class</span>
                 Kelas
             </label>
             <?php if (isset($teacherClass)): ?>
                 <div class="w-full px-4 py-2 border border-primary-300 bg-primary-50 rounded-xl text-primary-700 font-semibold">
-                    <span class="material-symbols-outlined text-sm align-middle mr-1">school</span>
+                    <span class="material-symbols text-sm align-middle mr-1">school</span>
                     <?= esc($teacherClass['name']) ?>
                 </div>
             <?php else: ?>
@@ -39,18 +39,18 @@
         <!-- Tanggal dengan navigasi -->
         <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">
-                <span class="material-symbols-outlined text-sm align-middle">calendar_today</span>
+                <span class="material-symbols text-sm align-middle">calendar_today</span>
                 Tanggal
             </label>
             <div class="flex gap-2">
                 <button onclick="changeDate(-1)" class="px-3 py-2 border border-gray-300 rounded-xl hover:bg-gray-50 transition-colors">
-                    <span class="material-symbols-outlined text-sm">chevron_left</span>
+                    <span class="material-symbols text-sm">chevron_left</span>
                 </button>
                 <input type="date" id="date" onchange="loadDaily()"
                     class="flex-1 px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                     value="<?= date('Y-m-d') ?>">
                 <button onclick="changeDate(1)" class="px-3 py-2 border border-gray-300 rounded-xl hover:bg-gray-50 transition-colors">
-                    <span class="material-symbols-outlined text-sm">chevron_right</span>
+                    <span class="material-symbols text-sm">chevron_right</span>
                 </button>
             </div>
         </div>
@@ -59,7 +59,7 @@
         <div class="flex items-end">
             <button onclick="setToday()"
                 class="w-full px-4 py-2 bg-primary-600 text-white rounded-xl hover:bg-primary-700 transition-colors font-medium">
-                <span class="material-symbols-outlined text-sm align-middle mr-1">today</span>
+                <span class="material-symbols text-sm align-middle mr-1">today</span>
                 Hari Ini
             </button>
         </div>
@@ -76,7 +76,7 @@
     <div class="bg-white rounded-2xl shadow overflow-hidden">
         <div class="px-6 py-4 bg-primary-600 text-white">
             <h3 class="text-lg font-bold flex items-center">
-                <span class="material-symbols-outlined mr-2">emoji_people</span>
+                <span class="material-symbols mr-2">emoji_people</span>
                 Daftar Siswa
             </h3>
         </div>
@@ -106,32 +106,9 @@
     </div>
 </div>
 
-<div id="recapContainer" class="hidden mt-6 bg-white rounded-2xl shadow overflow-hidden">
-    <div class="px-6 py-4 bg-indigo-600 text-white">
-        <h3 class="text-lg font-bold flex items-center">
-            <span class="material-symbols-outlined mr-2">insights</span>
-            Rekap Kelas & Intervensi Dini
-        </h3>
-    </div>
-    <div class="p-6 overflow-x-auto">
-        <table class="w-full">
-            <thead>
-                <tr class="bg-indigo-50">
-                    <th class="px-4 py-3 text-left text-xs font-medium text-indigo-700 uppercase tracking-wider border-b border-indigo-200">Nama</th>
-                    <th class="px-4 py-3 text-center text-xs font-medium text-indigo-700 uppercase tracking-wider border-b border-indigo-200">Rata-rata 7 Hari</th>
-                    <th class="px-4 py-3 text-center text-xs font-medium text-indigo-700 uppercase tracking-wider border-b border-indigo-200">Hari Sempurna</th>
-                    <th class="px-4 py-3 text-center text-xs font-medium text-indigo-700 uppercase tracking-wider border-b border-indigo-200">Kategori</th>
-                    <th class="px-4 py-3 text-center text-xs font-medium text-indigo-700 uppercase tracking-wider border-b border-indigo-200">Intervensi Dini</th>
-                </tr>
-            </thead>
-            <tbody id="recapTableBody"></tbody>
-        </table>
-    </div>
-</div>
-
 <!-- Empty State -->
 <div id="emptyState" class="bg-white rounded-2xl shadow p-12 text-center">
-    <span class="material-symbols-outlined text-6xl text-gray-300 mb-4">emoji_people</span>
+    <span class="material-symbols text-6xl text-gray-300 mb-4">emoji_people</span>
     <p class="text-gray-500">Memuat data siswa...</p>
 </div>
 
@@ -145,7 +122,7 @@
                 <p id="modalDate" class="text-sm text-primary-100 mt-0.5"></p>
             </div>
             <button onclick="closeHabitModal()" class="text-white hover:text-primary-200 transition-colors">
-                <span class="material-symbols-outlined text-2xl">close</span>
+                <span class="material-symbols text-2xl">close</span>
             </button>
         </div>
         <!-- Modal Body -->
@@ -297,11 +274,9 @@
             }
 
             renderTable(result.data, date);
-            await loadClassRecap(classId, date);
 
             document.getElementById('emptyState').classList.add('hidden');
             document.getElementById('dataContainer').classList.remove('hidden');
-            document.getElementById('recapContainer').classList.remove('hidden');
         } catch (error) {
             console.error('Error loading habits:', error);
             alert('Gagal memuat data kebiasaan');
@@ -348,43 +323,6 @@
         tbody.innerHTML = html;
     }
 
-    async function loadClassRecap(classId, date) {
-        try {
-            const response = await fetch(`<?= base_url('api/teacher/habits/class-recap') ?>?class_id=${classId}&date=${date}`);
-            const result = await response.json();
-
-            if (result.status !== 'success') {
-                return;
-            }
-
-            renderClassRecap(result.data.recap || []);
-        } catch (error) {
-            console.error('Error loading recap:', error);
-        }
-    }
-
-    function renderClassRecap(rows) {
-        const tbody = document.getElementById('recapTableBody');
-        if (!rows.length) {
-            tbody.innerHTML = '<tr><td colspan="5" class="px-4 py-8 text-center text-gray-500">Belum ada data rekap</td></tr>';
-            return;
-        }
-
-        tbody.innerHTML = rows.map((row) => `
-            <tr class="hover:bg-indigo-50 transition-colors">
-                <td class="px-4 py-3 border-b border-gray-200 text-sm font-semibold">${row.student_name}</td>
-                <td class="px-4 py-3 border-b border-gray-200 text-center text-sm">${row.avg_completed_7_days}/7</td>
-                <td class="px-4 py-3 border-b border-gray-200 text-center text-sm">${row.perfect_days_7_days}</td>
-                <td class="px-4 py-3 border-b border-gray-200 text-center">${getStatusBadge(row.status)}</td>
-                <td class="px-4 py-3 border-b border-gray-200 text-center">
-                    ${row.need_intervention
-                        ? '<span class="inline-flex items-center px-2 py-1 rounded-lg bg-red-100 text-red-700 text-xs font-bold">Perlu Intervensi</span>'
-                        : '<span class="inline-flex items-center px-2 py-1 rounded-lg bg-green-100 text-green-700 text-xs font-bold">Aman</span>'}
-                </td>
-            </tr>
-        `).join('');
-    }
-
     function getStatusBadge(status) {
         if (status === 'konsisten') {
             return '<span class="inline-flex items-center px-2 py-1 rounded-lg bg-green-100 text-green-700 text-xs font-bold">Konsisten</span>';
@@ -401,10 +339,10 @@
             return `<button onclick="showHabitDetailByIndex(event, ${studentIndex}, '${habitKey}')"
                 title="Lihat detail ${habitQuestionLabels[habitKey]?.title || habitKey}"
                 class="focus:outline-none hover:scale-110 transition-transform">
-                <span class="material-symbols-outlined text-2xl text-green-500">check_circle</span>
+                <span class="material-symbols text-2xl text-green-500">check_circle</span>
             </button>`;
         } else {
-            return '<span class="material-symbols-outlined text-2xl text-red-300">cancel</span>';
+            return '<span class="material-symbols text-2xl text-red-300">cancel</span>';
         }
     }
 
@@ -414,7 +352,9 @@
         const student = studentHabitData[studentIndex];
         if (!student) return;
         let answers = {};
-        try { answers = JSON.parse(student.habit_answers || '{}'); } catch(e) {}
+        try {
+            answers = JSON.parse(student.habit_answers || '{}');
+        } catch (e) {}
         const habitAnswers = answers[habitKey] || {};
         const config = habitQuestionLabels[habitKey];
 
@@ -427,10 +367,10 @@
         } else {
             let html = `<div class="rounded-xl border p-4 ${config.bg} ${config.border}">`;
             html += `<div class="flex items-center gap-2 mb-3">`;
-            html += `<span class="material-symbols-outlined text-2xl ${config.color}">${config.icon}</span>`;
+            html += `<span class="material-symbols text-2xl ${config.color}">${config.icon}</span>`;
             html += `<span class="font-bold text-gray-800 text-base">${config.title}</span>`;
             html += `<span class="ml-auto inline-flex items-center px-2 py-0.5 rounded-full bg-green-100 text-green-700 text-xs font-bold">`;
-            html += `<span class="material-symbols-outlined text-xs mr-0.5">check_circle</span> Dilakukan</span>`;
+            html += `<span class="material-symbols text-xs mr-0.5">check_circle</span> Dilakukan</span>`;
             html += `</div>`;
 
             const fieldEntries = Object.entries(config.fields);
@@ -467,7 +407,9 @@
         const student = studentHabitData[studentIndex];
         if (!student) return;
         let answers = {};
-        try { answers = JSON.parse(student.habit_answers || '{}'); } catch(e) {}
+        try {
+            answers = JSON.parse(student.habit_answers || '{}');
+        } catch (e) {}
 
         document.getElementById('modalStudentName').textContent = student.student_name;
         document.getElementById('modalDate').textContent = formatDateLabel(currentLoadedDate);
@@ -484,14 +426,14 @@
 
             html += `<div class="rounded-xl border p-4 ${isDone ? config.bg + ' ' + config.border : 'bg-gray-50 border-gray-200'}">`;
             html += `<div class="flex items-center gap-2 mb-2">`;
-            html += `<span class="material-symbols-outlined text-xl ${isDone ? config.color : 'text-gray-300'}">${config.icon}</span>`;
+            html += `<span class="material-symbols text-xl ${isDone ? config.color : 'text-gray-300'}">${config.icon}</span>`;
             html += `<span class="font-semibold text-gray-800">${config.title}</span>`;
             if (isDone) {
                 html += `<span class="ml-auto inline-flex items-center px-2 py-0.5 rounded-full bg-green-100 text-green-700 text-xs font-bold">`;
-                html += `<span class="material-symbols-outlined text-xs mr-0.5">check_circle</span> Dilakukan</span>`;
+                html += `<span class="material-symbols text-xs mr-0.5">check_circle</span> Dilakukan</span>`;
             } else {
                 html += `<span class="ml-auto inline-flex items-center px-2 py-0.5 rounded-full bg-red-100 text-red-600 text-xs font-bold">`;
-                html += `<span class="material-symbols-outlined text-xs mr-0.5">cancel</span> Belum</span>`;
+                html += `<span class="material-symbols text-xs mr-0.5">cancel</span> Belum</span>`;
             }
             html += `</div>`;
 
