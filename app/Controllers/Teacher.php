@@ -73,10 +73,11 @@ class Teacher extends BaseController
         if ($check) return $check;
 
         $classes = $this->getTeacherClasses();
+        $teacherClass = !empty($classes) ? $classes[0] : null;
 
         return view('teacher/attendance', [
-            'activePage' => 'teacher/attendance',
-            'classes'    => $classes,
+            'activePage'   => 'teacher/attendance',
+            'teacherClass' => $teacherClass,
         ]);
     }
 
