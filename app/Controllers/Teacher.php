@@ -129,8 +129,12 @@ class Teacher extends BaseController
         $check = $this->checkTeacherAuth();
         if ($check) return $check;
 
+        $classes = $this->getTeacherClasses();
+        $teacherClass = !empty($classes) ? $classes[0] : null;
+
         return view('teacher/habits_daily', [
-            'activePage' => 'teacher/habits-daily'
+            'activePage'   => 'teacher/habits-daily',
+            'teacherClass' => $teacherClass,
         ]);
     }
 
@@ -491,8 +495,9 @@ class Teacher extends BaseController
                     $habit = $dailyMap[$student['id']] ?? null;
                     $completed = 0;
                     $row = [
-                        'student_id' => $student['id'],
-                        'student_name' => $student['name'],
+                        'student_id'    => $student['id'],
+                        'student_name'  => $student['name'],
+                        'habit_answers' => $habit ? ($habit['habit_answers'] ?? '{}') : '{}',
                     ];
 
                     foreach (array_keys(StudentHabitModel::getHabitColumns()) as $field) {
