@@ -13,17 +13,17 @@
         <p class="text-gray-600 mt-1">Kelola data siswa dan informasi absensi</p>
     </div>
     <div class="flex flex-wrap gap-2">
-        <a href="<?= base_url('admin/students-import') ?>" class="btn-secondary flex items-center justify-center space-x-2 flex-1 md:flex-none">
+        <a href="<?= base_url('admin/students-import') ?>" class="bg-gray-600 hover:bg-gray-700 text-white font-semibold px-4 py-2.5 rounded-xl transition-colors flex items-center justify-center space-x-2 flex-1 md:flex-none">
             <span class="material-symbols-outlined text-lg">upload_file</span>
             <span class="hidden sm:inline">Import Excel</span>
             <span class="sm:hidden">Import</span>
         </a>
-        <button onclick="generateStudentAccounts()" class="btn-secondary flex items-center justify-center space-x-2 flex-1 md:flex-none">
+        <button onclick="generateStudentAccounts()" class="bg-gray-600 hover:bg-gray-700 text-white font-semibold px-4 py-2.5 rounded-xl transition-colors flex items-center justify-center space-x-2 flex-1 md:flex-none">
             <span class="material-symbols-outlined text-lg">manage_accounts</span>
             <span class="hidden sm:inline">Generate Akun</span>
             <span class="sm:hidden">Akun</span>
         </button>
-        <button onclick="openAddStudentModal()" class="btn-primary flex items-center justify-center space-x-2 flex-1 md:flex-none">
+        <button onclick="openAddStudentModal()" class="bg-primary-600 hover:bg-primary-700 text-white font-semibold px-4 py-2.5 rounded-xl transition-colors flex items-center justify-center space-x-2 flex-1 md:flex-none">
             <span class="material-symbols-outlined text-lg">add</span>
             <span>Tambah</span>
         </button>
@@ -54,10 +54,9 @@
             </div>
             <div class="md:col-span-2">
                 <label class="block text-sm font-semibold text-gray-700 mb-2">&nbsp;</label>
-                <button onclick="resetFilters()" class="w-full btn-secondary py-3">
-                    <span class="material-symbols-outlined text-lg mr-2">filter_alt_off</span>
-                    <span class="hidden sm:inline">Reset</span>
-                    <span class="sm:hidden">Reset</span>
+                <button onclick="resetFilters()" class="w-full bg-gray-600 hover:bg-gray-700 text-white font-semibold px-4 py-3 rounded-xl transition-colors flex items-center justify-center space-x-2">
+                    <span class="material-symbols-outlined text-lg">filter_alt_off</span>
+                    <span>Reset</span>
                 </button>
             </div>
         </div>
@@ -85,6 +84,9 @@
                         <th class="text-left py-4 px-4 text-xs font-bold uppercase tracking-wide text-primary-800 whitespace-nowrap">
                             Tempat, Tanggal Lahir
                         </th>
+                        <th onclick="setSortColumn('gender')" class="text-center py-4 px-4 text-xs font-bold uppercase tracking-wide text-primary-800 whitespace-nowrap cursor-pointer select-none hover:bg-primary-200 transition-colors rounded-lg">
+                            L/P<span id="sortIndicator_gender" class="ml-1 text-primary-600 text-sm"></span>
+                        </th>
                         <th onclick="setSortColumn('religion')" class="text-left py-4 px-4 text-xs font-bold uppercase tracking-wide text-primary-800 whitespace-nowrap cursor-pointer select-none hover:bg-primary-200 transition-colors rounded-lg">
                             Agama<span id="sortIndicator_religion" class="ml-1 text-primary-600 text-sm"></span>
                         </th>
@@ -96,7 +98,7 @@
                 </thead>
                 <tbody id="studentsTable">
                     <tr>
-                        <td colspan="8" class="text-center py-16">
+                        <td colspan="9" class="text-center py-16">
                             <div class="inline-block animate-spin rounded-full h-10 w-10 border-4 border-primary-200 border-t-primary-600"></div>
                             <p class="text-gray-500 mt-4 font-medium">Memuat data siswa...</p>
                         </td>
@@ -250,13 +252,13 @@
 
             <!-- Action Buttons -->
             <div class="flex flex-col-reverse md:flex-row justify-end gap-3 pt-6 border-t-2 border-gray-100">
-                <button type="button" onclick="closeStudentModal()" class="btn-secondary py-3 px-6">
-                    <span class="material-symbols-outlined mr-2">close</span>
-                    Batal
+                <button type="button" onclick="closeStudentModal()" class="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-3 px-6 rounded-xl transition-colors flex items-center justify-center space-x-2">
+                    <span class="material-symbols-outlined">close</span>
+                    <span>Batal</span>
                 </button>
-                <button type="submit" class="btn-primary py-3 px-6">
-                    <span class="material-symbols-outlined mr-2">save</span>
-                    Simpan Data
+                <button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white font-semibold py-3 px-6 rounded-xl transition-colors flex items-center justify-center space-x-2">
+                    <span class="material-symbols-outlined">save</span>
+                    <span>Simpan Data</span>
                 </button>
             </div>
         </form>
@@ -385,13 +387,13 @@
                     </div>
                     <p class="text-lg font-semibold text-gray-700 mb-2">Belum ada data siswa</p>
                     <p class="text-sm text-gray-500 mb-6">Mulai tambahkan siswa untuk mengelola data absensi</p>
-                    <button onclick="openAddStudentModal()" class="btn-primary inline-flex items-center">
-                        <span class="material-symbols-outlined mr-2">add</span>
-                        Tambah Siswa Pertama
+                    <button onclick="openAddStudentModal()" class="bg-primary-600 hover:bg-primary-700 text-white font-semibold px-6 py-3 rounded-xl transition-colors inline-flex items-center space-x-2">
+                        <span class="material-symbols-outlined">add</span>
+                        <span>Tambah Siswa Pertama</span>
                     </button>
                 </div>
             `;
-            tbody.innerHTML = `<tr><td colspan="8">${emptyState}</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="9">${emptyState}</td></tr>`;
             mobileContainer.innerHTML = emptyState;
             return;
         }
@@ -447,8 +449,9 @@
             const birthDate = student.birth_date ? formatDate(student.birth_date) : '-';
             const birthInfo = birthPlace !== '-' || birthDate !== '-' ? `${birthPlace}, ${birthDate}` : '-';
             
-            // Format religion
+            // Format religion and gender - plain text, no badges
             const religion = student.religion ? toTitleCase(student.religion) : '-';
+            const gender = student.gender === 'L' ? 'L' : (student.gender === 'P' ? 'P' : '-');
             
             return `
         <tr class="border-b border-gray-100 hover:bg-gray-50 transition-colors">
@@ -465,25 +468,26 @@
             <td class="py-4 px-4">
                 <span class="text-sm text-gray-700">${birthInfo}</span>
             </td>
+            <td class="py-4 px-4 text-center">
+                <span class="text-sm text-gray-700">${gender}</span>
+            </td>
             <td class="py-4 px-4">
                 <span class="text-sm text-gray-700">${religion}</span>
             </td>
             <td class="py-4 px-4">
-                <span class="inline-flex items-center px-3 py-1 rounded-lg text-sm font-semibold bg-primary-50 text-primary-700">
-                    ${classDisplay}
-                </span>
+                <span class="text-sm text-gray-700">${classDisplay}</span>
             </td>
             <td class="py-4 px-4">
                 <div class="flex items-center justify-center space-x-1">
                     <button onclick="editStudent(${student.id})" 
                         title="Edit data siswa"
-                        class="p-2 text-primary-600 hover:bg-primary-50 rounded-lg transition-colors">
-                        <span class="material-symbols-outlined text-xl">edit</span>
+                        class="px-3 py-2 bg-primary-600 text-white hover:bg-primary-700 rounded-lg transition-colors text-sm font-medium">
+                        Edit
                     </button>
                     <button onclick="deleteStudent(${student.id})" 
                         title="Hapus siswa"
-                        class="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors">
-                        <span class="material-symbols-outlined text-xl">delete</span>
+                        class="px-3 py-2 bg-red-600 text-white hover:bg-red-700 rounded-lg transition-colors text-sm font-medium">
+                        Hapus
                     </button>
                 </div>
             </td>
@@ -513,14 +517,14 @@
             ${student.nisn ? `<p class="text-xs text-gray-500 mb-3">NISN: ${student.nisn}</p>` : ''}
             <div class="flex space-x-2 pt-3 border-t border-gray-100">
                 <button onclick="editStudent(${student.id})" 
-                    class="flex-1 btn-secondary text-sm py-2">
-                    <span class="material-symbols-outlined text-base mr-1">edit</span>
-                    Edit
+                    class="flex-1 bg-primary-600 hover:bg-primary-700 text-white font-semibold rounded-xl py-2 text-sm transition-colors flex items-center justify-center space-x-1">
+                    <span class="material-symbols-outlined text-base">edit</span>
+                    <span>Edit</span>
                 </button>
                 <button onclick="deleteStudent(${student.id})" 
-                    class="flex-1 bg-red-50 text-red-600 hover:bg-red-100 font-semibold rounded-xl py-2 text-sm transition-colors">
-                    <span class="material-symbols-outlined text-base mr-1">delete</span>
-                    Hapus
+                    class="flex-1 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-xl py-2 text-sm transition-colors flex items-center justify-center space-x-1">
+                    <span class="material-symbols-outlined text-base">delete</span>
+                    <span>Hapus</span>
                 </button>
             </div>
         </div>
