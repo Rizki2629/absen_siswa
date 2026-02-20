@@ -76,11 +76,17 @@
                         <th onclick="setSortColumn('nis')" class="text-left py-4 px-4 text-xs font-bold uppercase tracking-wide text-primary-800 whitespace-nowrap cursor-pointer select-none hover:bg-primary-200 transition-colors rounded-lg">
                             NIS<span id="sortIndicator_nis" class="ml-1 text-primary-600 text-sm"></span>
                         </th>
+                        <th onclick="setSortColumn('nisn')" class="text-left py-4 px-4 text-xs font-bold uppercase tracking-wide text-primary-800 whitespace-nowrap cursor-pointer select-none hover:bg-primary-200 transition-colors rounded-lg">
+                            NISN<span id="sortIndicator_nisn" class="ml-1 text-primary-600 text-sm"></span>
+                        </th>
                         <th onclick="setSortColumn('name')" class="text-left py-4 px-4 text-xs font-bold uppercase tracking-wide text-primary-800 whitespace-nowrap cursor-pointer select-none hover:bg-primary-200 transition-colors rounded-lg">
                             Nama Siswa<span id="sortIndicator_name" class="ml-1 text-primary-600 text-sm"></span>
                         </th>
-                        <th onclick="setSortColumn('gender')" class="text-center py-4 px-4 text-xs font-bold uppercase tracking-wide text-primary-800 whitespace-nowrap cursor-pointer select-none hover:bg-primary-200 transition-colors rounded-lg">
-                            L/P<span id="sortIndicator_gender" class="ml-1 text-primary-600 text-sm"></span>
+                        <th class="text-left py-4 px-4 text-xs font-bold uppercase tracking-wide text-primary-800 whitespace-nowrap">
+                            Tempat, Tanggal Lahir
+                        </th>
+                        <th onclick="setSortColumn('religion')" class="text-left py-4 px-4 text-xs font-bold uppercase tracking-wide text-primary-800 whitespace-nowrap cursor-pointer select-none hover:bg-primary-200 transition-colors rounded-lg">
+                            Agama<span id="sortIndicator_religion" class="ml-1 text-primary-600 text-sm"></span>
                         </th>
                         <th onclick="setSortColumn('class')" class="text-left py-4 px-4 text-xs font-bold uppercase tracking-wide text-primary-800 whitespace-nowrap cursor-pointer select-none hover:bg-primary-200 transition-colors rounded-lg">
                             Kelas<span id="sortIndicator_class" class="ml-1 text-primary-600 text-sm"></span>
@@ -90,7 +96,7 @@
                 </thead>
                 <tbody id="studentsTable">
                     <tr>
-                        <td colspan="6" class="text-center py-16">
+                        <td colspan="8" class="text-center py-16">
                             <div class="inline-block animate-spin rounded-full h-10 w-10 border-4 border-primary-200 border-t-primary-600"></div>
                             <p class="text-gray-500 mt-4 font-medium">Memuat data siswa...</p>
                         </td>
@@ -385,7 +391,7 @@
                     </button>
                 </div>
             `;
-            tbody.innerHTML = `<tr><td colspan="6">${emptyState}</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="8">${emptyState}</td></tr>`;
             mobileContainer.innerHTML = emptyState;
             return;
         }
@@ -395,6 +401,19 @@
                 .toLowerCase()
                 .replace(/\b\w/g, char => char.toUpperCase())
                 .trim();
+        };
+
+        const formatDate = (dateString) => {
+            if (!dateString) return '-';
+            const date = new Date(dateString);
+            if (isNaN(date.getTime())) return '-';
+            
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+            const day = date.getDate();
+            const month = months[date.getMonth()];
+            const year = date.getFullYear();
+            
+            return `${day} ${month} ${year}`;
         };
 
         const formatClassLabel = (value) => {
@@ -422,6 +441,15 @@
         tbody.innerHTML = students.map((student, index) => {
             const rowNumber = ((studentsPage - 1) * studentsPerPage) + index + 1;
             const classDisplay = getClassDisplay(student);
+            
+            // Format birth info
+            const birthPlace = student.birth_place ? toTitleCase(student.birth_place) : '-';
+            const birthDate = student.birth_date ? formatDate(student.birth_date) : '-';
+            const birthInfo = birthPlace !== '-' || birthDate !== '-' ? `${birthPlace}, ${birthDate}` : '-';
+            
+            // Format religion
+            const religion = student.religion ? toTitleCase(student.religion) : '-';
+            
             return `
         <tr class="border-b border-gray-100 hover:bg-gray-50 transition-colors">
             <td class="py-4 px-4 text-gray-400 font-medium text-sm">${rowNumber}</td>
@@ -429,10 +457,17 @@
                 <span class="font-mono text-sm font-semibold text-gray-900">${student.nis}</span>
             </td>
             <td class="py-4 px-4">
-                <div class="font-semibold text-gray-900">${toTitleCase(student.name)}</div>
-                ${student.nisn ? `<div class="text-xs text-gray-500 mt-0.5">NISN: ${student.nisn}</div>` : ''}
+                <span class="font-mono text-sm text-gray-700">${student.nisn || '-'}</span>
             </td>
-            <td class="py-4 px-4 text-center">${getGenderBadge(student.gender)}</td>
+            <td class="py-4 px-4">
+                <div class="font-semibold text-gray-900">${toTitleCase(student.name)}</div>
+            </td>
+            <td class="py-4 px-4">
+                <span class="text-sm text-gray-700">${birthInfo}</span>
+            </td>
+            <td class="py-4 px-4">
+                <span class="text-sm text-gray-700">${religion}</span>
+            </td>
             <td class="py-4 px-4">
                 <span class="inline-flex items-center px-3 py-1 rounded-lg text-sm font-semibold bg-primary-50 text-primary-700">
                     ${classDisplay}

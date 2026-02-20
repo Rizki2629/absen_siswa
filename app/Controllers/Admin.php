@@ -1080,6 +1080,7 @@ class Admin extends BaseController
                 'nisn'       => 'students.nisn',
                 'birth_date' => 'students.birth_date',
                 'gender'     => 'students.gender',
+                'religion'   => 'students.religion',
                 'class'      => 'classes.name',
             ];
             if (isset($allowedSorts[$sortBy])) {
