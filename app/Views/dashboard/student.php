@@ -57,13 +57,8 @@ $statusIcon  = $isHadir ? ($todayStatus === 'terlambat' ? 'timer' : 'check_circl
                     </span>
                     <span class="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg"
                         style="background:rgba(255,255,255,0.2);color:#fff;">
-                        <span class="material-symbols-outlined" style="font-size:14px;">class</span>
-                        <?= esc($student['class'] ?? '-') ?>
-                    </span>
-                    <span class="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg"
-                        style="background:rgba(255,255,255,0.2);color:#fff;">
                         <span class="material-symbols-outlined" style="font-size:14px;">school</span>
-                        <?= esc($student['major'] ?? '-') ?>
+                        Kelas <?= esc($student['class'] ?? '-') ?>
                     </span>
                 </div>
             </div>
