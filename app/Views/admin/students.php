@@ -34,7 +34,7 @@
 <div class="card mb-6">
     <div class="card-body">
         <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
-            <div class="md:col-span-6">
+            <div class="md:col-span-5">
                 <label class="block text-sm font-semibold text-gray-700 mb-2">
                     <span class="material-symbols-outlined text-base align-middle mr-1">search</span>
                     Cari Siswa
@@ -52,7 +52,7 @@
                     <option value="">Semua Kelas</option>
                 </select>
             </div>
-            <div class="md:col-span-2">
+            <div class="md:col-span-3">
                 <label class="block text-sm font-semibold text-gray-700 mb-2">&nbsp;</label>
                 <button onclick="resetFilters()" class="w-full bg-gray-600 hover:bg-gray-700 text-white font-semibold px-4 py-3 rounded-xl transition-colors flex items-center justify-center space-x-2">
                     <span class="material-symbols-outlined text-lg">filter_alt_off</span>
