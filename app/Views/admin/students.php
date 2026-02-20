@@ -68,7 +68,7 @@
 <div class="card">
     <div class="card-body">
         <!-- Desktop Table View -->
-        <div class="hidden sm:block overflow-x-auto">
+        <div class="block overflow-x-auto">
             <table class="w-full">
                 <thead class="bg-gradient-to-r from-primary-50 to-primary-100">
                     <tr class="border-b-2 border-primary-200">
@@ -99,8 +99,8 @@
             </table>
         </div>
 
-        <!-- Mobile Card View -->
-        <div class="sm:hidden space-y-3" id="studentsMobile">
+        <!-- Mobile Card View (HIDDEN - for future mobile optimization) -->
+        <div class="hidden" id="studentsMobile">
             <div class="text-center py-12">
                 <div class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-primary-200 border-t-primary-600"></div>
                 <p class="text-gray-500 mt-4">Memuat data...</p>
