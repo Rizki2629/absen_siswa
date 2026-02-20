@@ -33,8 +33,8 @@
 <!-- Search & Filter -->
 <div class="card mb-6">
     <div class="card-body">
-        <div class="grid grid-cols-1 sm:grid-cols-12 gap-4">
-            <div class="sm:col-span-5">
+        <div class="flex flex-wrap gap-4">
+            <div class="flex-1" style="min-width: 300px;">
                 <label class="block text-sm font-semibold text-gray-700 mb-2">
                     <span class="material-symbols-outlined text-base align-middle mr-1">search</span>
                     Cari Siswa
@@ -43,7 +43,7 @@
                     onkeyup="filterStudents()"
                     class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all">
             </div>
-            <div class="sm:col-span-4">
+            <div class="flex-1" style="min-width: 200px;">
                 <label class="block text-sm font-semibold text-gray-700 mb-2">
                     <span class="material-symbols-outlined text-base align-middle mr-1">filter_list</span>
                     Filter Kelas
@@ -52,7 +52,7 @@
                     <option value="">Semua Kelas</option>
                 </select>
             </div>
-            <div class="sm:col-span-3">
+            <div style="min-width: 150px;">
                 <label class="block text-sm font-semibold text-gray-700 mb-2">&nbsp;</label>
                 <button onclick="resetFilters()" class="w-full bg-gray-600 hover:bg-gray-700 text-white font-semibold px-4 py-3 rounded-xl transition-colors flex items-center justify-center space-x-2">
                     <span class="material-symbols-outlined text-lg">filter_alt_off</span>
