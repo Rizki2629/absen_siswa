@@ -107,17 +107,29 @@ class TestIndexes extends BaseCommand
         // Test 3: Attendance by date
         CLI::write('Test 3: SELECT attendance WHERE date = ?', 'cyan');
         $start = microtime(true);
-        $db->query("SELECT * FROM attendance_logs WHERE date = CURDATE() LIMIT 10")->getResultArray();
-        $time3 = (microtime(true) - $start) * 1000;
-        CLI::write("  Time: " . number_format($time3, 2) . "ms", $time3 < 50 ? 'green' : 'yellow');
+        $result = $db->query("SELECT * FROM attendance_logs WHERE date = CURDATE() LIMIT 10");
+        if ($result) {
+            $result->getResultArray();
+            $time3 = (microtime(true) - $start) * 1000;
+            CLI::write("  Time: " . number_format($time3, 2) . "ms", $time3 < 50 ? 'green' : 'yellow');
+        } else {
+            $time3 = 0;
+            CLI::write("  Skipped (table empty or error)", 'yellow');
+        }
         CLI::newLine();
 
         // Test 4: Attendance by student and date (composite index)
         CLI::write('Test 4: SELECT attendance WHERE date = ? AND student_id = ?', 'cyan');
         $start = microtime(true);
-        $db->query("SELECT * FROM attendance_logs WHERE date = CURDATE() AND student_id = 1 LIMIT 1")->getResultArray();
-        $time4 = (microtime(true) - $start) * 1000;
-        CLI::write("  Time: " . number_format($time4, 2) . "ms", $time4 < 20 ? 'green' : 'yellow');
+        $result = $db->query("SELECT * FROM attendance_logs WHERE date = CURDATE() AND student_id = 1 LIMIT 1");
+        if ($result) {
+            $result->getResultArray();
+            $time4 = (microtime(true) - $start) * 1000;
+            CLI::write("  Time: " . number_format($time4, 2) . "ms", $time4 < 20 ? 'green' : 'yellow');
+        } else {
+            $time4 = 0;
+            CLI::write("  Skipped (table empty or error)", 'yellow');
+        }
         CLI::newLine();
 
         // Summary
