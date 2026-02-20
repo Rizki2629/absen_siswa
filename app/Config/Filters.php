@@ -77,12 +77,16 @@ class Filters extends BaseFilters
         'before' => [
             // 'cors',  // DISABLED FOR DEBUGGING
             // 'honeypot',
-            // 'csrf',
-            // 'invalidchars',
+            'csrf' => [
+                'except' => [
+                    'api/*', // Exclude API endpoints (use token-based auth instead)
+                ]
+            ],
+            'invalidchars',
         ],
         'after' => [
             // 'honeypot',
-            // 'secureheaders',
+            'secureheaders',
         ],
     ];
 
