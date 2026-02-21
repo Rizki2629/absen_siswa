@@ -19,7 +19,7 @@
     <div class="card cursor-pointer hover:shadow-lg transition-shadow" onclick="selectReportType('daily')">
         <div class="card-body text-center">
             <div class="bg-primary-100 rounded-full p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-                <span class="material-symbols-outlined text-primary-600 text-3xl">today</span>
+                <span class="material-symbols text-primary-600 text-3xl">today</span>
             </div>
             <h3 class="text-lg font-bold text-gray-900">Laporan Harian</h3>
             <p class="text-sm text-gray-500 mt-2">Rekap absensi per hari</p>
@@ -29,7 +29,7 @@
     <div class="card cursor-pointer hover:shadow-lg transition-shadow" onclick="selectReportType('weekly')">
         <div class="card-body text-center">
             <div class="bg-success-100 rounded-full p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-                <span class="material-symbols-outlined text-success-600 text-3xl">date_range</span>
+                <span class="material-symbols text-success-600 text-3xl">date_range</span>
             </div>
             <h3 class="text-lg font-bold text-gray-900">Laporan Mingguan</h3>
             <p class="text-sm text-gray-500 mt-2">Rekap absensi per minggu</p>
@@ -39,7 +39,7 @@
     <div class="card cursor-pointer hover:shadow-lg transition-shadow" onclick="selectReportType('monthly')">
         <div class="card-body text-center">
             <div class="bg-warning-100 rounded-full p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-                <span class="material-symbols-outlined text-warning-600 text-3xl">calendar_month</span>
+                <span class="material-symbols text-warning-600 text-3xl">calendar_month</span>
             </div>
             <h3 class="text-lg font-bold text-gray-900">Laporan Bulanan</h3>
             <p class="text-sm text-gray-500 mt-2">Rekap absensi per bulan</p>
@@ -73,7 +73,7 @@
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">&nbsp;</label>
                 <button onclick="generateReport()" class="w-full btn-primary">
-                    <span class="material-symbols-outlined mr-2">assessment</span>
+                    <span class="material-symbols mr-2">assessment</span>
                     Generate Laporan
                 </button>
             </div>
@@ -88,11 +88,11 @@
             <h3 class="text-lg font-bold text-gray-900">Preview Laporan</h3>
             <div class="flex space-x-2">
                 <button onclick="exportPDF()" class="btn-secondary flex items-center">
-                    <span class="material-symbols-outlined mr-2">picture_as_pdf</span>
+                    <span class="material-symbols mr-2">picture_as_pdf</span>
                     Export PDF
                 </button>
                 <button onclick="exportExcel()" class="btn-primary flex items-center">
-                    <span class="material-symbols-outlined mr-2">table_chart</span>
+                    <span class="material-symbols mr-2">table_chart</span>
                     Export Excel
                 </button>
             </div>

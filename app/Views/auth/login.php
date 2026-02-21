@@ -28,13 +28,16 @@
 
         <!-- Main content -->
         <div class="login-main-content">
-            <!-- Header with fingerprint icon -->
+            <!-- Header with logos -->
             <div class="login-header">
-                <div class="fingerprint-icon">
-                    <span class="material-symbols-outlined">fingerprint</span>
+                <div style="display:flex;align-items:center;justify-content:center;gap:20px;margin-bottom:8px;">
+                    <img src="<?= base_url('images/logo/logo-disdik.png') ?>" alt="Logo Disdik" style="height:72px;width:auto;object-fit:contain;">
+                    <img src="<?= base_url('images/logo/logo-sekolah.png') ?>" alt="Logo Sekolah" style="height:72px;width:auto;object-fit:contain;border-radius:8px;">
+                    <img src="<?= base_url('images/logo/logo-tutwuri.png') ?>" alt="Logo Tutwuri" style="height:72px;width:auto;object-fit:contain;">
                 </div>
                 <div class="title-section">
-                    <h1>Absensi Siswa</h1>
+                    <h1>SI-HADIR</h1>
+                    <p style="margin:4px 0 0;font-size:0.95rem;color:#6b7280;font-weight:500;">Sistem Informasi Habit dan Daftar Hadir Siswa</p>
                 </div>
             </div>
 
@@ -46,14 +49,14 @@
 
                 <?php if (session()->getFlashdata('error')): ?>
                     <div class="login-alert login-alert-error">
-                        <span class="material-symbols-outlined">error</span>
+                        <span class="material-symbols">error</span>
                         <span><?= session()->getFlashdata('error') ?></span>
                     </div>
                 <?php endif; ?>
 
                 <?php if (session()->getFlashdata('success')): ?>
                     <div class="login-alert login-alert-success">
-                        <span class="material-symbols-outlined">check_circle</span>
+                        <span class="material-symbols">check_circle</span>
                         <span><?= session()->getFlashdata('success') ?></span>
                     </div>
                 <?php endif; ?>
@@ -87,7 +90,7 @@
                                 type="button"
                                 class="toggle-password"
                                 onclick="togglePassword()">
-                                <span class="material-symbols-outlined" id="eyeIcon">visibility</span>
+                                <span class="material-symbols" id="eyeIcon">visibility</span>
                             </button>
                         </div>
                     </div>

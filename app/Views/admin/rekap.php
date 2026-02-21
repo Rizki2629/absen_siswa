@@ -184,11 +184,11 @@
     </div>
     <div class="flex gap-2">
         <button onclick="exportToExcel()" class="px-4 py-2 bg-green-600 text-white rounded-xl hover:bg-green-700 transition-colors flex items-center gap-2">
-            <span class="material-symbols-outlined text-lg">download</span>
+            <span class="material-symbols text-lg">download</span>
             Export Excel
         </button>
         <button onclick="printTable()" class="px-4 py-2 bg-gray-600 text-white rounded-xl hover:bg-gray-700 transition-colors flex items-center gap-2">
-            <span class="material-symbols-outlined text-lg">print</span>
+            <span class="material-symbols text-lg">print</span>
             Cetak
         </button>
     </div>
@@ -280,7 +280,7 @@
 <!-- Table Container -->
 <div class="table-wrapper" id="tableContainer">
     <div class="text-center py-16">
-        <span class="material-symbols-outlined text-6xl text-gray-300 mb-4">table_chart</span>
+        <span class="material-symbols text-6xl text-gray-300 mb-4">table_chart</span>
         <h3 class="text-lg font-semibold text-gray-500">Pilih kelas dan periode untuk menampilkan rekap</h3>
         <p class="text-gray-400 mt-1">Pilih kelas, bulan, dan tahun di atas</p>
     </div>

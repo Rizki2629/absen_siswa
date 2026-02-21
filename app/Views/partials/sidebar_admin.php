@@ -139,20 +139,20 @@ foreach ($menuGroups as $index => $group) {
 <?php foreach ($menuGroups as $index => $group): ?>
     <?php if ($group['type'] === 'single'): ?>
         <a href="<?= base_url($group['url']) ?>" class="<?= ($activePage ?? '') === $group['url'] ? 'sidebar-item-active' : 'sidebar-item' ?>">
-            <span class="material-symbols-outlined mr-3"><?= $group['icon'] ?></span>
+            <span class="material-symbols mr-3"><?= $group['icon'] ?></span>
             <span><?= $group['label'] ?></span>
         </a>
     <?php else: ?>
         <div class="menu-group">
             <div class="menu-group-header <?= $expandedGroup === $index ? 'expanded' : '' ?>" onclick="toggleGroup(this)">
-                <span class="material-symbols-outlined mr-3"><?= $group['icon'] ?></span>
+                <span class="material-symbols mr-3"><?= $group['icon'] ?></span>
                 <span><?= $group['label'] ?></span>
-                <span class="material-symbols-outlined chevron-icon <?= $expandedGroup === $index ? 'rotated' : '' ?>">chevron_right</span>
+                <span class="material-symbols chevron-icon <?= $expandedGroup === $index ? 'rotated' : '' ?>">chevron_right</span>
             </div>
             <div class="menu-group-items <?= $expandedGroup === $index ? 'show' : '' ?>">
                 <?php foreach ($group['items'] as $item): ?>
                     <a href="<?= base_url($item['url']) ?>" class="menu-group-item <?= ($activePage ?? '') === $item['url'] ? 'active' : '' ?>">
-                        <span class="material-symbols-outlined mr-3" style="font-size: 1.25rem;"><?= $item['icon'] ?></span>
+                        <span class="material-symbols mr-3" style="font-size: 1.25rem;"><?= $item['icon'] ?></span>
                         <span><?= $item['label'] ?></span>
                     </a>
                 <?php endforeach; ?>

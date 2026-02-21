@@ -13,7 +13,7 @@
         <p class="text-gray-600 mt-1">Hubungkan ID fingerprint di mesin dengan data siswa</p>
     </div>
     <button onclick="openAddMappingModal()" class="btn-primary flex items-center space-x-2">
-        <span class="material-symbols-outlined">add</span>
+        <span class="material-symbols">add</span>
         <span>Tambah Mapping</span>
     </button>
 </div>
@@ -80,7 +80,7 @@
         <div class="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center rounded-t-2xl">
             <h3 class="text-xl font-bold text-gray-900">Tambah Mapping Baru</h3>
             <button onclick="closeMappingModal()" class="text-gray-400 hover:text-gray-600">
-                <span class="material-symbols-outlined">close</span>
+                <span class="material-symbols">close</span>
             </button>
         </div>
 
@@ -141,7 +141,7 @@
                     Batal
                 </button>
                 <button type="submit" class="btn-primary flex items-center space-x-2">
-                    <span class="material-symbols-outlined text-sm">save</span>
+                    <span class="material-symbols text-sm">save</span>
                     <span>Simpan Mapping</span>
                 </button>
             </div>
@@ -154,7 +154,7 @@
     <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6">
         <div class="text-center mb-6">
             <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-danger-100 mb-4">
-                <span class="material-symbols-outlined text-danger-600 text-4xl">delete</span>
+                <span class="material-symbols text-danger-600 text-4xl">delete</span>
             </div>
             <h3 class="text-xl font-bold text-gray-900 mb-2">Hapus Mapping?</h3>
             <p class="text-gray-600">Mapping akan dihapus dan siswa tidak akan bisa absen menggunakan mesin ini.</p>
@@ -276,7 +276,7 @@
                         <td class="py-3 px-4 text-center">
                             <button onclick="openDeleteModal(${mapping.id})" 
                                 class="text-danger-600 hover:bg-danger-50 p-2 rounded-lg">
-                                <span class="material-symbols-outlined text-sm">delete</span>
+                                <span class="material-symbols text-sm">delete</span>
                             </button>
                         </td>
                     </tr>
@@ -286,12 +286,12 @@
                     <tr>
                         <td colspan="6" class="text-center py-12">
                             <div class="inline-flex items-center justify-center w-16 h-16 bg-gray-100 rounded-full mb-4">
-                                <span class="material-symbols-outlined text-gray-400 text-4xl">link_off</span>
+                                <span class="material-symbols text-gray-400 text-4xl">link_off</span>
                             </div>
                             <h3 class="text-lg font-medium text-gray-900 mb-2">Belum Ada Mapping</h3>
                             <p class="text-gray-600 mb-6">Tambahkan mapping untuk menghubungkan siswa dengan mesin fingerprint</p>
                             <button onclick="openAddMappingModal()" class="btn-primary inline-flex items-center space-x-2">
-                                <span class="material-symbols-outlined">add</span>
+                                <span class="material-symbols">add</span>
                                 <span>Tambah Mapping Pertama</span>
                             </button>
                         </td>
@@ -398,7 +398,7 @@
         const alert = document.createElement('div');
         alert.className = `${colors[type]} border-l-4 p-4 rounded-lg flex items-center fixed top-4 right-4 z-50 shadow-lg max-w-md`;
         alert.innerHTML = `
-        <span class="material-symbols-outlined mr-3">${icons[type]}</span>
+        <span class="material-symbols mr-3">${icons[type]}</span>
         <span>${message}</span>
     `;
 

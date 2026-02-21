@@ -16,7 +16,7 @@ $routes->post('auth/login', 'Auth::login');
 $routes->get('logout', 'Auth::logout');
 
 // Admin Routes
-$routes->group('admin', ['filter' => 'auth'], static function (RouteCollection $routes): void {
+$routes->group('admin', ['filter' => 'admin_auth'], static function (RouteCollection $routes): void {
 	$routes->get('dashboard', 'Admin::dashboard');
 	$routes->get('devices', 'Admin::devices');
 	$routes->get('device-mapping', 'Admin::deviceMapping');
@@ -36,6 +36,14 @@ $routes->group('admin', ['filter' => 'auth'], static function (RouteCollection $
 	$routes->get('users', 'Admin::users');
 	$routes->get('reports', 'Admin::reports');
 	$routes->get('calendar', 'Admin::calendar');
+});
+
+// Guru Piket Routes
+$routes->group('guru-piket', ['filter' => 'gurupiket_auth'], static function (RouteCollection $routes): void {
+	$routes->get('dashboard', 'GuruPiket::dashboard');
+	$routes->get('monitoring', 'GuruPiket::monitoring');
+	$routes->get('daily-recap', 'GuruPiket::dailyRecap');
+	$routes->get('exceptions', 'GuruPiket::exceptions');
 });
 
 // Teacher/Guru Routes
@@ -69,13 +77,14 @@ $routes->group('api/teacher', ['filter' => 'auth'], static function (RouteCollec
 });
 
 // Admin API Routes (for AJAX calls)
-$routes->group('api/admin', ['filter' => 'auth'], static function (RouteCollection $routes): void {
+$routes->group('api/admin', ['filter' => 'admin_auth'], static function (RouteCollection $routes): void {
 	// Users API
 	$routes->get('users', 'Admin::apiGetUsers');
 	$routes->get('users/(:num)', 'Admin::apiGetUser/$1');
 	$routes->post('users', 'Admin::apiCreateUser');
 	$routes->put('users/(:num)', 'Admin::apiUpdateUser/$1');
 	$routes->delete('users/(:num)', 'Admin::apiDeleteUser/$1');
+	$routes->post('users/(:num)/reset-password', 'Admin::apiResetPassword/$1');
 
 	// Teachers API
 	$routes->get('teachers', 'Admin::apiGetTeachers');

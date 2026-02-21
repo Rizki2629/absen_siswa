@@ -81,7 +81,7 @@
 
 <!-- Empty State -->
 <div id="emptyState" class="bg-white rounded-2xl shadow p-12 text-center">
-    <span class="material-symbols-outlined text-6xl text-teal-300 mb-4">emoji_people</span>
+    <span class="material-symbols text-6xl text-teal-300 mb-4">emoji_people</span>
     <h3 class="text-lg font-semibold text-gray-700 mb-2">Pilih Kelas untuk Melihat Rekap</h3>
     <p class="text-gray-500">Pilih kelas dan periode untuk menampilkan rekap 7 kebiasaan anak Indonesia hebat</p>
 </div>
@@ -95,7 +95,7 @@
                 <p class="text-sm text-gray-500" id="habitModalDate"></p>
             </div>
             <button onclick="closeHabitModal()" class="text-gray-400 hover:text-gray-600">
-                <span class="material-symbols-outlined">close</span>
+                <span class="material-symbols">close</span>
             </button>
         </div>
 
@@ -123,16 +123,16 @@
             <div class="flex justify-between items-center pt-4 mt-4 border-t border-gray-200">
                 <div class="flex space-x-2">
                     <button type="button" onclick="checkAll(true)" class="text-sm px-3 py-1 bg-teal-100 text-teal-700 rounded-lg hover:bg-teal-200">
-                        <span class="material-symbols-outlined text-sm mr-1">check_box</span> Centang Semua
+                        <span class="material-symbols text-sm mr-1">check_box</span> Centang Semua
                     </button>
                     <button type="button" onclick="checkAll(false)" class="text-sm px-3 py-1 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200">
-                        <span class="material-symbols-outlined text-sm mr-1">check_box_outline_blank</span> Hapus Semua
+                        <span class="material-symbols text-sm mr-1">check_box_outline_blank</span> Hapus Semua
                     </button>
                 </div>
                 <div class="flex space-x-3">
                     <button type="button" onclick="closeHabitModal()" class="btn-secondary">Batal</button>
                     <button type="button" onclick="saveHabits()" class="btn-primary bg-teal-600 hover:bg-teal-700">
-                        <span class="material-symbols-outlined mr-2">save</span> Simpan
+                        <span class="material-symbols mr-2">save</span> Simpan
                     </button>
                 </div>
             </div>

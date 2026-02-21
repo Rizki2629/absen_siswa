@@ -19,7 +19,7 @@ $menuItems = [
     $itemClass = $isActive ? 'sidebar-item-active' : 'sidebar-item';
     ?>
     <a href="<?= base_url($item['url']) ?>" class="<?= $itemClass ?>">
-        <span class="material-symbols-outlined mr-3"><?= $item['icon'] ?></span>
+        <span class="material-symbols mr-3"><?= $item['icon'] ?></span>
         <span><?= $item['label'] ?></span>
     </a>
 <?php endforeach; ?>

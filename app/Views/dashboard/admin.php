@@ -17,7 +17,7 @@
                     <h3 class="text-3xl font-bold text-gray-900"><?= $stats['total_students'] ?? 0 ?></h3>
                 </div>
                 <div class="bg-primary-100 rounded-xl p-3 group-hover:scale-110 transition-transform">
-                    <span class="material-symbols-outlined text-primary-600 text-3xl">groups</span>
+                    <span class="material-symbols text-primary-600 text-3xl">groups</span>
                 </div>
             </div>
         </div>
@@ -32,7 +32,7 @@
                     <h3 class="text-3xl font-bold text-gray-900"><?= $stats['present_today'] ?? 0 ?></h3>
                 </div>
                 <div class="bg-success-100 rounded-xl p-3 group-hover:scale-110 transition-transform">
-                    <span class="material-symbols-outlined text-success-600 text-3xl">check_circle</span>
+                    <span class="material-symbols text-success-600 text-3xl">check_circle</span>
                 </div>
             </div>
         </div>
@@ -47,7 +47,7 @@
                     <h3 class="text-3xl font-bold text-gray-900"><?= $stats['active_devices'] ?? 0 ?>/<?= $stats['total_devices'] ?? 0 ?></h3>
                 </div>
                 <div class="bg-warning-100 rounded-xl p-3 group-hover:scale-110 transition-transform">
-                    <span class="material-symbols-outlined text-warning-600 text-3xl">devices</span>
+                    <span class="material-symbols text-warning-600 text-3xl">devices</span>
                 </div>
             </div>
         </div>
@@ -62,7 +62,7 @@
                     <h3 class="text-3xl font-bold text-gray-900"><?= $stats['absent_today'] ?? 0 ?></h3>
                 </div>
                 <div class="bg-danger-100 rounded-xl p-3 group-hover:scale-110 transition-transform">
-                    <span class="material-symbols-outlined text-danger-600 text-3xl">cancel</span>
+                    <span class="material-symbols text-danger-600 text-3xl">cancel</span>
                 </div>
             </div>
         </div>
@@ -76,12 +76,12 @@
     <div class="card">
         <div class="card-header flex items-center justify-between">
             <h3 class="font-bold text-gray-900 flex items-center">
-                <span class="material-symbols-outlined mr-2 text-success-600">history</span>
+                <span class="material-symbols mr-2 text-success-600">history</span>
                 Log Absensi Terbaru
             </h3>
             <a href="<?= base_url('admin/logs') ?>" class="text-sm text-primary-600 hover:text-primary-700 font-medium">
                 Lihat Semua
-                <span class="material-symbols-outlined text-sm align-middle">arrow_forward</span>
+                <span class="material-symbols text-sm align-middle">arrow_forward</span>
             </a>
         </div>
         <div class="card-body p-0">
@@ -103,7 +103,7 @@
                             <tr class="hover:bg-gray-50 transition-colors animate-fade-in">
                                 <td class="table-cell">
                                     <span class="flex items-center text-gray-600">
-                                        <span class="material-symbols-outlined text-sm mr-1">schedule</span>
+                                        <span class="material-symbols text-sm mr-1">schedule</span>
                                         <?= $log['att_time'] ?>
                                     </span>
                                 </td>
@@ -111,7 +111,7 @@
                                 <td class="table-cell text-gray-600"><?= $log['class_name'] ?></td>
                                 <td class="table-cell">
                                     <span class="flex items-center text-gray-600">
-                                        <span class="material-symbols-outlined text-sm mr-1">router</span>
+                                        <span class="material-symbols text-sm mr-1">router</span>
                                         <?= $log['device_name'] ?>
                                     </span>
                                 </td>

@@ -14,11 +14,11 @@
     </div>
     <div class="flex space-x-3">
         <button onclick="loadLogs()" class="btn-secondary flex items-center space-x-2">
-            <span class="material-symbols-outlined">refresh</span>
+            <span class="material-symbols">refresh</span>
             <span>Refresh</span>
         </button>
         <button onclick="toggleAutoRefresh()" id="autoRefreshBtn" class="btn-primary flex items-center space-x-2">
-            <span class="material-symbols-outlined">play_arrow</span>
+            <span class="material-symbols">play_arrow</span>
             <span>Auto Refresh</span>
         </button>
     </div>
@@ -34,7 +34,7 @@
                     <h3 class="text-2xl font-bold text-gray-900" id="totalLogs">0</h3>
                 </div>
                 <div class="bg-primary-100 rounded-full p-3">
-                    <span class="material-symbols-outlined text-primary-600 text-3xl">description</span>
+                    <span class="material-symbols text-primary-600 text-3xl">description</span>
                 </div>
             </div>
         </div>
@@ -48,7 +48,7 @@
                     <h3 class="text-2xl font-bold text-success-600" id="checkInCount">0</h3>
                 </div>
                 <div class="bg-success-100 rounded-full p-3">
-                    <span class="material-symbols-outlined text-success-600 text-3xl">login</span>
+                    <span class="material-symbols text-success-600 text-3xl">login</span>
                 </div>
             </div>
         </div>
@@ -62,7 +62,7 @@
                     <h3 class="text-2xl font-bold text-warning-600" id="checkOutCount">0</h3>
                 </div>
                 <div class="bg-warning-100 rounded-full p-3">
-                    <span class="material-symbols-outlined text-warning-600 text-3xl">logout</span>
+                    <span class="material-symbols text-warning-600 text-3xl">logout</span>
                 </div>
             </div>
         </div>
@@ -76,7 +76,7 @@
                     <h3 class="text-sm font-bold text-gray-900" id="lastLog">-</h3>
                 </div>
                 <div class="bg-info-100 rounded-full p-3">
-                    <span class="material-symbols-outlined text-info-600 text-3xl">schedule</span>
+                    <span class="material-symbols text-info-600 text-3xl">schedule</span>
                 </div>
             </div>
         </div>
@@ -110,7 +110,7 @@
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">&nbsp;</label>
                 <button onclick="clearFilters()" class="w-full btn-secondary">
-                    <span class="material-symbols-outlined text-sm mr-2">filter_alt_off</span>
+                    <span class="material-symbols text-sm mr-2">filter_alt_off</span>
                     Reset Filter
                 </button>
             </div>
@@ -212,7 +212,7 @@
                         <tr>
                             <td colspan="6" class="text-center py-12">
                                 <div class="text-warning-600">
-                                    <span class="material-symbols-outlined text-4xl">lock</span>
+                                    <span class="material-symbols text-4xl">lock</span>
                                     <p class="mt-2 font-medium">Session Expired</p>
                                     <p class="text-sm mt-2">Silakan refresh halaman atau login kembali</p>
                                     <button onclick="location.reload()" class="btn-primary mt-4">Refresh Halaman</button>
@@ -242,7 +242,7 @@
                         <tr>
                             <td colspan="6" class="text-center py-12">
                                 <div class="text-red-600">
-                                    <span class="material-symbols-outlined text-4xl">error</span>
+                                    <span class="material-symbols text-4xl">error</span>
                                     <p class="mt-2">${data.message}</p>
                                 </div>
                             </td>
@@ -311,7 +311,7 @@
                     <tr>
                         <td colspan="6" class="text-center py-12">
                             <div class="inline-flex items-center justify-center w-16 h-16 bg-gray-100 rounded-full mb-4">
-                                <span class="material-symbols-outlined text-gray-400 text-4xl">description</span>
+                                <span class="material-symbols text-gray-400 text-4xl">description</span>
                             </div>
                             <h3 class="text-lg font-medium text-gray-900 mb-2">Belum Ada Log</h3>
                             <p class="text-gray-600">Data absensi akan muncul di sini ketika ada yang scan di mesin</p>
@@ -326,7 +326,7 @@
                     <tr>
                         <td colspan="6" class="text-center py-12">
                             <div class="text-red-600">
-                                <span class="material-symbols-outlined text-4xl">error</span>
+                                <span class="material-symbols text-4xl">error</span>
                                 <p class="mt-2 font-medium">Terjadi Kesalahan</p>
                                 <p class="text-sm mt-2">${error.message || 'Tidak dapat memuat data log'}</p>
                                 <button onclick="loadLogs()" class="btn-primary mt-4">Coba Lagi</button>
@@ -345,14 +345,14 @@
             // Stop auto refresh
             clearInterval(autoRefreshInterval);
             isAutoRefresh = false;
-            btn.innerHTML = '<span class="material-symbols-outlined">play_arrow</span><span>Auto Refresh</span>';
+            btn.innerHTML = '<span class="material-symbols">play_arrow</span><span>Auto Refresh</span>';
             btn.classList.remove('bg-success-600', 'hover:bg-success-700');
             btn.classList.add('btn-primary');
         } else {
             // Start auto refresh every 5 seconds
             autoRefreshInterval = setInterval(loadLogs, 5000);
             isAutoRefresh = true;
-            btn.innerHTML = '<span class="material-symbols-outlined">stop</span><span>Stop Refresh</span>';
+            btn.innerHTML = '<span class="material-symbols">stop</span><span>Stop Refresh</span>';
             btn.classList.remove('btn-primary');
             btn.classList.add('bg-success-600', 'hover:bg-success-700');
             loadLogs(); // Load immediately

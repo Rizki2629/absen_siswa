@@ -18,7 +18,7 @@
         <!-- Kelas -->
         <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">
-                <span class="material-symbols-outlined text-sm align-middle">class</span>
+                <span class="material-symbols text-sm align-middle">class</span>
                 Kelas
             </label>
             <select id="classId" class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
@@ -29,7 +29,7 @@
         <!-- Bulan -->
         <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">
-                <span class="material-symbols-outlined text-sm align-middle">calendar_month</span>
+                <span class="material-symbols text-sm align-middle">calendar_month</span>
                 Bulan
             </label>
             <select id="month" class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
@@ -51,7 +51,7 @@
         <!-- Tahun -->
         <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">
-                <span class="material-symbols-outlined text-sm align-middle">event</span>
+                <span class="material-symbols text-sm align-middle">event</span>
                 Tahun
             </label>
             <select id="year" class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
@@ -63,7 +63,7 @@
         <div class="flex items-end">
             <button onclick="loadRekap()"
                 class="w-full px-4 py-2 bg-primary-600 text-white rounded-xl hover:bg-primary-700 transition-colors font-medium">
-                <span class="material-symbols-outlined text-sm align-middle mr-1">search</span>
+                <span class="material-symbols text-sm align-middle mr-1">search</span>
                 Tampilkan
             </button>
         </div>
@@ -75,7 +75,7 @@
     <div class="bg-white rounded-2xl shadow overflow-hidden">
         <div class="px-6 py-4 bg-primary-600 text-white">
             <h3 class="text-lg font-bold flex items-center">
-                <span class="material-symbols-outlined mr-2">table_chart</span>
+                <span class="material-symbols mr-2">table_chart</span>
                 Rekap Kehadiran
             </h3>
         </div>
@@ -106,7 +106,7 @@
 
 <!-- Empty State -->
 <div id="emptyState" class="bg-white rounded-2xl shadow p-12 text-center">
-    <span class="material-symbols-outlined text-6xl text-gray-300 mb-4">analytics</span>
+    <span class="material-symbols text-6xl text-gray-300 mb-4">analytics</span>
     <p class="text-gray-500">Pilih kelas, bulan, dan tahun untuk menampilkan rekap kehadiran</p>
 </div>
 

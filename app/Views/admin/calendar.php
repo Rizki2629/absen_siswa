@@ -283,11 +283,11 @@
             <!-- Month/Year Navigation -->
             <div class="flex items-center justify-between px-6 py-3 bg-gradient-to-r from-primary-600 to-primary-700">
                 <button onclick="prevMonth()" class="p-1.5 rounded-lg hover:bg-white/20 transition-colors text-white">
-                    <span class="material-symbols-outlined text-xl">chevron_left</span>
+                    <span class="material-symbols text-xl">chevron_left</span>
                 </button>
                 <h3 class="text-lg font-bold text-white" id="calendarTitle">Februari 2026</h3>
                 <button onclick="nextMonth()" class="p-1.5 rounded-lg hover:bg-white/20 transition-colors text-white">
-                    <span class="material-symbols-outlined text-xl">chevron_right</span>
+                    <span class="material-symbols text-xl">chevron_right</span>
                 </button>
             </div>
 
@@ -333,13 +333,13 @@
         <div class="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
             <div class="px-5 py-3 bg-gradient-to-r from-red-600 to-red-700">
                 <h4 class="font-bold text-white text-sm flex items-center gap-2">
-                    <span class="material-symbols-outlined text-lg">event_busy</span>
+                    <span class="material-symbols text-lg">event_busy</span>
                     Hari Libur <span id="holidayListTitle" class="font-normal text-red-200 text-xs"></span>
                 </h4>
             </div>
             <div class="px-4 py-3 max-h-[480px] overflow-y-auto" id="holidayListContainer">
                 <div class="text-center text-gray-400 py-6 text-sm">
-                    <span class="material-symbols-outlined text-3xl mb-2 block">calendar_month</span>
+                    <span class="material-symbols text-3xl mb-2 block">calendar_month</span>
                     Memuat data libur...
                 </div>
             </div>
@@ -359,7 +359,7 @@
             <!-- Weekend info -->
             <div id="weekendInfo" class="hidden mb-3 bg-red-50 border border-red-200 rounded-xl p-3">
                 <div class="flex items-center gap-2 text-red-700">
-                    <span class="material-symbols-outlined text-lg">weekend</span>
+                    <span class="material-symbols text-lg">weekend</span>
                     <div>
                         <p class="font-semibold text-sm">Libur Akhir Pekan</p>
                         <p class="text-xs mt-0.5">Absensi otomatis dikunci</p>
@@ -370,7 +370,7 @@
             <!-- National holiday info -->
             <div id="nationalHolidayInfo" class="hidden mb-3 bg-red-50 border border-red-200 rounded-xl p-3">
                 <div class="flex items-center gap-2 text-red-700">
-                    <span class="material-symbols-outlined text-lg">event_busy</span>
+                    <span class="material-symbols text-lg">event_busy</span>
                     <div>
                         <p class="font-semibold text-sm">Libur Nasional</p>
                         <p class="text-xs mt-0.5" id="nationalHolidayName"></p>
@@ -403,7 +403,7 @@
             <!-- Hari dan label Hari Libur -->
             <div class="mt-4">
                 <div class="flex items-center gap-2">
-                    <span class="material-symbols-outlined text-base">calendar_today</span>
+                    <span class="material-symbols text-base">calendar_today</span>
                     <span id="modalDayName" class="text-sm font-semibold"></span>
                     <span id="modalLiburLabel" class="ml-2 text-xs font-bold text-red-600"></span>
                 </div>
@@ -412,7 +412,7 @@
             <!-- Lock alert -->
             <div id="lockAlert" class="hidden mt-4 bg-amber-50 border border-amber-200 rounded-xl p-3">
                 <div class="flex items-center gap-2 text-amber-800">
-                    <span class="material-symbols-outlined text-lg">lock</span>
+                    <span class="material-symbols text-lg">lock</span>
                     <p class="text-xs font-medium" id="lockAlertText">Absensi dikunci karena hari libur</p>
                 </div>
             </div>
@@ -423,7 +423,7 @@
                 Batal
             </button>
             <button onclick="saveHoliday()" id="modalSaveBtn" class="px-5 py-2 text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 rounded-xl transition-colors shadow-sm">
-                <span class="material-symbols-outlined text-sm align-middle mr-1">save</span>
+                <span class="material-symbols text-sm align-middle mr-1">save</span>
                 Simpan
             </button>
         </div>
@@ -979,7 +979,7 @@
         if (allHolidays.length === 0) {
             container.innerHTML = `
                 <div class="text-center text-gray-400 py-8 text-sm">
-                    <span class="material-symbols-outlined text-3xl mb-2 block text-green-300">check_circle</span>
+                    <span class="material-symbols text-3xl mb-2 block text-green-300">check_circle</span>
                     <p class="text-gray-500">Tidak ada hari libur</p>
                     <p class="text-gray-400 text-xs mt-1">Bulan ini tidak ada libur nasional</p>
                 </div>`;

@@ -9,16 +9,26 @@
     <!-- Tailwind CSS -->
     <link rel="stylesheet" href="<?= base_url('css/style.css') ?>">
 
-    <!-- Material Symbols (Full Color) -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <!-- Material Symbols (Rounded, Filled) -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <style>
-        .material-symbols-outlined {
+        .material-symbols {
+            font-family: 'Material Symbols Rounded';
+            font-style: normal;
+            font-weight: normal;
+            font-size: 24px;
+            line-height: 1;
+            letter-spacing: normal;
+            text-transform: none;
+            display: inline-block;
+            white-space: nowrap;
+            word-wrap: normal;
+            direction: ltr;
+            -webkit-font-feature-settings: 'liga';
+            font-feature-settings: 'liga';
+            -webkit-font-smoothing: antialiased;
             font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
             user-select: none;
-        }
-
-        .material-symbols-outlined.outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
         }
     </style>
 
@@ -54,9 +64,7 @@
             <!-- Logo -->
             <div class="px-4 py-6 border-b border-gray-200">
                 <div class="flex items-center space-x-3">
-                    <div class="bg-gradient-to-br from-primary-500 to-primary-700 rounded-xl p-2 shadow-lg">
-                        <span class="material-symbols-outlined text-white text-3xl">fingerprint</span>
-                    </div>
+                    <img src="<?= base_url('images/logo/logo-sekolah.png') ?>" alt="Logo" class="w-10 h-10 rounded-xl object-cover shadow-lg">
                     <div>
                         <h1 class="text-lg font-bold text-gray-900">Manajemen Kelas</h1>
                     </div>
@@ -67,7 +75,7 @@
             <div class="px-4 py-4 border-b border-gray-200 bg-gray-50">
                 <div class="flex items-center space-x-3">
                     <div class="bg-primary-100 rounded-full p-2">
-                        <span class="material-symbols-outlined text-primary-600 text-2xl">account_circle</span>
+                        <span class="material-symbols text-primary-600 text-2xl">account_circle</span>
                     </div>
                     <div class="flex-1 min-w-0">
                         <?php
@@ -89,7 +97,7 @@
             <!-- Logout -->
             <div class="border-t border-gray-200 p-4">
                 <a href="<?= base_url('logout') ?>" class="sidebar-item text-danger-600 hover:bg-danger-50 rounded-lg">
-                    <span class="material-symbols-outlined mr-3">logout</span>
+                    <span class="material-symbols mr-3">logout</span>
                     <span class="font-medium">Keluar</span>
                 </a>
             </div>
@@ -111,14 +119,14 @@
                             aria-controls="sidebar"
                             aria-expanded="false"
                             aria-label="Toggle sidebar">
-                            <span class="material-symbols-outlined text-2xl">menu</span>
+                            <span class="material-symbols text-2xl">menu</span>
                         </button>
                     </div>
 
                     <div class="flex items-center space-x-4">
                         <!-- Notifications -->
                         <button class="relative p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-all">
-                            <span class="material-symbols-outlined text-2xl">notifications</span>
+                            <span class="material-symbols text-2xl">notifications</span>
                             <?php if (isset($unreadNotifications) && $unreadNotifications > 0): ?>
                                 <span class="notification-badge"><?= $unreadNotifications ?></span>
                             <?php endif; ?>
@@ -126,7 +134,7 @@
 
                         <!-- Time -->
                         <div class="hidden md:flex items-center space-x-2 text-gray-600 bg-gray-50 px-3 py-2 rounded-lg border border-gray-200">
-                            <span class="material-symbols-outlined text-primary-600">schedule</span>
+                            <span class="material-symbols text-primary-600">schedule</span>
                             <span class="text-sm font-medium" id="currentTime">Loading...</span>
                         </div>
                     </div>

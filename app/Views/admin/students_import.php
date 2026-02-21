@@ -10,7 +10,7 @@
 <div class="flex justify-between items-center mb-6">
     <div class="flex items-center gap-3">
         <a href="<?= base_url('admin/students') ?>" class="text-gray-400 hover:text-gray-600 transition-colors">
-            <span class="material-symbols-outlined text-3xl">arrow_back</span>
+            <span class="material-symbols text-3xl">arrow_back</span>
         </a>
         <div>
             <h2 class="text-2xl font-bold text-gray-900">Import Data Siswa</h2>
@@ -18,7 +18,7 @@
         </div>
     </div>
     <a href="<?= base_url('admin/students') ?>" class="btn-secondary flex items-center space-x-2">
-        <span class="material-symbols-outlined">groups</span>
+        <span class="material-symbols">groups</span>
         <span>Lihat Data Siswa</span>
     </a>
 </div>
@@ -69,12 +69,12 @@
         <div class="card">
             <div class="card-body">
                 <h3 class="text-base font-semibold text-gray-800 mb-3 flex items-center gap-2">
-                    <span class="material-symbols-outlined text-primary-600">download</span>
+                    <span class="material-symbols text-primary-600">download</span>
                     Download Template
                 </h3>
                 <p class="text-sm text-gray-600 mb-4">Gunakan template ini agar header kolom tidak salah dan proses upload berhasil.</p>
                 <button onclick="downloadStudentTemplateXlsx()" class="btn-primary flex items-center gap-2">
-                    <span class="material-symbols-outlined">table_view</span>
+                    <span class="material-symbols">table_view</span>
                     Download Template XLSX
                 </button>
             </div>
@@ -84,7 +84,7 @@
         <div class="card">
             <div class="card-body">
                 <h3 class="text-base font-semibold text-gray-800 mb-3 flex items-center gap-2">
-                    <span class="material-symbols-outlined text-primary-600">upload_file</span>
+                    <span class="material-symbols text-primary-600">upload_file</span>
                     Upload File Data Siswa
                 </h3>
 
@@ -95,11 +95,11 @@
                     ondragover="handleDragOver(event)"
                     ondragleave="handleDragLeave(event)"
                     ondrop="handleDrop(event)">
-                    <span class="material-symbols-outlined text-5xl text-gray-300 mb-2">upload_file</span>
+                    <span class="material-symbols text-5xl text-gray-300 mb-2">upload_file</span>
                     <p class="font-medium text-gray-700 mb-1">Klik untuk pilih file atau seret ke sini</p>
                     <p class="text-sm text-gray-500">Format: XLSX, XLS, atau CSV — maksimum 10MB</p>
                     <div id="selectedFileInfo" class="hidden mt-3 bg-white border border-gray-200 rounded-lg px-4 py-2 inline-block">
-                        <span class="material-symbols-outlined text-green-600 align-middle text-base mr-1">check_circle</span>
+                        <span class="material-symbols text-green-600 align-middle text-base mr-1">check_circle</span>
                         <span id="selectedFileName" class="text-sm text-gray-700 font-medium"></span>
                     </div>
                 </div>
@@ -109,11 +109,11 @@
                 <div class="mt-4 flex items-center gap-3">
                     <button onclick="uploadStudentsFile()" id="uploadBtn" disabled
                         class="btn-primary flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
-                        <span class="material-symbols-outlined">cloud_upload</span>
+                        <span class="material-symbols">cloud_upload</span>
                         Upload & Proses
                     </button>
                     <button onclick="resetFileInput()" class="btn-secondary flex items-center gap-2">
-                        <span class="material-symbols-outlined">refresh</span>
+                        <span class="material-symbols">refresh</span>
                         Reset
                     </button>
                 </div>
@@ -124,7 +124,7 @@
         <div id="uploadResultCard" class="card hidden">
             <div class="card-body">
                 <h3 class="text-base font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                    <span class="material-symbols-outlined text-green-600">task_alt</span>
+                    <span class="material-symbols text-green-600">task_alt</span>
                     Hasil Upload
                 </h3>
                 <div class="grid grid-cols-3 gap-4 mb-4">
@@ -147,7 +147,7 @@
                 </div>
                 <div class="mt-4">
                     <a href="<?= base_url('admin/students') ?>" class="btn-primary flex items-center gap-2 w-fit">
-                        <span class="material-symbols-outlined">groups</span>
+                        <span class="material-symbols">groups</span>
                         Lihat Data Siswa
                     </a>
                 </div>
@@ -158,7 +158,7 @@
         <div id="uploadErrorCard" class="card hidden border border-red-200">
             <div class="card-body">
                 <h3 class="text-base font-semibold text-red-700 mb-2 flex items-center gap-2">
-                    <span class="material-symbols-outlined">error</span>
+                    <span class="material-symbols">error</span>
                     Upload Gagal
                 </h3>
                 <p id="uploadErrorMessage" class="text-sm text-red-600"></p>
@@ -172,7 +172,7 @@
         <div class="card sticky top-4">
             <div class="card-body">
                 <h3 class="text-base font-semibold text-gray-800 mb-3 flex items-center gap-2">
-                    <span class="material-symbols-outlined text-primary-600">help_outline</span>
+                    <span class="material-symbols text-primary-600">help_outline</span>
                     Panduan Format
                 </h3>
 
@@ -239,23 +239,23 @@
                         <p class="font-semibold text-gray-800 mb-1">Aturan format:</p>
                         <ul class="space-y-1.5 text-gray-600">
                             <li class="flex gap-2">
-                                <span class="material-symbols-outlined text-primary-500 text-base mt-0.5">check_small</span>
+                                <span class="material-symbols text-primary-500 text-base mt-0.5">check_small</span>
                                 <span>JK diisi <strong>L</strong> (Laki-laki) atau <strong>P</strong> (Perempuan)</span>
                             </li>
                             <li class="flex gap-2">
-                                <span class="material-symbols-outlined text-primary-500 text-base mt-0.5">check_small</span>
+                                <span class="material-symbols text-primary-500 text-base mt-0.5">check_small</span>
                                 <span>Tanggal Lahir: format Excel atau teks seperti "15 Maret 2008"</span>
                             </li>
                             <li class="flex gap-2">
-                                <span class="material-symbols-outlined text-primary-500 text-base mt-0.5">check_small</span>
+                                <span class="material-symbols text-primary-500 text-base mt-0.5">check_small</span>
                                 <span>Rombel dicocokkan otomatis ke kelas yang sudah ada di sistem</span>
                             </li>
                             <li class="flex gap-2">
-                                <span class="material-symbols-outlined text-primary-500 text-base mt-0.5">check_small</span>
+                                <span class="material-symbols text-primary-500 text-base mt-0.5">check_small</span>
                                 <span>Siswa dengan NIPD yang sama akan diperbarui datanya (update)</span>
                             </li>
                             <li class="flex gap-2">
-                                <span class="material-symbols-outlined text-primary-500 text-base mt-0.5">check_small</span>
+                                <span class="material-symbols text-primary-500 text-base mt-0.5">check_small</span>
                                 <span>Baris kosong dan header otomatis diabaikan</span>
                             </li>
                         </ul>

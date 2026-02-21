@@ -17,7 +17,7 @@
                     <h3 class="text-3xl font-bold text-success-600"><?= $stats['present'] ?? 0 ?></h3>
                 </div>
                 <div class="bg-success-100 rounded-xl p-3 group-hover:scale-110 transition-transform">
-                    <span class="material-symbols-outlined text-success-600 text-3xl">check_circle</span>
+                    <span class="material-symbols text-success-600 text-3xl">check_circle</span>
                 </div>
             </div>
         </div>
@@ -32,7 +32,7 @@
                     <h3 class="text-3xl font-bold text-warning-600"><?= $stats['sick'] ?? 0 ?></h3>
                 </div>
                 <div class="bg-warning-100 rounded-xl p-3 group-hover:scale-110 transition-transform">
-                    <span class="material-symbols-outlined text-warning-600 text-3xl">medication</span>
+                    <span class="material-symbols text-warning-600 text-3xl">medication</span>
                 </div>
             </div>
         </div>
@@ -47,7 +47,7 @@
                     <h3 class="text-3xl font-bold text-primary-600"><?= $stats['permission'] ?? 0 ?></h3>
                 </div>
                 <div class="bg-primary-100 rounded-xl p-3 group-hover:scale-110 transition-transform">
-                    <span class="material-symbols-outlined text-primary-600 text-3xl">mail</span>
+                    <span class="material-symbols text-primary-600 text-3xl">mail</span>
                 </div>
             </div>
         </div>
@@ -62,7 +62,7 @@
                     <h3 class="text-3xl font-bold text-danger-600"><?= $stats['absent'] ?? 0 ?></h3>
                 </div>
                 <div class="bg-danger-100 rounded-xl p-3 group-hover:scale-110 transition-transform">
-                    <span class="material-symbols-outlined text-danger-600 text-3xl">cancel</span>
+                    <span class="material-symbols text-danger-600 text-3xl">cancel</span>
                 </div>
             </div>
         </div>
@@ -79,7 +79,7 @@
         <div class="card">
             <div class="card-header flex items-center justify-between">
                 <h3 class="font-bold text-gray-900 flex items-center">
-                    <span class="material-symbols-outlined mr-2 text-success-600 animate-pulse">sensors</span>
+                    <span class="material-symbols mr-2 text-success-600 animate-pulse">sensors</span>
                     Scan Terbaru (Real-time)
                 </h3>
                 <div class="flex items-center space-x-2">
@@ -88,7 +88,7 @@
                         Live
                     </span>
                     <button onclick="toggleSound()" class="p-2 hover:bg-gray-100 rounded-lg transition-colors" title="Toggle Sound">
-                        <span class="material-symbols-outlined text-gray-600" id="soundIcon">volume_up</span>
+                        <span class="material-symbols text-gray-600" id="soundIcon">volume_up</span>
                     </button>
                 </div>
             </div>
@@ -106,24 +106,24 @@
                             <div class="flex items-center space-x-4">
                                 <div class="flex-shrink-0">
                                     <div class="bg-<?= $scan['photo'] ?>-100 rounded-full p-3">
-                                        <span class="material-symbols-outlined text-<?= $scan['photo'] ?>-600 text-2xl">person</span>
+                                        <span class="material-symbols text-<?= $scan['photo'] ?>-600 text-2xl">person</span>
                                     </div>
                                 </div>
                                 <div class="flex-1 min-w-0">
                                     <div class="flex items-center justify-between mb-1">
                                         <p class="text-sm font-bold text-gray-900"><?= $scan['name'] ?></p>
                                         <span class="text-xs text-gray-500 flex items-center">
-                                            <span class="material-symbols-outlined text-xs mr-1">schedule</span>
+                                            <span class="material-symbols text-xs mr-1">schedule</span>
                                             <?= $scan['time'] ?>
                                         </span>
                                     </div>
                                     <div class="flex items-center space-x-3 text-xs text-gray-500">
                                         <span class="flex items-center">
-                                            <span class="material-symbols-outlined text-xs mr-1">badge</span>
+                                            <span class="material-symbols text-xs mr-1">badge</span>
                                             <?= $scan['nis'] ?>
                                         </span>
                                         <span class="flex items-center">
-                                            <span class="material-symbols-outlined text-xs mr-1">class</span>
+                                            <span class="material-symbols text-xs mr-1">class</span>
                                             <?= $scan['class'] ?>
                                         </span>
                                     </div>
@@ -131,12 +131,12 @@
                                 <div>
                                     <?php if ($scan['status'] === 'Tepat Waktu'): ?>
                                         <span class="badge-success">
-                                            <span class="material-symbols-outlined text-xs mr-1">check</span>
+                                            <span class="material-symbols text-xs mr-1">check</span>
                                             <?= $scan['status'] ?>
                                         </span>
                                     <?php else: ?>
                                         <span class="badge-warning">
-                                            <span class="material-symbols-outlined text-xs mr-1">warning</span>
+                                            <span class="material-symbols text-xs mr-1">warning</span>
                                             <?= $scan['status'] ?>
                                         </span>
                                     <?php endif; ?>
@@ -152,16 +152,16 @@
         <div class="card">
             <div class="card-header flex items-center justify-between">
                 <h3 class="font-bold text-gray-900 flex items-center">
-                    <span class="material-symbols-outlined mr-2 text-danger-600">pending</span>
+                    <span class="material-symbols mr-2 text-danger-600">pending</span>
                     Siswa Belum Scan (<?= $stats['not_scanned'] ?? 0 ?>)
                 </h3>
                 <div class="flex space-x-2">
                     <button class="btn-secondary text-xs py-1.5 px-3">
-                        <span class="material-symbols-outlined text-xs mr-1">filter_alt</span>
+                        <span class="material-symbols text-xs mr-1">filter_alt</span>
                         Filter Kelas
                     </button>
                     <button onclick="showAddExceptionModal()" class="btn-primary text-xs py-1.5 px-3">
-                        <span class="material-symbols-outlined text-xs mr-1">add</span>
+                        <span class="material-symbols text-xs mr-1">add</span>
                         Input Manual
                     </button>
                 </div>
@@ -195,17 +195,17 @@
                                             <button onclick="markAs('sick', '<?= $student['nis'] ?>')"
                                                 class="p-1.5 text-warning-600 hover:bg-warning-50 rounded transition-colors"
                                                 title="Tandai Sakit">
-                                                <span class="material-symbols-outlined text-sm">medication</span>
+                                                <span class="material-symbols text-sm">medication</span>
                                             </button>
                                             <button onclick="markAs('permission', '<?= $student['nis'] ?>')"
                                                 class="p-1.5 text-primary-600 hover:bg-primary-50 rounded transition-colors"
                                                 title="Tandai Izin">
-                                                <span class="material-symbols-outlined text-sm">mail</span>
+                                                <span class="material-symbols text-sm">mail</span>
                                             </button>
                                             <button onclick="markAs('forgot', '<?= $student['nis'] ?>')"
                                                 class="p-1.5 text-success-600 hover:bg-success-50 rounded transition-colors"
                                                 title="Lupa Scan">
-                                                <span class="material-symbols-outlined text-sm">edit</span>
+                                                <span class="material-symbols text-sm">edit</span>
                                             </button>
                                         </div>
                                     </td>
@@ -226,21 +226,21 @@
         <div class="card">
             <div class="card-header">
                 <h3 class="font-bold text-gray-900 flex items-center">
-                    <span class="material-symbols-outlined mr-2">bolt</span>
+                    <span class="material-symbols mr-2">bolt</span>
                     Aksi Cepat
                 </h3>
             </div>
             <div class="card-body space-y-2">
                 <button class="btn-primary w-full justify-center">
-                    <span class="material-symbols-outlined mr-2">download</span>
+                    <span class="material-symbols mr-2">download</span>
                     Export Rekap Hari Ini
                 </button>
                 <button class="btn-secondary w-full justify-center">
-                    <span class="material-symbols-outlined mr-2">print</span>
+                    <span class="material-symbols mr-2">print</span>
                     Cetak Laporan
                 </button>
                 <button onclick="showAddExceptionModal()" class="btn-outline w-full justify-center">
-                    <span class="material-symbols-outlined mr-2">add_circle</span>
+                    <span class="material-symbols mr-2">add_circle</span>
                     Input Ketidakhadiran
                 </button>
             </div>
@@ -250,7 +250,7 @@
         <div class="card">
             <div class="card-header">
                 <h3 class="font-bold text-gray-900 flex items-center">
-                    <span class="material-symbols-outlined mr-2">pie_chart</span>
+                    <span class="material-symbols mr-2">pie_chart</span>
                     Distribusi Kehadiran
                 </h3>
             </div>
@@ -290,7 +290,7 @@
 
         <!-- Info -->
         <div class="alert-info">
-            <span class="material-symbols-outlined text-xl">info</span>
+            <span class="material-symbols text-xl">info</span>
             <div>
                 <p class="font-medium mb-1">Tips Guru Piket</p>
                 <p class="text-sm">Segera input ketidakhadiran sebelum jam 08:00 agar data lebih akurat.</p>

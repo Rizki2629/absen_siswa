@@ -13,7 +13,7 @@
         <p class="text-gray-600 mt-1">Kelola jam shift masuk dan pulang, serta kelas yang menggunakan shift</p>
     </div>
     <button onclick="openAddShiftModal()" class="btn-primary flex items-center space-x-2">
-        <span class="material-symbols-outlined">add</span>
+        <span class="material-symbols">add</span>
         <span>Tambah Shift</span>
     </button>
 </div>
@@ -35,7 +35,7 @@
         <div class="border-b border-gray-200 px-6 py-4 flex justify-between items-center">
             <h3 class="text-xl font-bold text-gray-900" id="shiftModalTitle">Tambah Shift Baru</h3>
             <button onclick="closeShiftModal()" class="text-gray-400 hover:text-gray-600">
-                <span class="material-symbols-outlined">close</span>
+                <span class="material-symbols">close</span>
             </button>
         </div>
 
@@ -85,7 +85,7 @@
             <div class="flex justify-end space-x-3 pt-4">
                 <button type="button" onclick="closeShiftModal()" class="btn-secondary">Batal</button>
                 <button type="submit" class="btn-primary" id="saveShiftBtn">
-                    <span class="material-symbols-outlined mr-2">save</span>
+                    <span class="material-symbols mr-2">save</span>
                     Simpan
                 </button>
             </div>
@@ -96,7 +96,7 @@
 <!-- Toast -->
 <div id="toast" class="fixed bottom-6 right-6 z-50 hidden">
     <div class="bg-gray-900 text-white px-6 py-3 rounded-xl shadow-lg flex items-center gap-3">
-        <span class="material-symbols-outlined text-xl" id="toastIcon">check_circle</span>
+        <span class="material-symbols text-xl" id="toastIcon">check_circle</span>
         <span id="toastMessage"></span>
     </div>
 </div>
@@ -138,7 +138,7 @@
             console.error('Gagal memuat shift:', e);
             document.getElementById('shiftsContainer').innerHTML = `
                 <div class="card p-8 text-center text-red-500">
-                    <span class="material-symbols-outlined text-4xl mb-2">error</span>
+                    <span class="material-symbols text-4xl mb-2">error</span>
                     <p>Gagal memuat data shift</p>
                 </div>`;
         }
@@ -152,7 +152,7 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="text-center py-12 text-gray-500">
-                            <span class="material-symbols-outlined text-5xl text-gray-300 mb-2">schedule</span>
+                            <span class="material-symbols text-5xl text-gray-300 mb-2">schedule</span>
                             <p>Belum ada data shift</p>
                             <button onclick="openAddShiftModal()" class="btn-primary mt-4">Tambah Shift Pertama</button>
                         </div>
@@ -179,10 +179,10 @@
                             </div>
                             <div class="flex gap-2">
                                 <button onclick="editShift(${shift.id})" class="p-2 text-gray-400 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition">
-                                    <span class="material-symbols-outlined">edit</span>
+                                    <span class="material-symbols">edit</span>
                                 </button>
                                 <button onclick="deleteShift(${shift.id})" class="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition">
-                                    <span class="material-symbols-outlined">delete</span>
+                                    <span class="material-symbols">delete</span>
                                 </button>
                             </div>
                         </div>
@@ -344,7 +344,7 @@
             showToast('Gagal menyimpan shift', 'error');
         } finally {
             saveBtn.disabled = false;
-            saveBtn.innerHTML = '<span class="material-symbols-outlined mr-2">save</span>Simpan';
+            saveBtn.innerHTML = '<span class="material-symbols mr-2">save</span>Simpan';
         }
     });
 

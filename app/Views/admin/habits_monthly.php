@@ -91,7 +91,7 @@
 
 <!-- Empty State -->
 <div id="emptyState" class="bg-white rounded-2xl shadow p-12 text-center">
-    <span class="material-symbols-outlined text-6xl text-primary-300 mb-4">date_range</span>
+    <span class="material-symbols text-6xl text-primary-300 mb-4">date_range</span>
     <h3 class="text-lg font-semibold text-gray-700 mb-2">Pilih Kelas dan Siswa</h3>
     <p class="text-gray-500">Pilih kelas, siswa, bulan, dan tahun untuk menampilkan rekap bulanan 7 kebiasaan</p>
 </div>
@@ -255,9 +255,9 @@
                         if (!d.has_data) return '<td class="py-2.5 px-2 text-center text-gray-300">-</td>';
                         const val = d[col];
                         if (val == 1) {
-                            return '<td class="py-2.5 px-2 text-center text-green-600"><span class="material-symbols-outlined text-lg">check_circle</span></td>';
+                            return '<td class="py-2.5 px-2 text-center text-green-600"><span class="material-symbols text-lg">check_circle</span></td>';
                         } else {
-                            return '<td class="py-2.5 px-2 text-center text-red-400"><span class="material-symbols-outlined text-lg">cancel</span></td>';
+                            return '<td class="py-2.5 px-2 text-center text-red-400"><span class="material-symbols text-lg">cancel</span></td>';
                         }
                     }).join('')}
                     <td class="py-2.5 px-3 text-center">

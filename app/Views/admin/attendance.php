@@ -280,7 +280,7 @@
     </div>
     <div class="flex items-center gap-3">
         <button onclick="submitAttendance()" class="submit-btn" id="submitBtn" disabled>
-            <span class="material-symbols-outlined text-xl">save</span>
+            <span class="material-symbols text-xl">save</span>
             Simpan Kehadiran
         </button>
     </div>
@@ -302,13 +302,13 @@
         <div class="flex-1">
             <label class="block text-sm font-medium text-gray-700 mb-1">Cari Siswa</label>
             <div class="relative">
-                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xl">search</span>
+                <span class="material-symbols absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xl">search</span>
                 <input type="text" id="searchInput" oninput="filterStudents()" placeholder="Cari nama atau NIS..." class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-sm">
             </div>
         </div>
         <div class="flex gap-2">
             <button onclick="markAll('hadir')" class="mark-all-btn border-green-300 text-green-700 bg-green-50 hover:bg-green-600 hover:text-white hover:border-green-600" title="Tandai Semua Hadir">
-                <span class="material-symbols-outlined text-sm align-middle mr-1">check_circle</span>Semua Hadir
+                <span class="material-symbols text-sm align-middle mr-1">check_circle</span>Semua Hadir
             </button>
         </div>
     </div>
@@ -317,7 +317,7 @@
 <!-- Lock Banner -->
 <div id="lockBanner" class="lock-banner hidden">
     <div class="lock-icon">
-        <span class="material-symbols-outlined">lock</span>
+        <span class="material-symbols">lock</span>
     </div>
     <div>
         <h3 class="font-bold text-amber-900 text-base">Absensi Dikunci</h3>
@@ -329,7 +329,7 @@
 <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
     <div class="stat-card bg-white border border-gray-200 shadow-sm">
         <div class="stat-icon bg-blue-100">
-            <span class="material-symbols-outlined text-blue-600">groups</span>
+            <span class="material-symbols text-blue-600">groups</span>
         </div>
         <div>
             <p class="text-sm text-gray-500">Total Siswa</p>
@@ -338,7 +338,7 @@
     </div>
     <div class="stat-card bg-white border border-gray-200 shadow-sm">
         <div class="stat-icon bg-green-100">
-            <span class="material-symbols-outlined text-green-600">how_to_reg</span>
+            <span class="material-symbols text-green-600">how_to_reg</span>
         </div>
         <div>
             <p class="text-sm text-gray-500">Hadir</p>
@@ -347,7 +347,7 @@
     </div>
     <div class="stat-card bg-white border border-gray-200 shadow-sm">
         <div class="stat-icon bg-yellow-100">
-            <span class="material-symbols-outlined text-yellow-600">medical_services</span>
+            <span class="material-symbols text-yellow-600">medical_services</span>
         </div>
         <div>
             <p class="text-sm text-gray-500">Sakit / Izin</p>
@@ -356,7 +356,7 @@
     </div>
     <div class="stat-card bg-white border border-gray-200 shadow-sm">
         <div class="stat-icon bg-red-100">
-            <span class="material-symbols-outlined text-red-600">person_off</span>
+            <span class="material-symbols text-red-600">person_off</span>
         </div>
         <div>
             <p class="text-sm text-gray-500">Alpa</p>
@@ -372,7 +372,7 @@
 
 <!-- Empty State -->
 <div id="emptyState" class="hidden text-center py-16">
-    <span class="material-symbols-outlined text-6xl text-gray-300 mb-4">how_to_reg</span>
+    <span class="material-symbols text-6xl text-gray-300 mb-4">how_to_reg</span>
     <h3 class="text-lg font-semibold text-gray-500">Pilih kelas untuk menampilkan daftar siswa</h3>
     <p class="text-gray-400 mt-1">Pilih kelas dan tanggal di atas untuk mulai mengisi daftar hadir</p>
 </div>
@@ -389,7 +389,7 @@
 <!-- Toast Notification -->
 <div id="toast" class="fixed bottom-6 right-6 z-50 hidden">
     <div class="bg-gray-900 text-white px-6 py-3 rounded-xl shadow-lg flex items-center gap-3">
-        <span class="material-symbols-outlined text-xl" id="toastIcon">check_circle</span>
+        <span class="material-symbols text-xl" id="toastIcon">check_circle</span>
         <span id="toastMessage">Berhasil disimpan</span>
     </div>
 </div>
@@ -868,7 +868,7 @@
         if (list.length === 0) {
             grid.innerHTML = `
                 <div class="col-span-full text-center py-12">
-                    <span class="material-symbols-outlined text-5xl text-gray-300">person_search</span>
+                    <span class="material-symbols text-5xl text-gray-300">person_search</span>
                     <p class="text-gray-500 mt-3">Tidak ada siswa ditemukan</p>
                 </div>
             `;
@@ -1068,7 +1068,7 @@
             showToast('Terjadi kesalahan saat menyimpan', 'error');
         } finally {
             submitBtn.disabled = false;
-            submitBtn.innerHTML = '<span class="material-symbols-outlined text-xl">save</span> Simpan Kehadiran';
+            submitBtn.innerHTML = '<span class="material-symbols text-xl">save</span> Simpan Kehadiran';
         }
     }
 

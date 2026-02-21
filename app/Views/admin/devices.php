@@ -13,7 +13,7 @@
         <p class="text-gray-600 mt-1">Kelola perangkat fingerprint untuk absensi siswa</p>
     </div>
     <button onclick="openAddDeviceModal()" class="btn-primary flex items-center space-x-2">
-        <span class="material-symbols-outlined">add</span>
+        <span class="material-symbols">add</span>
         <span>Tambah Mesin</span>
     </button>
 </div>
@@ -36,7 +36,7 @@
         <div class="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center rounded-t-2xl">
             <h3 class="text-xl font-bold text-gray-900" id="modalTitle">Tambah Mesin Baru</h3>
             <button onclick="closeDeviceModal()" class="text-gray-400 hover:text-gray-600">
-                <span class="material-symbols-outlined">close</span>
+                <span class="material-symbols">close</span>
             </button>
         </div>
 
@@ -122,7 +122,7 @@
                     Batal
                 </button>
                 <button type="submit" class="btn-primary flex items-center space-x-2">
-                    <span class="material-symbols-outlined text-sm">save</span>
+                    <span class="material-symbols text-sm">save</span>
                     <span>Simpan</span>
                 </button>
             </div>
@@ -135,7 +135,7 @@
     <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6">
         <div class="text-center mb-6">
             <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-danger-100 mb-4">
-                <span class="material-symbols-outlined text-danger-600 text-4xl">delete</span>
+                <span class="material-symbols text-danger-600 text-4xl">delete</span>
             </div>
             <h3 class="text-xl font-bold text-gray-900 mb-2">Hapus Mesin?</h3>
             <p class="text-gray-600">Mesin akan dihapus secara permanen. Tindakan ini tidak dapat dibatalkan.</p>
@@ -151,6 +151,9 @@
         </div>
     </div>
 </div>
+
+<!-- Action Buttons Helper -->
+<script src="<?= base_url('assets/js/action-buttons-helper.js') ?>"></script>
 
 <script>
     let deleteDeviceId = null;
@@ -182,20 +185,20 @@
                             <!-- Device Info -->
                             <div class="space-y-3 mb-6">
                                 <div class="flex items-center text-sm text-gray-600">
-                                    <span class="material-symbols-outlined text-lg mr-2">tag</span>
+                                    <span class="material-symbols text-lg mr-2">tag</span>
                                     <span>SN: ${device.sn}</span>
                                 </div>
                                 <div class="flex items-center text-sm text-gray-600">
-                                    <span class="material-symbols-outlined text-lg mr-2">router</span>
+                                    <span class="material-symbols text-lg mr-2">router</span>
                                     <span>${device.ip_address}:${device.port}</span>
                                 </div>
                                 <div class="flex items-center text-sm text-gray-600">
-                                    <span class="material-symbols-outlined text-lg mr-2">location_on</span>
+                                    <span class="material-symbols text-lg mr-2">location_on</span>
                                     <span>${device.location}</span>
                                 </div>
                                 ${device.last_seen_at ? `
                                 <div class="flex items-center text-sm text-gray-600">
-                                    <span class="material-symbols-outlined text-lg mr-2">schedule</span>
+                                    <span class="material-symbols text-lg mr-2">schedule</span>
                                     <span>Terakhir: ${formatDateTime(device.last_seen_at)}</span>
                                 </div>
                                 ` : ''}
@@ -204,18 +207,20 @@
                             <!-- Actions -->
                             <div class="flex space-x-2 pt-4 border-t border-gray-200">
                                 <button onclick="testConnection(${device.id}, '${device.ip_address}', ${device.port})" 
+                                    title="Test koneksi perangkat"
                                     class="flex-1 btn-secondary text-sm py-2">
-                                    <span class="material-symbols-outlined text-sm">wifi_tethering</span>
+                                    <span class="material-symbols text-sm">wifi_tethering</span>
                                     Test
                                 </button>
                                 <button onclick="editDevice(${device.id})" 
-                                    class="flex-1 btn-primary text-sm py-2">
-                                    <span class="material-symbols-outlined text-sm">edit</span>
+                                    title="Edit perangkat"
+                                    class="flex-1 bg-primary-600 text-white hover:bg-primary-700 rounded-lg transition-colors font-medium text-sm py-2">
                                     Edit
                                 </button>
                                 <button onclick="openDeleteModal(${device.id})" 
-                                    class="btn-secondary text-danger-600 hover:bg-danger-50 px-3 py-2">
-                                    <span class="material-symbols-outlined text-sm">delete</span>
+                                    title="Hapus perangkat"
+                                    class="bg-red-600 text-white hover:bg-red-700 rounded-lg transition-colors font-medium px-3 py-2 text-sm">
+                                    Hapus
                                 </button>
                             </div>
                         </div>
@@ -225,12 +230,12 @@
                     container.innerHTML = `
                     <div class="col-span-3 text-center py-12">
                         <div class="inline-flex items-center justify-center w-16 h-16 bg-gray-100 rounded-full mb-4">
-                            <span class="material-symbols-outlined text-gray-400 text-4xl">devices</span>
+                            <span class="material-symbols text-gray-400 text-4xl">devices</span>
                         </div>
                         <h3 class="text-lg font-medium text-gray-900 mb-2">Belum Ada Mesin</h3>
                         <p class="text-gray-600 mb-6">Tambahkan mesin fingerprint untuk mulai mencatat absensi</p>
                         <button onclick="openAddDeviceModal()" class="btn-primary inline-flex items-center space-x-2">
-                            <span class="material-symbols-outlined">add</span>
+                            <span class="material-symbols">add</span>
                             <span>Tambah Mesin Pertama</span>
                         </button>
                     </div>
@@ -241,7 +246,7 @@
                 console.error('Error loading devices:', error);
                 document.getElementById('devicesContainer').innerHTML = `
                 <div class="col-span-3 text-center py-12">
-                    <span class="material-symbols-outlined text-danger-500 text-5xl mb-4">error</span>
+                    <span class="material-symbols text-danger-500 text-5xl mb-4">error</span>
                     <p class="text-danger-600">Gagal memuat data mesin</p>
                 </div>
             `;
@@ -386,7 +391,7 @@
         const alert = document.createElement('div');
         alert.className = `${colors[type]} border-l-4 p-4 rounded-lg flex items-center fixed top-4 right-4 z-50 shadow-lg max-w-md`;
         alert.innerHTML = `
-        <span class="material-symbols-outlined mr-3">${icons[type]}</span>
+        <span class="material-symbols mr-3">${icons[type]}</span>
         <span>${message}</span>
     `;
 

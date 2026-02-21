@@ -37,6 +37,8 @@ class Filters extends BaseFilters
         'performance'   => PerformanceMetrics::class,
         'tokens'        => TokenAuth::class,
         'auth'          => \App\Filters\Auth::class,
+        'admin_auth'    => \App\Filters\AdminAuth::class,
+        'gurupiket_auth' => \App\Filters\GuruPiketAuth::class,
     ];
 
     /**

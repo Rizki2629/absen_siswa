@@ -330,7 +330,7 @@ $teacherClass = $teacherClass ?? null;
     </div>
     <div class="flex items-center gap-3">
         <button onclick="submitAttendance()" class="submit-btn" id="submitBtn" disabled>
-            <span class="material-symbols-outlined text-xl">save</span>
+            <span class="material-symbols text-xl">save</span>
             Simpan Kehadiran
         </button>
     </div>
@@ -338,7 +338,7 @@ $teacherClass = $teacherClass ?? null;
 
 <?php if (!$teacherClass): ?>
     <div class="bg-white rounded-2xl shadow p-12 text-center">
-        <span class="material-symbols-outlined text-6xl text-gray-300 mb-4">school</span>
+        <span class="material-symbols text-6xl text-gray-300 mb-4">school</span>
         <p class="text-gray-500 text-lg">Anda belum ditetapkan sebagai wali kelas</p>
         <p class="text-gray-400 text-sm mt-2">Hubungi administrator untuk mengatur kelas Anda</p>
     </div>
@@ -353,7 +353,7 @@ $teacherClass = $teacherClass ?? null;
             <!-- Date Navigation -->
             <div class="flex items-center gap-2">
                 <button class="date-nav-btn" onclick="changeDate(-1)" title="Hari sebelumnya">
-                    <span class="material-symbols-outlined text-xl">chevron_left</span>
+                    <span class="material-symbols text-xl">chevron_left</span>
                 </button>
                 <div class="date-display" title="Klik untuk pilih tanggal">
                     <input type="date" id="datePickerInput" onchange="onDatePickerChange(this.value)">
@@ -363,14 +363,14 @@ $teacherClass = $teacherClass ?? null;
                     </div>
                 </div>
                 <button class="date-nav-btn" onclick="changeDate(1)" title="Hari berikutnya">
-                    <span class="material-symbols-outlined text-xl">chevron_right</span>
+                    <span class="material-symbols text-xl">chevron_right</span>
                 </button>
             </div>
 
             <!-- Search -->
             <div class="flex-1">
                 <div class="relative">
-                    <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xl">search</span>
+                    <span class="material-symbols absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xl">search</span>
                     <input type="text" id="searchInput" oninput="filterStudents()" placeholder="Cari nama atau NIS..."
                         class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-sm">
                 </div>
@@ -379,7 +379,7 @@ $teacherClass = $teacherClass ?? null;
             <!-- Mark All -->
             <div class="flex-shrink-0">
                 <button onclick="markAll('hadir')" class="mark-all-btn border-green-300 text-green-700 bg-green-50 hover:bg-green-600 hover:text-white hover:border-green-600">
-                    <span class="material-symbols-outlined text-sm align-middle mr-1">check_circle</span>Semua Hadir
+                    <span class="material-symbols text-sm align-middle mr-1">check_circle</span>Semua Hadir
                 </button>
             </div>
         </div>
@@ -387,7 +387,7 @@ $teacherClass = $teacherClass ?? null;
 
     <!-- Lock Banner -->
     <div id="lockBanner" class="lock-banner hidden">
-        <div class="lock-icon"><span class="material-symbols-outlined">lock</span></div>
+        <div class="lock-icon"><span class="material-symbols">lock</span></div>
         <div>
             <h3 class="font-bold text-amber-900 text-base">Absensi Dikunci</h3>
             <p class="text-amber-800 text-sm mt-0.5" id="lockReason"></p>
@@ -397,28 +397,28 @@ $teacherClass = $teacherClass ?? null;
     <!-- Stats Cards -->
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
         <div class="stat-card bg-white border border-gray-200 shadow-sm">
-            <div class="stat-icon bg-blue-100"><span class="material-symbols-outlined text-blue-600">groups</span></div>
+            <div class="stat-icon bg-blue-100"><span class="material-symbols text-blue-600">groups</span></div>
             <div>
                 <p class="text-sm text-gray-500">Total Siswa</p>
                 <p class="text-2xl font-bold text-gray-900" id="statTotal">0</p>
             </div>
         </div>
         <div class="stat-card bg-white border border-gray-200 shadow-sm">
-            <div class="stat-icon bg-green-100"><span class="material-symbols-outlined text-green-600">how_to_reg</span></div>
+            <div class="stat-icon bg-green-100"><span class="material-symbols text-green-600">how_to_reg</span></div>
             <div>
                 <p class="text-sm text-gray-500">Hadir</p>
                 <p class="text-2xl font-bold text-green-600" id="statHadir">0</p>
             </div>
         </div>
         <div class="stat-card bg-white border border-gray-200 shadow-sm">
-            <div class="stat-icon bg-yellow-100"><span class="material-symbols-outlined text-yellow-600">medical_services</span></div>
+            <div class="stat-icon bg-yellow-100"><span class="material-symbols text-yellow-600">medical_services</span></div>
             <div>
                 <p class="text-sm text-gray-500">Sakit / Izin</p>
                 <p class="text-2xl font-bold text-yellow-600" id="statSakitIzin">0</p>
             </div>
         </div>
         <div class="stat-card bg-white border border-gray-200 shadow-sm">
-            <div class="stat-icon bg-red-100"><span class="material-symbols-outlined text-red-600">person_off</span></div>
+            <div class="stat-icon bg-red-100"><span class="material-symbols text-red-600">person_off</span></div>
             <div>
                 <p class="text-sm text-gray-500">Alpa</p>
                 <p class="text-2xl font-bold text-red-600" id="statAlpa">0</p>
@@ -441,7 +441,7 @@ $teacherClass = $teacherClass ?? null;
     <!-- Toast -->
     <div id="toast" class="fixed bottom-6 right-6 z-50 hidden">
         <div class="bg-gray-900 text-white px-6 py-3 rounded-xl shadow-lg flex items-center gap-3">
-            <span class="material-symbols-outlined text-xl" id="toastIcon">check_circle</span>
+            <span class="material-symbols text-xl" id="toastIcon">check_circle</span>
             <span id="toastMessage">Berhasil disimpan</span>
         </div>
     </div>
@@ -820,7 +820,7 @@ $teacherClass = $teacherClass ?? null;
 
         if (!list.length) {
             grid.innerHTML = `<div class="col-span-full text-center py-12">
-                <span class="material-symbols-outlined text-5xl text-gray-300">person_search</span>
+                <span class="material-symbols text-5xl text-gray-300">person_search</span>
                 <p class="text-gray-500 mt-3">Tidak ada siswa di kelas ini</p></div>`;
             updateStats();
             return;
@@ -967,7 +967,7 @@ $teacherClass = $teacherClass ?? null;
             showToast('Terjadi kesalahan saat menyimpan', 'error');
         } finally {
             btn.disabled = false;
-            btn.innerHTML = '<span class="material-symbols-outlined text-xl">save</span> Simpan Kehadiran';
+            btn.innerHTML = '<span class="material-symbols text-xl">save</span> Simpan Kehadiran';
         }
     }
 

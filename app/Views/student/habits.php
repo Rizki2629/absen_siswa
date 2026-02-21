@@ -1042,7 +1042,7 @@
                     <div class="poster-title">${def.title}</div>
                     ${(def.key === 'bangun_pagi' || def.key === 'tidur_cepat') ? `
                     <div class="time-badge">
-                        <span class="material-symbols-outlined text-[14px]">schedule</span>
+                        <span class="material-symbols text-[14px]">schedule</span>
                         ${def.time}
                     </div>
                     ` : ''}
@@ -1060,18 +1060,18 @@
                     ${isCompleted ? `
                     <div class="habit-action-row">
                         <button type="button" class="check-button check-button-status">
-                            <span class="material-symbols-outlined text-base">${buttonIcon}</span>
+                            <span class="material-symbols text-base">${buttonIcon}</span>
                             <span>${buttonText}</span>
                         </button>
                         <button type="button" class="edit-button" onclick="openHabitQuestionModal('${def.key}', 'edit')">
-                            <span class="material-symbols-outlined text-sm">edit</span>
+                            <span class="material-symbols text-sm">edit</span>
                             <span>Edit</span>
                         </button>
                     </div>
                     ` : `
                     <button ${buttonAction}
                             class="check-button ${buttonClass}">
-                        <span class="material-symbols-outlined text-base">
+                        <span class="material-symbols text-base">
                             ${buttonIcon}
                         </span>
                         <span>${buttonText}</span>

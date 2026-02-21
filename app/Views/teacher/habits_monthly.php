@@ -18,7 +18,7 @@
         <!-- Kelas -->
         <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">
-                <span class="material-symbols-outlined text-sm align-middle">class</span>
+                <span class="material-symbols text-sm align-middle">class</span>
                 Kelas
             </label>
             <select id="classId" onchange="onClassChange()" class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
@@ -29,7 +29,7 @@
         <!-- Siswa -->
         <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">
-                <span class="material-symbols-outlined text-sm align-middle">person</span>
+                <span class="material-symbols text-sm align-middle">person</span>
                 Siswa
             </label>
             <select id="studentId" onchange="loadMonthly()" class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500" disabled>
@@ -40,7 +40,7 @@
         <!-- Bulan -->
         <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">
-                <span class="material-symbols-outlined text-sm align-middle">calendar_month</span>
+                <span class="material-symbols text-sm align-middle">calendar_month</span>
                 Bulan
             </label>
             <select id="month" onchange="loadMonthly()" class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
@@ -62,7 +62,7 @@
         <!-- Tahun -->
         <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">
-                <span class="material-symbols-outlined text-sm align-middle">event</span>
+                <span class="material-symbols text-sm align-middle">event</span>
                 Tahun
             </label>
             <select id="year" onchange="loadMonthly()" class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
@@ -74,7 +74,7 @@
         <div class="flex items-end">
             <button onclick="loadMonthly()"
                 class="w-full px-4 py-2 bg-primary-600 text-white rounded-xl hover:bg-primary-700 transition-colors font-medium">
-                <span class="material-symbols-outlined text-sm align-middle mr-1">search</span>
+                <span class="material-symbols text-sm align-middle mr-1">search</span>
                 Tampilkan
             </button>
         </div>
@@ -87,7 +87,7 @@
         <div class="px-6 py-4 bg-primary-600 text-white flex items-center justify-between">
             <div>
                 <h3 class="text-lg font-bold flex items-center">
-                    <span class="material-symbols-outlined mr-2">emoji_people</span>
+                    <span class="material-symbols mr-2">emoji_people</span>
                     Rekap Bulanan
                 </h3>
                 <p class="text-sm text-primary-100 mt-1" id="studentInfo"></p>
@@ -121,7 +121,7 @@
 
 <!-- Empty State -->
 <div id="emptyState" class="bg-white rounded-2xl shadow p-12 text-center">
-    <span class="material-symbols-outlined text-6xl text-gray-300 mb-4">person_search</span>
+    <span class="material-symbols text-6xl text-gray-300 mb-4">person_search</span>
     <p class="text-gray-500">Pilih kelas dan siswa untuk menampilkan rekap bulanan</p>
 </div>
 
@@ -292,9 +292,9 @@
 
     function getIcon(checked) {
         if (checked === true || checked === 1 || checked === '1') {
-            return '<span class="material-symbols-outlined text-2xl text-green-500">check_circle</span>';
+            return '<span class="material-symbols text-2xl text-green-500">check_circle</span>';
         } else {
-            return '<span class="material-symbols-outlined text-2xl text-red-300">cancel</span>';
+            return '<span class="material-symbols text-2xl text-red-300">cancel</span>';
         }
     }
 

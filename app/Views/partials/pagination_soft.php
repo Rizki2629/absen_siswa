@@ -15,7 +15,7 @@ $containerClass = $containerClass ?? 'mt-4 flex flex-col md:flex-row md:items-ce
     <nav class="flex items-center gap-x-2" aria-label="<?= esc($ariaLabel) ?>">
         <button id="<?= esc($prevId) ?>" type="button" onclick="<?= esc($prevHandler, 'attr') ?>"
             class="h-10 px-4 rounded-xl border border-gray-200 bg-white text-gray-700 font-medium hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1.5">
-            <span class="material-symbols-outlined text-base">chevron_left</span>
+            <span class="material-symbols text-base">chevron_left</span>
             <span>Sebelumnya</span>
         </button>
 
@@ -24,7 +24,7 @@ $containerClass = $containerClass ?? 'mt-4 flex flex-col md:flex-row md:items-ce
         <button id="<?= esc($nextId) ?>" type="button" onclick="<?= esc($nextHandler, 'attr') ?>"
             class="h-10 px-4 rounded-xl border border-gray-200 bg-white text-gray-700 font-medium hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1.5">
             <span>Berikutnya</span>
-            <span class="material-symbols-outlined text-base">chevron_right</span>
+            <span class="material-symbols text-base">chevron_right</span>
         </button>
     </nav>
 </div>

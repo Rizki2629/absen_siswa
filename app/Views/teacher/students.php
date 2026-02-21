@@ -23,7 +23,7 @@
 <?php if (empty($classes)): ?>
     <!-- No Class Assigned -->
     <div class="bg-white rounded-2xl shadow p-12 text-center">
-        <span class="material-symbols-outlined text-6xl text-gray-300 mb-4 block">school</span>
+        <span class="material-symbols text-6xl text-gray-300 mb-4 block">school</span>
         <p class="text-gray-500 text-lg">Anda belum ditetapkan sebagai wali kelas</p>
         <p class="text-gray-400 text-sm mt-2">Hubungi administrator untuk mengatur kelas Anda</p>
     </div>
@@ -31,7 +31,7 @@
 <?php elseif (empty($students)): ?>
     <!-- No Students -->
     <div class="bg-white rounded-2xl shadow p-12 text-center">
-        <span class="material-symbols-outlined text-6xl text-gray-300 mb-4 block">person_search</span>
+        <span class="material-symbols text-6xl text-gray-300 mb-4 block">person_search</span>
         <p class="text-gray-500 text-lg">Belum ada siswa di kelas <?= esc($singleClass['name'] ?? '') ?></p>
         <p class="text-gray-400 text-sm mt-2">Data siswa dapat ditambahkan oleh administrator</p>
     </div>
@@ -41,7 +41,7 @@
     <!-- Search Bar -->
     <div class="mb-4">
         <div class="relative">
-            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">search</span>
+            <span class="material-symbols absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">search</span>
             <input type="text" id="searchInput" placeholder="Cari nama atau NIS..."
                 oninput="filterStudents()"
                 class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-white">
@@ -52,7 +52,7 @@
     <div class="bg-white rounded-2xl shadow overflow-hidden">
         <div class="px-6 py-4 bg-primary-600 text-white">
             <h3 class="text-lg font-bold flex items-center">
-                <span class="material-symbols-outlined mr-2">groups</span>
+                <span class="material-symbols mr-2">groups</span>
                 Siswa <?= esc($singleClass['name'] ?? '') ?>
             </h3>
         </div>
@@ -79,7 +79,7 @@
                             <td class="px-4 py-3">
                                 <div class="flex items-center">
                                     <div class="w-8 h-8 rounded-lg flex items-center justify-center mr-3 <?= ($student['gender'] === 'L') ? 'bg-blue-100' : 'bg-pink-100' ?>">
-                                        <span class="material-symbols-outlined text-sm <?= ($student['gender'] === 'L') ? 'text-blue-600' : 'text-pink-600' ?>">person</span>
+                                        <span class="material-symbols text-sm <?= ($student['gender'] === 'L') ? 'text-blue-600' : 'text-pink-600' ?>">person</span>
                                     </div>
                                     <span class="font-medium text-gray-900"><?= esc($student['name']) ?></span>
                                 </div>
@@ -102,7 +102,7 @@
 
         <!-- Empty Search Result -->
         <div id="noResult" class="hidden p-10 text-center text-gray-400">
-            <span class="material-symbols-outlined text-5xl mb-3 block">search_off</span>
+            <span class="material-symbols text-5xl mb-3 block">search_off</span>
             Tidak ada siswa yang cocok
         </div>
     </div>

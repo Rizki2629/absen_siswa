@@ -73,6 +73,10 @@ class GuruPiket extends BaseController
 
     public function monitoring()
     {
+        if (session()->get('role') !== 'guru_piket') {
+            return redirect()->to('/')->with('error', 'Unauthorized access');
+        }
+
         // Real-time monitoring page
         $data = [
             'title' => 'Monitoring Real-time',
@@ -90,6 +94,10 @@ class GuruPiket extends BaseController
 
     public function dailyRecap()
     {
+        if (session()->get('role') !== 'guru_piket') {
+            return redirect()->to('/')->with('error', 'Unauthorized access');
+        }
+
         // Daily recap page
         $data = [
             'title' => 'Rekap Harian',
@@ -107,6 +115,10 @@ class GuruPiket extends BaseController
 
     public function exceptions()
     {
+        if (session()->get('role') !== 'guru_piket') {
+            return redirect()->to('/')->with('error', 'Unauthorized access');
+        }
+
         // Input exceptions page
         $data = [
             'title' => 'Input Ketidakhadiran',

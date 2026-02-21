@@ -13,7 +13,7 @@
         <p class="text-gray-600 mt-1">Kelola data kelas dan jumlah siswa</p>
     </div>
     <button onclick="openAddClassModal()" class="btn-primary flex items-center space-x-2">
-        <span class="material-symbols-outlined">add</span>
+        <span class="material-symbols">add</span>
         <span>Tambah Kelas</span>
     </button>
 </div>
@@ -30,7 +30,7 @@
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">&nbsp;</label>
                 <button onclick="resetClassFilters()" class="w-full btn-secondary">
-                    <span class="material-symbols-outlined text-sm mr-2">filter_alt_off</span>
+                    <span class="material-symbols text-sm mr-2">filter_alt_off</span>
                     Reset Filter
                 </button>
             </div>
@@ -69,14 +69,14 @@
             <div class="flex items-center gap-x-2">
                 <button id="classesPrevBtn" onclick="goToClassesPage(classesPage - 1)" disabled
                     class="h-10 px-4 rounded-xl border border-gray-200 bg-white text-gray-500 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1 text-sm font-medium transition">
-                    <span class="material-symbols-outlined text-base">chevron_left</span>
+                    <span class="material-symbols text-base">chevron_left</span>
                     <span>Sebelumnya</span>
                 </button>
                 <div id="classesPaginationNumbers" class="flex items-center gap-x-1"></div>
                 <button id="classesNextBtn" onclick="goToClassesPage(classesPage + 1)" disabled
                     class="h-10 px-4 rounded-xl border border-gray-200 bg-white text-gray-500 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1 text-sm font-medium transition">
                     <span>Berikutnya</span>
-                    <span class="material-symbols-outlined text-base">chevron_right</span>
+                    <span class="material-symbols text-base">chevron_right</span>
                 </button>
             </div>
         </div>
@@ -89,7 +89,7 @@
         <div class="border-b border-gray-200 px-6 py-4 flex justify-between items-center">
             <h3 class="text-xl font-bold text-gray-900" id="classModalTitle">Tambah Kelas Baru</h3>
             <button onclick="closeClassModal()" class="text-gray-400 hover:text-gray-600">
-                <span class="material-symbols-outlined">close</span>
+                <span class="material-symbols">close</span>
             </button>
         </div>
 
@@ -135,13 +135,16 @@
             <div class="flex justify-end space-x-3 pt-4">
                 <button type="button" onclick="closeClassModal()" class="btn-secondary">Batal</button>
                 <button type="submit" class="btn-primary">
-                    <span class="material-symbols-outlined mr-2">save</span>
+                    <span class="material-symbols mr-2">save</span>
                     Simpan
                 </button>
             </div>
         </form>
     </div>
 </div>
+
+<!-- Action Buttons Helper -->
+<script src="<?= base_url('assets/js/action-buttons-helper.js') ?>"></script>
 
 <script>
     let allClasses = [];
@@ -254,7 +257,7 @@
             tbody.innerHTML = `
             <tr>
                 <td colspan="6" class="text-center py-12 text-gray-500">
-                    <span class="material-symbols-outlined text-5xl text-gray-300 block mb-2">class</span>
+                    <span class="material-symbols text-5xl text-gray-300 block mb-2">class</span>
                     <p>Belum ada data kelas</p>
                     <button onclick="openAddClassModal()" class="btn-primary mt-4">Tambah Kelas Pertama</button>
                 </td>
@@ -273,18 +276,16 @@
                 <td class="py-3 px-4 text-gray-700">${waliKelas}</td>
                 <td class="py-3 px-4 text-center">
                     <span class="inline-flex items-center gap-1 text-gray-700">
-                        <span class="material-symbols-outlined text-sm text-primary-500">groups</span>
+                        <span class="material-symbols text-sm text-primary-500">groups</span>
                         ${cls.student_count || 0} Siswa
                     </span>
                 </td>
                 <td class="py-3 px-4 text-gray-700">${cls.year || cls.academic_year || '-'}</td>
                 <td class="py-3 px-4 text-center">
-                    <button onclick="editClass(${cls.id})" class="text-primary-600 hover:text-primary-800 mr-2 p-1 rounded focus:outline-none" style="border:none;background:none;box-shadow:none;">
-                        <span class="material-symbols-outlined">edit</span>
-                    </button>
-                    <button onclick="deleteClass(${cls.id})" class="text-danger-600 hover:text-danger-800 p-1 rounded focus:outline-none" style="border:none;background:none;box-shadow:none;">
-                        <span class="material-symbols-outlined">delete</span>
-                    </button>
+                    ${renderActionButtons(cls.id, 'class', {
+                        editTooltip: 'Edit kelas',
+                        deleteTooltip: 'Hapus kelas'
+                    })}
                 </td>
             </tr>
         `;
@@ -354,7 +355,7 @@
         container.innerHTML = pages.map(item => {
             if (typeof item !== 'number') {
                 const jp = item === 'ellipsis-start' ? Math.max(1, classesPage - 5) : Math.min(classesTotalPages, classesPage + 5);
-                return `<button type="button" onclick="goToClassesPage(${jp})" class="w-10 h-10 rounded-xl border border-gray-200 bg-white text-gray-500 hover:bg-gray-50 flex items-center justify-center"><span class="material-symbols-outlined text-base">more_horiz</span></button>`;
+                return `<button type="button" onclick="goToClassesPage(${jp})" class="w-10 h-10 rounded-xl border border-gray-200 bg-white text-gray-500 hover:bg-gray-50 flex items-center justify-center"><span class="material-symbols text-base">more_horiz</span></button>`;
             }
             const isCurrent = item === classesPage;
             const cls = isCurrent ? 'bg-primary-600 text-white border-primary-600' : 'bg-white text-gray-700 border-gray-200 hover:bg-gray-50';

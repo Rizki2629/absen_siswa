@@ -42,26 +42,22 @@
                 <span class="material-symbols text-sm align-middle">calendar_today</span>
                 Tanggal
             </label>
-            <div class="flex gap-2">
-                <button onclick="changeDate(-1)" class="px-3 py-2 border border-gray-300 rounded-xl hover:bg-gray-50 transition-colors">
+            <div class="flex items-center border border-gray-300 rounded-xl overflow-hidden divide-x divide-gray-300">
+                <button onclick="changeDate(-1)" class="px-3 py-2 bg-gray-50 text-gray-700 hover:bg-gray-100 transition-colors" title="Hari sebelumnya">
                     <span class="material-symbols text-sm">chevron_left</span>
                 </button>
                 <input type="date" id="date" onchange="loadDaily()"
-                    class="flex-1 px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                    class="flex-1 px-4 py-2 bg-white focus:outline-none focus:ring-0 border-0"
                     value="<?= date('Y-m-d') ?>">
-                <button onclick="changeDate(1)" class="px-3 py-2 border border-gray-300 rounded-xl hover:bg-gray-50 transition-colors">
+                <button onclick="changeDate(1)" class="px-3 py-2 bg-gray-50 text-gray-700 hover:bg-gray-100 transition-colors" title="Hari berikutnya">
                     <span class="material-symbols text-sm">chevron_right</span>
                 </button>
+                <button onclick="setToday()"
+                    class="px-4 py-2 bg-primary-50 text-primary-700 hover:bg-primary-100 transition-colors font-medium">
+                    <span class="material-symbols text-sm align-middle mr-1">today</span>
+                    Hari Ini
+                </button>
             </div>
-        </div>
-
-        <!-- Hari Ini Button -->
-        <div class="flex items-end">
-            <button onclick="setToday()"
-                class="w-full px-4 py-2 bg-primary-600 text-white rounded-xl hover:bg-primary-700 transition-colors font-medium">
-                <span class="material-symbols text-sm align-middle mr-1">today</span>
-                Hari Ini
-            </button>
         </div>
     </div>
 

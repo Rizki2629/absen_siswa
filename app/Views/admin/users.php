@@ -13,7 +13,7 @@
         <p class="text-gray-600 mt-1">Kelola akun pengguna sistem</p>
     </div>
     <button onclick="openAddUserModal()" class="btn-primary flex items-center space-x-2">
-        <span class="material-symbols-outlined">add</span>
+        <span class="material-symbols">add</span>
         <span id="addUserButtonText">Tambah User</span>
     </button>
 </div>
@@ -24,21 +24,21 @@
         <nav class="flex space-x-1">
             <button onclick="switchTab('admin')" id="tab-admin" class="tab-button active text-purple-600 py-3 px-4 text-sm font-medium border-0">
                 <div class="flex items-center space-x-2">
-                    <span class="material-symbols-outlined text-base">shield_person</span>
+                    <span class="material-symbols text-base">shield_person</span>
                     <span>Admin</span>
                     <span id="count-admin" class="bg-purple-100 text-purple-600 ml-2 py-0.5 px-2 rounded-full text-xs font-semibold">0</span>
                 </div>
             </button>
             <button onclick="switchTab('teacher')" id="tab-teacher" class="tab-button text-gray-500 hover:text-purple-600 py-3 px-4 text-sm font-medium border-0">
                 <div class="flex items-center space-x-2">
-                    <span class="material-symbols-outlined text-base">person</span>
+                    <span class="material-symbols text-base">person</span>
                     <span>Guru</span>
                     <span id="count-teacher" class="bg-gray-100 text-gray-600 ml-2 py-0.5 px-2 rounded-full text-xs font-semibold">0</span>
                 </div>
             </button>
             <button onclick="switchTab('siswa')" id="tab-siswa" class="tab-button text-gray-500 hover:text-purple-600 py-3 px-4 text-sm font-medium border-0">
                 <div class="flex items-center space-x-2">
-                    <span class="material-symbols-outlined text-base">school</span>
+                    <span class="material-symbols text-base">school</span>
                     <span>Siswa</span>
                     <span id="count-siswa" class="bg-gray-100 text-gray-600 ml-2 py-0.5 px-2 rounded-full text-xs font-semibold">0</span>
                 </div>
@@ -52,7 +52,7 @@
     <div class="card-body">
         <div id="studentSearchWrapper" class="mb-4" style="display: none;">
             <div class="relative max-w-md">
-                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">search</span>
+                <span class="material-symbols absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">search</span>
                 <input
                     type="text"
                     id="studentSearchInput"
@@ -98,7 +98,7 @@
         <div class="border-b border-gray-200 px-6 py-4 flex justify-between items-center">
             <h3 class="text-xl font-bold text-gray-900" id="userModalTitle">Tambah User Baru</h3>
             <button onclick="closeUserModal()" class="text-gray-400 hover:text-gray-600">
-                <span class="material-symbols-outlined">close</span>
+                <span class="material-symbols">close</span>
             </button>
         </div>
 
@@ -152,13 +152,16 @@
             <div class="flex justify-end space-x-3 pt-4">
                 <button type="button" onclick="closeUserModal()" class="btn-secondary">Batal</button>
                 <button type="submit" class="btn-primary">
-                    <span class="material-symbols-outlined mr-2">save</span>
+                    <span class="material-symbols mr-2">save</span>
                     Simpan
                 </button>
             </div>
         </form>
     </div>
 </div>
+
+<!-- Action Buttons Helper -->
+<script src="<?= base_url('assets/js/action-buttons-helper.js') ?>"></script>
 
 <script>
     let currentTab = 'admin';
@@ -281,7 +284,7 @@
             tableBody.innerHTML = `
                 <tr>
                     <td colspan="7" class="text-center py-12 text-gray-500">
-                        <span class="material-symbols-outlined text-5xl text-gray-300 mb-2">manage_accounts</span>
+                        <span class="material-symbols text-5xl text-gray-300 mb-2">manage_accounts</span>
                         <p>Belum ada data user</p>
                     </td>
                 </tr>
@@ -308,17 +311,25 @@
                         <span class="${Number(user.is_active) === 1 ? 'badge-success' : 'badge-danger'}">${Number(user.is_active) === 1 ? 'Aktif' : 'Nonaktif'}</span>
                     </td>
                     <td class="py-3 px-4 text-center">
-                        <button onclick="editUser(${Number(user.id)})" class="text-primary-600 hover:text-primary-800 mr-2 p-1 rounded focus:outline-none" style="border:none;background:none;box-shadow:none;">
-                            <span class="material-symbols-outlined">edit</span>
-                        </button>
-                        <button onclick="resetPassword(${Number(user.id)})" class="text-warning-600 hover:text-warning-800 mr-2 p-1 rounded focus:outline-none" style="border:none;background:none;box-shadow:none;">
-                            <span class="material-symbols-outlined">key</span>
-                        </button>
-                        ${canDelete ? `
-                            <button onclick="deleteUser(${Number(user.id)})" class="text-danger-600 hover:text-danger-800 p-1 rounded focus:outline-none" style="border:none;background:none;box-shadow:none;">
-                                <span class="material-symbols-outlined">delete</span>
+                        <div class="flex items-center justify-center gap-1">
+                            <button onclick="editUser(${Number(user.id)})" 
+                                title="Edit pengguna"
+                                class="px-3 py-2 bg-primary-600 text-white hover:bg-primary-700 rounded-lg transition-colors text-sm font-medium">
+                                Edit
                             </button>
-                        ` : ''}
+                            <button onclick="resetPassword(${Number(user.id)})" 
+                                title="Reset password"
+                                class="px-3 py-2 bg-warning-500 text-white hover:bg-warning-600 border border-warning-500 rounded-lg transition-colors text-sm font-medium flex items-center gap-2">
+                                <span class="material-symbols text-2xl">lock_reset</span> Reset Password
+                            </button>
+                            ${canDelete ? `
+                                <button onclick="deleteUser(${Number(user.id)})" 
+                                    title="Hapus pengguna"
+                                    class="px-3 py-2 bg-red-600 text-white hover:bg-red-700 rounded-lg transition-colors text-sm font-medium">
+                                    Hapus
+                                </button>
+                            ` : ''}
+                        </div>
                     </td>
                 </tr>
             `;
@@ -413,7 +424,7 @@
                 return `
                     <button type="button" onclick="goToPage(${jumpPage})" title="${tooltip}"
                         class="w-10 h-10 rounded-xl border border-gray-200 bg-white text-gray-500 hover:bg-gray-50 flex items-center justify-center">
-                        <span class="material-symbols-outlined text-base">more_horiz</span>
+                        <span class="material-symbols text-base">more_horiz</span>
                     </button>
                 `;
             }
@@ -549,10 +560,43 @@
         }
     }
 
-    function resetPassword(id) {
-        if (confirm('Reset password user ini ke password default?')) {
-            // TODO: Implement reset password endpoint
-            alert('Fitur reset password akan segera tersedia');
+    async function resetPassword(id) {
+        const defaultPassword = prompt('Masukkan password baru (default: password123):', 'password123');
+
+        if (defaultPassword === null) {
+            return; // User cancelled
+        }
+
+        if (defaultPassword.trim().length < 6) {
+            alert('Password minimal 6 karakter');
+            return;
+        }
+
+        if (!confirm(`Reset password user ini ke "${defaultPassword}"?`)) {
+            return;
+        }
+
+        try {
+            const response = await fetch(`<?= base_url('api/admin/users') ?>/${id}/reset-password`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    new_password: defaultPassword.trim()
+                })
+            });
+
+            const result = await response.json();
+
+            if (result.status === 'success') {
+                alert(`Password berhasil direset!\n\nUsername: ${result.data.username}\nPassword: ${result.data.new_password}\n\nCatat password ini untuk diberikan ke user.`);
+            } else {
+                alert('Gagal reset password: ' + result.message);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Gagal reset password: ' + error.message);
         }
     }
 
@@ -591,12 +635,10 @@
             is_active: document.getElementById('userActive').checked ? 1 : 0
         };
 
-        // Only include password when adding new user or when password field is visible
-        if (!userId || document.getElementById('passwordField').style.display !== 'none') {
-            const password = document.getElementById('userPassword').value;
-            if (password) {
-                formData.password = password;
-            }
+        // Only include password when adding new user
+        const passwordField = document.getElementById('userPassword');
+        if (passwordField && passwordField.value.trim().length > 0) {
+            formData.password = passwordField.value.trim();
         }
 
         try {

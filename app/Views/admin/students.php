@@ -14,17 +14,12 @@
     </div>
     <div class="flex flex-wrap gap-2">
         <a href="<?= base_url('admin/students-import') ?>" class="bg-gray-600 hover:bg-gray-700 text-white font-semibold px-4 py-2.5 rounded-xl transition-colors flex items-center justify-center space-x-2 flex-1 md:flex-none">
-            <span class="material-symbols-outlined text-lg">upload_file</span>
+            <span class="material-symbols text-lg">upload_file</span>
             <span class="hidden sm:inline">Import Excel</span>
             <span class="sm:hidden">Import</span>
         </a>
-        <button onclick="generateStudentAccounts()" class="bg-gray-600 hover:bg-gray-700 text-white font-semibold px-4 py-2.5 rounded-xl transition-colors flex items-center justify-center space-x-2 flex-1 md:flex-none">
-            <span class="material-symbols-outlined text-lg">manage_accounts</span>
-            <span class="hidden sm:inline">Generate Akun</span>
-            <span class="sm:hidden">Akun</span>
-        </button>
         <button onclick="openAddStudentModal()" class="bg-primary-600 hover:bg-primary-700 text-white font-semibold px-4 py-2.5 rounded-xl transition-colors flex items-center justify-center space-x-2 flex-1 md:flex-none">
-            <span class="material-symbols-outlined text-lg">add</span>
+            <span class="material-symbols text-lg">add</span>
             <span>Tambah</span>
         </button>
     </div>
@@ -36,7 +31,7 @@
         <div class="flex flex-wrap gap-4">
             <div class="flex-1" style="min-width: 300px;">
                 <label class="block text-sm font-semibold text-gray-700 mb-2">
-                    <span class="material-symbols-outlined text-base align-middle mr-1">search</span>
+                    <span class="material-symbols text-base align-middle mr-1">search</span>
                     Cari Siswa
                 </label>
                 <input type="text" id="searchStudent" placeholder="Cari berdasarkan nama atau NIS..."
@@ -45,7 +40,7 @@
             </div>
             <div class="flex-1" style="min-width: 200px;">
                 <label class="block text-sm font-semibold text-gray-700 mb-2">
-                    <span class="material-symbols-outlined text-base align-middle mr-1">filter_list</span>
+                    <span class="material-symbols text-base align-middle mr-1">filter_list</span>
                     Filter Kelas
                 </label>
                 <select id="filterClass" onchange="filterStudents()" class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all">
@@ -55,7 +50,7 @@
             <div style="min-width: 150px;">
                 <label class="block text-sm font-semibold text-gray-700 mb-2">&nbsp;</label>
                 <button onclick="resetFilters()" class="w-full bg-gray-600 hover:bg-gray-700 text-white font-semibold px-4 py-3 rounded-xl transition-colors flex items-center justify-center space-x-2">
-                    <span class="material-symbols-outlined text-lg">filter_alt_off</span>
+                    <span class="material-symbols text-lg">filter_alt_off</span>
                     <span>Reset</span>
                 </button>
             </div>
@@ -136,12 +131,12 @@
         <div class="sticky top-0 bg-gradient-to-r from-primary-600 to-primary-700 px-6 py-5 flex justify-between items-center">
             <div class="flex items-center space-x-3">
                 <div class="w-10 h-10 bg-white bg-opacity-20 rounded-xl flex items-center justify-center">
-                    <span class="material-symbols-outlined text-white">person_add</span>
+                    <span class="material-symbols text-white">person_add</span>
                 </div>
                 <h3 class="text-xl font-bold text-white" id="studentModalTitle">Tambah Siswa Baru</h3>
             </div>
             <button onclick="closeStudentModal()" class="text-white hover:bg-white hover:bg-opacity-20 rounded-lg p-2 transition-colors">
-                <span class="material-symbols-outlined">close</span>
+                <span class="material-symbols">close</span>
             </button>
         </div>
 
@@ -152,7 +147,7 @@
             <!-- Identitas Section -->
             <div class="space-y-4">
                 <h4 class="text-sm font-bold text-gray-700 uppercase tracking-wide flex items-center">
-                    <span class="material-symbols-outlined text-primary-600 mr-2">badge</span>
+                    <span class="material-symbols text-primary-600 mr-2">badge</span>
                     Identitas Siswa
                 </h4>
                 
@@ -214,7 +209,7 @@
             <!-- Kontak Section -->
             <div class="space-y-4 pt-4 border-t-2 border-gray-100">
                 <h4 class="text-sm font-bold text-gray-700 uppercase tracking-wide flex items-center">
-                    <span class="material-symbols-outlined text-primary-600 mr-2">contacts</span>
+                    <span class="material-symbols text-primary-600 mr-2">contacts</span>
                     Informasi Kontak
                 </h4>
                 
@@ -253,11 +248,11 @@
             <!-- Action Buttons -->
             <div class="flex flex-col-reverse md:flex-row justify-end gap-3 pt-6 border-t-2 border-gray-100">
                 <button type="button" onclick="closeStudentModal()" class="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-3 px-6 rounded-xl transition-colors flex items-center justify-center space-x-2">
-                    <span class="material-symbols-outlined">close</span>
+                    <span class="material-symbols">close</span>
                     <span>Batal</span>
                 </button>
                 <button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white font-semibold py-3 px-6 rounded-xl transition-colors flex items-center justify-center space-x-2">
-                    <span class="material-symbols-outlined">save</span>
+                    <span class="material-symbols">save</span>
                     <span>Simpan Data</span>
                 </button>
             </div>
@@ -280,6 +275,9 @@
         animation: fade-in 0.2s ease-out;
     }
 </style>
+
+<!-- Action Buttons Helper -->
+<script src="<?= base_url('assets/js/action-buttons-helper.js') ?>"></script>
 
 <script>
     let studentsPage = 1;
@@ -383,12 +381,12 @@
             const emptyState = `
                 <div class="text-center py-16 text-gray-500">
                     <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gray-100 mb-4">
-                        <span class="material-symbols-outlined text-5xl text-gray-300">groups</span>
+                        <span class="material-symbols text-5xl text-gray-300">groups</span>
                     </div>
                     <p class="text-lg font-semibold text-gray-700 mb-2">Belum ada data siswa</p>
                     <p class="text-sm text-gray-500 mb-6">Mulai tambahkan siswa untuk mengelola data absensi</p>
                     <button onclick="openAddStudentModal()" class="bg-primary-600 hover:bg-primary-700 text-white font-semibold px-6 py-3 rounded-xl transition-colors inline-flex items-center space-x-2">
-                        <span class="material-symbols-outlined">add</span>
+                        <span class="material-symbols">add</span>
                         <span>Tambah Siswa Pertama</span>
                     </button>
                 </div>
@@ -410,7 +408,7 @@
             const date = new Date(dateString);
             if (isNaN(date.getTime())) return '-';
             
-            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+            const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
             const day = date.getDate();
             const month = months[date.getMonth()];
             const year = date.getFullYear();
@@ -455,15 +453,15 @@
             
             return `
         <tr class="border-b border-gray-100 hover:bg-gray-50 transition-colors">
-            <td class="py-4 px-4 text-gray-400 font-medium text-sm">${rowNumber}</td>
+            <td class="py-4 px-4 text-gray-400 text-sm">${rowNumber}</td>
             <td class="py-4 px-4">
-                <span class="font-mono text-sm font-semibold text-gray-900">${student.nis}</span>
+                <span class="font-mono text-sm text-gray-900">${student.nis}</span>
             </td>
             <td class="py-4 px-4">
                 <span class="font-mono text-sm text-gray-700">${student.nisn || '-'}</span>
             </td>
             <td class="py-4 px-4">
-                <div class="font-semibold text-gray-900">${toTitleCase(student.name)}</div>
+                <div class="text-gray-900">${toTitleCase(student.name)}</div>
             </td>
             <td class="py-4 px-4">
                 <span class="text-sm text-gray-700">${birthInfo}</span>
@@ -478,18 +476,10 @@
                 <span class="text-sm text-gray-700">${classDisplay}</span>
             </td>
             <td class="py-4 px-4">
-                <div class="flex items-center justify-center space-x-1">
-                    <button onclick="editStudent(${student.id})" 
-                        title="Edit data siswa"
-                        class="px-3 py-2 bg-primary-600 text-white hover:bg-primary-700 rounded-lg transition-colors text-sm font-medium">
-                        Edit
-                    </button>
-                    <button onclick="deleteStudent(${student.id})" 
-                        title="Hapus siswa"
-                        class="px-3 py-2 bg-red-600 text-white hover:bg-red-700 rounded-lg transition-colors text-sm font-medium">
-                        Hapus
-                    </button>
-                </div>
+                ${renderActionButtons(student.id, 'student', {
+                    editTooltip: 'Edit data siswa',
+                    deleteTooltip: 'Hapus siswa'
+                })}
             </td>
         </tr>
     `;
@@ -515,17 +505,12 @@
                 </span>
             </div>
             ${student.nisn ? `<p class="text-xs text-gray-500 mb-3">NISN: ${student.nisn}</p>` : ''}
-            <div class="flex space-x-2 pt-3 border-t border-gray-100">
-                <button onclick="editStudent(${student.id})" 
-                    class="flex-1 bg-primary-600 hover:bg-primary-700 text-white font-semibold rounded-xl py-2 text-sm transition-colors flex items-center justify-center space-x-1">
-                    <span class="material-symbols-outlined text-base">edit</span>
-                    <span>Edit</span>
-                </button>
-                <button onclick="deleteStudent(${student.id})" 
-                    class="flex-1 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-xl py-2 text-sm transition-colors flex items-center justify-center space-x-1">
-                    <span class="material-symbols-outlined text-base">delete</span>
-                    <span>Hapus</span>
-                </button>
+            <div class="pt-3 border-t border-gray-100">
+                ${renderActionButtonsWithIcon(student.id, 'student', {
+                    editTooltip: 'Edit data siswa',
+                    deleteTooltip: 'Hapus siswa',
+                    layout: 'horizontal'
+                })}
             </div>
         </div>
     `;
@@ -635,7 +620,7 @@
                 return `
                     <button type="button" onclick="goToStudentsPage(${jumpPage})" title="${tooltip}"
                         class="w-10 h-10 rounded-xl border border-gray-200 bg-white text-gray-500 hover:bg-gray-50 flex items-center justify-center">
-                        <span class="material-symbols-outlined text-base">more_horiz</span>
+                        <span class="material-symbols text-base">more_horiz</span>
                     </button>
                 `;
             }

@@ -38,7 +38,7 @@ $statusIcon  = $isHadir ? ($todayStatus === 'terlambat' ? 'timer' : 'check_circl
     <div class="relative px-5 py-5 md:px-6 md:py-6 z-10">
         <!-- Date Header -->
         <p class="text-xs font-medium mb-3 flex items-center gap-1.5 text-white/90">
-            <span class="material-symbols-outlined" style="font-size:14px;">calendar_today</span>
+            <span class="material-symbols" style="font-size:14px;">calendar_today</span>
             <?= $todayLabel ?>
         </p>
 
@@ -52,12 +52,12 @@ $statusIcon  = $isHadir ? ($todayStatus === 'terlambat' ? 'timer' : 'check_circl
                 <div class="flex flex-wrap gap-2">
                     <span class="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg"
                         style="background:rgba(255,255,255,0.2);color:#fff;">
-                        <span class="material-symbols-outlined" style="font-size:14px;">badge</span>
+                        <span class="material-symbols" style="font-size:14px;">badge</span>
                         <?= esc($student['nis'] ?? '-') ?>
                     </span>
                     <span class="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg"
                         style="background:rgba(255,255,255,0.2);color:#fff;">
-                        <span class="material-symbols-outlined" style="font-size:14px;">school</span>
+                        <span class="material-symbols" style="font-size:14px;">school</span>
                         Kelas <?= esc($student['class'] ?? '-') ?>
                     </span>
                 </div>
@@ -72,18 +72,18 @@ $statusIcon  = $isHadir ? ($todayStatus === 'terlambat' ? 'timer' : 'check_circl
                     <div class="flex items-center gap-2.5 mb-3">
                         <div class="rounded-full p-2 flex-shrink-0
                             <?= $statusColor === 'success' ? 'bg-green-400' : ($statusColor === 'warning' ? 'bg-yellow-400' : ($statusColor === 'danger' ? 'bg-red-400' : 'bg-blue-300')) ?>">
-                            <span class="material-symbols-outlined text-white" style="font-size:18px;"><?= $statusIcon ?></span>
+                            <span class="material-symbols text-white" style="font-size:18px;"><?= $statusIcon ?></span>
                         </div>
                         <span class="text-white font-bold text-base"><?= $statusLabel ?></span>
                     </div>
                     <?php if ($isHadir): ?>
                         <div class="space-y-1.5 text-xs text-white/90">
                             <p class="flex items-center gap-1.5">
-                                <span class="material-symbols-outlined" style="font-size:14px;">login</span>
+                                <span class="material-symbols" style="font-size:14px;">login</span>
                                 Masuk: <span class="font-bold text-white ml-auto"><?= esc($todayAttendance['check_in'] ?? '-') ?></span>
                             </p>
                             <p class="flex items-center gap-1.5">
-                                <span class="material-symbols-outlined" style="font-size:14px;">logout</span>
+                                <span class="material-symbols" style="font-size:14px;">logout</span>
                                 Pulang: <span class="font-bold text-white ml-auto"><?= esc($todayAttendance['check_out'] ?? 'Belum') ?></span>
                             </p>
                         </div>
@@ -91,7 +91,7 @@ $statusIcon  = $isHadir ? ($todayStatus === 'terlambat' ? 'timer' : 'check_circl
                 <?php else: ?>
                     <div class="flex items-center gap-2.5">
                         <div class="bg-yellow-400 rounded-full p-2 flex-shrink-0">
-                            <span class="material-symbols-outlined text-white" style="font-size:18px;">schedule</span>
+                            <span class="material-symbols text-white" style="font-size:18px;">schedule</span>
                         </div>
                         <div>
                             <p class="text-white font-bold text-sm">Belum Tercatat</p>
@@ -117,7 +117,7 @@ $statusIcon  = $isHadir ? ($todayStatus === 'terlambat' ? 'timer' : 'check_circl
                     <p class="text-xs text-gray-400 mt-1.5">hari</p>
                 </div>
                 <div class="bg-success-100 rounded-xl p-3 flex-shrink-0">
-                    <span class="material-symbols-outlined text-success-600" style="font-size:26px;">check_circle</span>
+                    <span class="material-symbols text-success-600" style="font-size:26px;">check_circle</span>
                 </div>
             </div>
         </div>
@@ -133,7 +133,7 @@ $statusIcon  = $isHadir ? ($todayStatus === 'terlambat' ? 'timer' : 'check_circl
                     <p class="text-xs text-gray-400 mt-1.5">hari</p>
                 </div>
                 <div class="bg-warning-100 rounded-xl p-3 flex-shrink-0">
-                    <span class="material-symbols-outlined text-warning-600" style="font-size:26px;">timer</span>
+                    <span class="material-symbols text-warning-600" style="font-size:26px;">timer</span>
                 </div>
             </div>
         </div>
@@ -149,7 +149,7 @@ $statusIcon  = $isHadir ? ($todayStatus === 'terlambat' ? 'timer' : 'check_circl
                     <p class="text-xs text-gray-400 mt-1.5">hari</p>
                 </div>
                 <div class="bg-primary-100 rounded-xl p-3 flex-shrink-0">
-                    <span class="material-symbols-outlined text-primary-500" style="font-size:26px;">medical_information</span>
+                    <span class="material-symbols text-primary-500" style="font-size:26px;">medical_information</span>
                 </div>
             </div>
         </div>
@@ -165,7 +165,7 @@ $statusIcon  = $isHadir ? ($todayStatus === 'terlambat' ? 'timer' : 'check_circl
                     <p class="text-xs text-gray-400 mt-1.5">hari</p>
                 </div>
                 <div class="bg-danger-100 rounded-xl p-3 flex-shrink-0">
-                    <span class="material-symbols-outlined text-danger-600" style="font-size:26px;">cancel</span>
+                    <span class="material-symbols text-danger-600" style="font-size:26px;">cancel</span>
                 </div>
             </div>
         </div>
@@ -180,7 +180,7 @@ $statusIcon  = $isHadir ? ($todayStatus === 'terlambat' ? 'timer' : 'check_circl
     <div class="card shadow-md hover:shadow-lg transition-shadow">
         <div class="card-header py-4 px-5 border-b border-gray-100">
             <h3 class="text-sm font-bold text-gray-900 flex items-center gap-2">
-                <span class="material-symbols-outlined text-primary-600" style="font-size:20px;">analytics</span>
+                <span class="material-symbols text-primary-600" style="font-size:20px;">analytics</span>
                 Tingkat Kehadiran
             </h3>
         </div>
@@ -205,15 +205,15 @@ $statusIcon  = $isHadir ? ($todayStatus === 'terlambat' ? 'timer' : 'check_circl
 
             <?php if ($attendanceRate >= 90): ?>
                 <span class="inline-flex items-center gap-1.5 bg-success-100 text-success-700 text-xs font-bold px-4 py-2 rounded-lg">
-                    <span class="material-symbols-outlined" style="font-size:14px;">star</span> Sangat Baik!
+                    <span class="material-symbols" style="font-size:14px;">star</span> Sangat Baik!
                 </span>
             <?php elseif ($attendanceRate >= 75): ?>
                 <span class="inline-flex items-center gap-1.5 bg-warning-100 text-warning-700 text-xs font-bold px-4 py-2 rounded-lg">
-                    <span class="material-symbols-outlined" style="font-size:14px;">thumb_up</span> Pertahankan!
+                    <span class="material-symbols" style="font-size:14px;">thumb_up</span> Pertahankan!
                 </span>
             <?php else: ?>
                 <span class="inline-flex items-center gap-1.5 bg-danger-100 text-danger-700 text-xs font-bold px-4 py-2 rounded-lg">
-                    <span class="material-symbols-outlined" style="font-size:14px;">warning</span> Perlu Ditingkatkan
+                    <span class="material-symbols" style="font-size:14px;">warning</span> Perlu Ditingkatkan
                 </span>
             <?php endif; ?>
         </div>
@@ -227,7 +227,7 @@ $statusIcon  = $isHadir ? ($todayStatus === 'terlambat' ? 'timer' : 'check_circl
             class="card shadow-md hover:shadow-lg hover:-translate-y-1 transition-all duration-200 group cursor-pointer">
             <div class="card-body flex flex-col items-center justify-center py-6 px-4 text-center">
                 <div class="bg-primary-100 rounded-xl p-4 mb-3 group-hover:bg-primary-200 transition-colors">
-                    <span class="material-symbols-outlined text-primary-600" style="font-size:28px;">calendar_month</span>
+                    <span class="material-symbols text-primary-600" style="font-size:28px;">calendar_month</span>
                 </div>
                 <h4 class="font-bold text-gray-800 text-sm leading-tight mb-1">Riwayat Kehadiran</h4>
                 <p class="text-xs text-gray-500">Lihat rekap</p>
@@ -239,7 +239,7 @@ $statusIcon  = $isHadir ? ($todayStatus === 'terlambat' ? 'timer' : 'check_circl
             class="card shadow-md hover:shadow-lg hover:-translate-y-1 transition-all duration-200 group cursor-pointer">
             <div class="card-body flex flex-col items-center justify-center py-6 px-4 text-center">
                 <div class="bg-success-100 rounded-xl p-4 mb-3 group-hover:bg-success-200 transition-colors">
-                    <span class="material-symbols-outlined text-success-600" style="font-size:28px;">emoji_people</span>
+                    <span class="material-symbols text-success-600" style="font-size:28px;">emoji_people</span>
                 </div>
                 <h4 class="font-bold text-gray-800 text-sm leading-tight mb-1">7 Kebiasaan</h4>
                 <p class="text-xs text-gray-500">Kebiasaan harian</p>
@@ -251,7 +251,7 @@ $statusIcon  = $isHadir ? ($todayStatus === 'terlambat' ? 'timer' : 'check_circl
             class="card shadow-md hover:shadow-lg hover:-translate-y-1 transition-all duration-200 group cursor-pointer">
             <div class="card-body flex flex-col items-center justify-center py-6 px-4 text-center">
                 <div class="relative bg-warning-100 rounded-xl p-4 mb-3 group-hover:bg-warning-200 transition-colors inline-block">
-                    <span class="material-symbols-outlined text-warning-600" style="font-size:28px;">notifications</span>
+                    <span class="material-symbols text-warning-600" style="font-size:28px;">notifications</span>
                     <?php if (isset($unreadNotifications) && $unreadNotifications > 0): ?>
                         <span class="absolute -top-1 -right-1 bg-danger-500 text-white font-bold rounded-full w-5 h-5 flex items-center justify-center leading-none text-xs">
                             <?= $unreadNotifications > 9 ? '9+' : $unreadNotifications ?>

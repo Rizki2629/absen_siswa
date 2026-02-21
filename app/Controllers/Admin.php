@@ -467,17 +467,62 @@ class Admin extends BaseController
         try {
             $json = $this->request->getJSON(true);
             $userModel = model(\App\Models\UserModel::class);
+
+            // Get existing user data
+            $existingUser = $userModel->find($id);
+            if (!$existingUser) {
+                return $this->response->setStatusCode(404)->setJSON([
+                    'status' => 'error',
+                    'message' => 'User tidak ditemukan'
+                ]);
+            }
+
             $data = [];
-            if (isset($json['username'])) $data['username'] = $json['username'];
-            if (isset($json['email'])) $data['email'] = $json['email'];
-            if (isset($json['password']) && $json['password']) $data['password_hash'] = password_hash($json['password'], PASSWORD_DEFAULT);
+
+            // Username - check if changed and if new username is unique
+            if (isset($json['username']) && $json['username'] !== $existingUser['username']) {
+                $usernameExists = $userModel->where('username', $json['username'])
+                    ->where('id !=', $id)
+                    ->first();
+                if ($usernameExists) {
+                    return $this->response->setStatusCode(400)->setJSON([
+                        'status' => 'error',
+                        'message' => 'Username sudah digunakan oleh user lain'
+                    ]);
+                }
+                $data['username'] = $json['username'];
+            }
+
+            // Email - check if changed and if new email is unique
+            if (isset($json['email']) && $json['email'] !== '' && $json['email'] !== $existingUser['email']) {
+                $emailExists = $userModel->where('email', $json['email'])
+                    ->where('id !=', $id)
+                    ->first();
+                if ($emailExists) {
+                    return $this->response->setStatusCode(400)->setJSON([
+                        'status' => 'error',
+                        'message' => 'Email sudah digunakan oleh user lain'
+                    ]);
+                }
+                $data['email'] = $json['email'];
+            }
+
+            // Password - only update if provided
+            if (isset($json['password']) && $json['password']) {
+                $data['password_hash'] = password_hash($json['password'], PASSWORD_DEFAULT);
+            }
+
+            // Other fields
             if (isset($json['role'])) $data['role'] = $json['role'];
             if (isset($json['name'])) $data['full_name'] = $json['name'];
             if (isset($json['phone'])) $data['phone'] = $json['phone'];
             if (isset($json['is_active'])) $data['is_active'] = (int)$json['is_active'];
+
+            // Update user
             if (!empty($data)) {
                 $userModel->update($id, $data);
             }
+
             return $this->response->setJSON([
                 'status' => 'success',
                 'message' => 'User berhasil diperbarui',
@@ -514,6 +559,51 @@ class Admin extends BaseController
             return $this->response->setStatusCode(500)->setJSON([
                 'status' => 'error',
                 'message' => 'Gagal menghapus user: ' . $e->getMessage()
+            ]);
+        }
+    }
+
+    /**
+     * API: Reset user password
+     */
+    public function apiResetPassword($id)
+    {
+        try {
+            $json = $this->request->getJSON(true);
+            $userModel = model(\App\Models\UserModel::class);
+
+            $user = $userModel->find($id);
+            if (!$user) {
+                return $this->response->setStatusCode(404)->setJSON([
+                    'status' => 'error',
+                    'message' => 'User tidak ditemukan'
+                ]);
+            }
+
+            // Default password: use provided value, or fall back to the user's username
+            // (which is NIS/NISN for student accounts — easy to communicate)
+            $newPassword = (isset($json['new_password']) && trim($json['new_password']) !== '')
+                ? $json['new_password']
+                : $user['username'];
+
+            $data = [
+                'password_hash' => password_hash($newPassword, PASSWORD_DEFAULT)
+            ];
+
+            $userModel->update($id, $data);
+
+            return $this->response->setJSON([
+                'status' => 'success',
+                'message' => 'Password berhasil direset',
+                'data' => [
+                    'username' => $user['username'],
+                    'new_password' => $newPassword
+                ]
+            ]);
+        } catch (\Throwable $e) {
+            return $this->response->setStatusCode(500)->setJSON([
+                'status' => 'error',
+                'message' => 'Gagal reset password: ' . $e->getMessage()
             ]);
         }
     }

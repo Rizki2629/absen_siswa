@@ -17,7 +17,7 @@
     <a href="<?= base_url('teacher/attendance') ?>" class="bg-white rounded-2xl shadow p-6 hover:shadow-lg transition-all">
         <div class="flex items-center mb-4">
             <div class="w-12 h-12 bg-primary-100 rounded-xl flex items-center justify-center mr-4">
-                <span class="material-symbols-outlined text-2xl text-primary-600">how_to_reg</span>
+                <span class="material-symbols text-2xl text-primary-600">how_to_reg</span>
             </div>
             <div>
                 <h4 class="text-lg font-bold text-gray-900">Daftar Hadir</h4>
@@ -29,7 +29,7 @@
     <a href="<?= base_url('teacher/rekap') ?>" class="bg-white rounded-2xl shadow p-6 hover:shadow-lg transition-all">
         <div class="flex items-center mb-4">
             <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center mr-4">
-                <span class="material-symbols-outlined text-2xl text-green-600">table_chart</span>
+                <span class="material-symbols text-2xl text-green-600">table_chart</span>
             </div>
             <div>
                 <h4 class="text-lg font-bold text-gray-900">Rekap Kehadiran</h4>
@@ -41,7 +41,7 @@
     <a href="<?= base_url('teacher/habits-daily') ?>" class="bg-white rounded-2xl shadow p-6 hover:shadow-lg transition-all">
         <div class="flex items-center mb-4">
             <div class="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center mr-4">
-                <span class="material-symbols-outlined text-2xl text-amber-600">emoji_people</span>
+                <span class="material-symbols text-2xl text-amber-600">emoji_people</span>
             </div>
             <div>
                 <h4 class="text-lg font-bold text-gray-900">7 Kebiasaan</h4>
